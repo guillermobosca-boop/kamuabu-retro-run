@@ -2009,7 +2009,13 @@ class MenuScene extends Phaser.Scene {
     this.input.keyboard.on("keydown-DOWN", () => { this.resetAttract(); this.moveVertical(1); });
     this.input.keyboard.on("keydown-ENTER", () => { this.resetAttract(); this.startSelected(); });
     this.input.keyboard.on("keydown-SPACE", () => { this.resetAttract(); this.startSelected(); });
-    this.input.on("pointerdown", () => this.resetAttract());
+    this.input.on("pointerdown", (pointer, targets) => {
+      this.resetAttract();
+      if (targets.length > 0) {
+        return;
+      }
+      this.startSelected();
+    });
     this.updateCards();
   }
 
