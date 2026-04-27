@@ -1,0 +1,512 @@
+:root {
+  --ink: #15151c;
+  --cream: #f2ead8;
+  --orange: #ff8b22;
+  --blue: #40d8ff;
+  --lime: #c7ff3a;
+  --red: #ff365f;
+  --steel: #6b6f7d;
+  --shadow: #08080c;
+  --city-accent: #ff365f;
+  --city-highlight: #f2ead8;
+  --city-shadow: #2d313a;
+  --city-glow: #40d8ff;
+  --hud-metal-a: #f3efe6;
+  --hud-metal-b: #bab5aa;
+  --hud-title: #5c355e;
+  --hud-value: #16171d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  color: var(--cream);
+  background:
+    linear-gradient(90deg, rgba(255, 54, 95, 0.16) 0 9%, transparent 9% 91%, rgba(64, 216, 255, 0.14) 91%),
+    radial-gradient(circle at 18% 16%, rgba(255, 139, 34, 0.28), transparent 22rem),
+    radial-gradient(circle at 84% 20%, rgba(64, 216, 255, 0.22), transparent 22rem),
+    linear-gradient(135deg, #201b22 0%, #10101a 48%, #252936 100%);
+  font-family: "VT323", monospace;
+  overflow-x: hidden;
+}
+
+body::before {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 18px 18px;
+  opacity: 0.8;
+}
+
+.shell {
+  width: min(1720px, calc(100vw - 18px));
+  min-height: 100vh;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(260px, 0.48fr) minmax(960px, 2.24fr);
+  align-items: center;
+  gap: 18px;
+  padding: 12px 0;
+}
+
+.brand-panel {
+  position: relative;
+  padding: 18px 18px 16px;
+  border: 4px solid var(--cream);
+  border-radius: 10px;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(255, 54, 95, 0.16), transparent 38%),
+    linear-gradient(180deg, rgba(39, 42, 52, 0.96), rgba(15, 15, 22, 0.92));
+  box-shadow: 12px 12px 0 var(--shadow), inset 0 0 0 5px rgba(0, 0, 0, 0.34);
+}
+
+.brand-panel::before {
+  position: absolute;
+  inset: 10px;
+  content: "";
+  border: 2px solid rgba(242, 234, 216, 0.08);
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.brand-header {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  margin-bottom: 14px;
+  padding-right: 92px;
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  color: var(--blue);
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  line-height: 1.8;
+  text-transform: uppercase;
+}
+
+.brand-logo {
+  margin: 0;
+  color: var(--orange);
+  font-family: "Press Start 2P", monospace;
+  text-shadow: 5px 5px 0 #000, 8px 8px 0 var(--red);
+}
+
+.brand-logo-main,
+.brand-logo-sub {
+  display: block;
+  white-space: nowrap;
+}
+
+.brand-logo-main {
+  font-size: clamp(22px, 1.84vw, 34px);
+  line-height: 0.96;
+  letter-spacing: -0.04em;
+}
+
+.brand-logo-sub {
+  margin-top: 10px;
+  font-size: clamp(17px, 1.34vw, 26px);
+  line-height: 0.96;
+  letter-spacing: -0.035em;
+}
+
+.bit-badge {
+  position: absolute;
+  top: 10px;
+  right: 0;
+  padding: 10px 14px 9px;
+  color: var(--ink);
+  background: var(--lime);
+  border: 4px solid var(--ink);
+  border-radius: 999px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 9px;
+  line-height: 1;
+  transform: rotate(-6deg);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.42);
+}
+
+.coin-callout {
+  margin: 0 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px 7px;
+  border: 3px solid rgba(64, 216, 255, 0.42);
+  border-radius: 999px;
+  color: var(--blue);
+  background: rgba(7, 10, 16, 0.76);
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.22);
+  animation: coin-blink 1.05s steps(2, jump-none) infinite;
+}
+
+.coin-callout::before {
+  width: 10px;
+  height: 10px;
+  content: "";
+  border-radius: 50%;
+  background: var(--orange);
+  box-shadow: 0 0 0 2px #000, 0 0 14px rgba(255, 139, 34, 0.55);
+}
+
+.pitch {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.02;
+}
+
+.brand-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.brand-meta span {
+  padding: 7px 10px 6px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.22);
+  color: var(--cream);
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.brand-footer {
+  margin: 14px 0 0;
+  color: rgba(242, 234, 216, 0.78);
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  line-height: 1.35;
+  letter-spacing: 0.06em;
+}
+
+.game-card {
+  padding: 10px;
+  border: 4px solid var(--cream);
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.12), transparent 34%),
+    linear-gradient(90deg, #09090d, #262935 8%, #111218 92%, #09090d),
+    #0f0f14;
+  box-shadow:
+    12px 12px 0 rgba(0, 0, 0, 0.52),
+    0 18px 44px rgba(0, 0, 0, 0.42),
+    inset 0 0 0 5px rgba(255, 255, 255, 0.06);
+}
+
+.menu-active .hud,
+.menu-active .controls {
+  display: none;
+}
+
+.menu-active .game-card {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.menu-active .shell {
+  width: min(1840px, calc(100vw - 18px));
+  grid-template-columns: minmax(240px, 0.34fr) minmax(1100px, 2.9fr);
+  gap: 24px;
+}
+
+.menu-active .brand-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 356px;
+  padding: 16px 16px 18px;
+  max-width: 322px;
+}
+
+.menu-active .brand-logo {
+  text-shadow: 4px 4px 0 #000, 6px 6px 0 var(--red);
+}
+
+.menu-active .brand-logo-main {
+  font-size: clamp(18px, 1.28vw, 24px);
+}
+
+.menu-active .brand-logo-sub {
+  margin-top: 8px;
+  font-size: clamp(14px, 1.05vw, 20px);
+}
+
+.menu-active .pitch {
+  font-size: 15px;
+  line-height: 1.02;
+}
+
+.menu-active .eyebrow {
+  font-size: 8px;
+  margin-bottom: 10px;
+}
+
+.menu-active .brand-header {
+  gap: 10px;
+  margin-bottom: 10px;
+  padding-right: 84px;
+}
+
+.menu-active .bit-badge {
+  top: 4px;
+  padding: 9px 12px 8px;
+  font-size: 7px;
+}
+
+.menu-active .coin-callout {
+  margin-bottom: 12px;
+  font-size: 8px;
+}
+
+.menu-active .brand-meta {
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.menu-active .brand-meta span {
+  font-size: 6px;
+  padding: 6px 8px 5px;
+}
+
+.menu-active .brand-footer {
+  margin-top: 12px;
+  font-size: 6px;
+}
+
+.hud {
+  display: grid;
+  grid-template-columns: 1.15fr 0.82fr 1.15fr 1fr 0.78fr 1.08fr 1fr 0.82fr;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.hud-card {
+  position: relative;
+  min-width: 0;
+  padding: 7px 8px 7px 26px;
+  border: 3px solid #000;
+  border-radius: 4px;
+  color: var(--ink);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.55), transparent 24%),
+    linear-gradient(180deg, var(--hud-metal-a), var(--hud-metal-b));
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.5),
+    inset -4px -4px 0 rgba(0, 0, 0, 0.22),
+    0 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+.hud-card::before {
+  position: absolute;
+  left: 7px;
+  top: 10px;
+  width: 12px;
+  height: 12px;
+  content: "";
+  border: 2px solid #000;
+  border-radius: 2px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent 45%),
+    var(--city-accent);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.26);
+}
+
+.hud-card::after {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 6px;
+  height: 4px;
+  content: "";
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.hud-score::before {
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff6d2 0 28%, transparent 30%), var(--city-accent);
+}
+
+.hud-combo::before,
+.hud-weapon::before {
+  clip-path: polygon(0 55%, 55% 55%, 55% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.hud-city::before {
+  border-radius: 50% 50% 12% 12%;
+}
+
+.hud-mission::before {
+  border-radius: 999px;
+}
+
+.hud-socks::after,
+.hud-mission::after {
+  background:
+    linear-gradient(90deg, var(--city-accent) 0 var(--meter, 0%), rgba(0, 0, 0, 0.12) var(--meter, 0%) 100%);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18);
+}
+
+.hud-weapon::after,
+.hud-state::after {
+  background: linear-gradient(90deg, var(--city-glow), rgba(0, 0, 0, 0.12));
+  opacity: 0.45;
+}
+
+.hud span,
+.hud strong {
+  display: block;
+}
+
+.hud span {
+  color: var(--hud-title);
+  font-family: "Press Start 2P", monospace;
+  font-size: clamp(7px, 0.75vw, 9px);
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hud strong {
+  margin-top: 6px;
+  min-height: 23px;
+  overflow: hidden;
+  color: var(--hud-value);
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.18);
+  font-size: clamp(16px, 1.45vw, 23px);
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#game {
+  overflow: hidden;
+  border: 4px solid #000;
+  border-radius: 6px;
+  background: #2f3138;
+  box-shadow:
+    0 0 0 4px #4a4f5c,
+    0 0 0 7px rgba(242, 234, 216, 0.18),
+    inset 0 0 22px rgba(0, 0, 0, 0.72);
+}
+
+#game canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  image-rendering: auto;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 9px;
+  color: var(--blue);
+  font-size: 20px;
+}
+
+@media (min-width: 1280px) {
+  .game-card {
+    align-self: center;
+  }
+
+  #game canvas {
+    max-height: calc(100vh - 118px);
+    object-fit: contain;
+  }
+}
+
+@media (max-width: 900px) {
+  .shell {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .brand-panel {
+    box-shadow: 8px 8px 0 var(--shadow);
+  }
+}
+
+@media (max-width: 560px) {
+  .shell {
+    width: min(100vw - 16px, 1180px);
+    padding: 12px 0;
+  }
+
+  .brand-panel {
+    padding: 18px;
+  }
+
+  .brand-header {
+    padding-right: 0;
+  }
+
+  .bit-badge {
+    position: static;
+    justify-self: start;
+    margin-top: 4px;
+  }
+
+  .brand-logo-main {
+    font-size: 24px;
+  }
+
+  .brand-logo-sub {
+    font-size: 18px;
+  }
+
+  .pitch {
+    font-size: 24px;
+  }
+
+  .game-card {
+    padding: 8px;
+  }
+
+  .hud {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .controls {
+    flex-direction: column;
+    font-size: 21px;
+  }
+}
+
+@keyframes coin-blink {
+  0%,
+  44% {
+    opacity: 1;
+    box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.22), 0 0 0 rgba(64, 216, 255, 0);
+  }
+
+  45%,
+  100% {
+    opacity: 0.46;
+    box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.22), 0 0 12px rgba(64, 216, 255, 0.25);
+  }
+}

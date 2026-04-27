@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KAMUABU Retro Run</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="brand-panel" aria-label="Presentacion del juego">
+        <p class="eyebrow">KAMUABU presenta</p>
+        <div class="brand-header">
+          <h1 class="brand-logo">
+            <span class="brand-logo-main">KAMUABU</span>
+            <span class="brand-logo-sub">Retro Run</span>
+          </h1>
+          <span class="bit-badge" aria-label="64 Bit">64-BIT</span>
+        </div>
+        <p class="coin-callout" aria-label="Insert Coin">INSERT COIN</p>
+        <p class="pitch">
+          Un runner arcade de calle con selector de ciudades, saltos,
+          agachadas, power-ups de calcetines y actitud de recreativa noventera.
+        </p>
+        <div class="brand-meta" aria-label="Informacion arcade">
+          <span>1P RUN+GUN</span>
+          <span>PIXEL TOUR</span>
+          <span>KAMUABU CLUB</span>
+        </div>
+        <p class="brand-footer">PRESS START TO TOUR THE WORLD</p>
+      </section>
+
+      <section class="game-card" aria-label="Juego">
+        <div class="hud">
+          <div class="hud-card hud-score">
+            <span>Puntos</span>
+            <strong id="score">000000</strong>
+          </div>
+          <div class="hud-card hud-combo">
+            <span>Combo</span>
+            <strong id="combo">x1</strong>
+          </div>
+          <div class="hud-card hud-best">
+            <span>Mejor</span>
+            <strong id="best">000000</strong>
+          </div>
+          <div class="hud-card hud-city">
+            <span>Ciudad</span>
+            <strong id="city">-</strong>
+          </div>
+          <div class="hud-card hud-socks">
+            <span>Calc.</span>
+            <strong id="socks">0/3</strong>
+          </div>
+          <div class="hud-card hud-state">
+            <span>Estado</span>
+            <strong id="state">normal</strong>
+          </div>
+          <div class="hud-card hud-weapon">
+            <span>Arma</span>
+            <strong id="weapon">Pistol</strong>
+          </div>
+          <div class="hud-card hud-mission">
+            <span>Mision</span>
+            <strong id="mission">0%</strong>
+          </div>
+        </div>
+        <div id="game"></div>
+        <div class="controls">
+          <span>A/D: moverse | Espacio: saltar | S/abajo: agacharse | J: disparar</span>
+          <span>R: reiniciar | ESC: ciudades</span>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
+    <script type="module" src="./src/game.js"></script>
+  </body>
+</html>
