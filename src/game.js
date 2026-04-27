@@ -2013,7 +2013,8 @@ class MenuScene extends Phaser.Scene {
     this.input.keyboard.on("keydown-SPACE", () => { this.resetAttract(); this.startSelected(); });
     this.input.on("pointerdown", (pointer, targets) => {
       this.resetAttract();
-      if (targets.length > 0) {
+      const clickedInteractive = targets.some((target) => target?.getData?.("menu-action"));
+      if (clickedInteractive) {
         return;
       }
       this.startSelected();
@@ -2065,6 +2066,13 @@ class MenuScene extends Phaser.Scene {
         strokeThickness: Math.max(2, Math.round(sx(2))),
       })
       .setOrigin(0.5);
+    this.insertCoin
+      .setInteractive({ useHandCursor: true })
+      .setData("menu-action", "start")
+      .on("pointerdown", () => {
+        this.resetAttract();
+        this.startSelected();
+      });
     this.tweens.add({
       targets: this.insertCoin,
       alpha: 0.28,
@@ -2080,6 +2088,14 @@ class MenuScene extends Phaser.Scene {
         color: "#40d8ff",
       })
       .setOrigin(0.5);
+    this.menuHotzone = this.add
+      .zone(WIDTH / 2, sy(138), sx(420), sy(56))
+      .setInteractive({ useHandCursor: true })
+      .setData("menu-action", "start")
+      .on("pointerdown", () => {
+        this.resetAttract();
+        this.startSelected();
+      });
   }
 
   createFeaturePanel() {
@@ -2104,6 +2120,13 @@ class MenuScene extends Phaser.Scene {
       .rectangle(leftX, topY + previewH / 2, previewW, previewH, 0x343844)
       .setStrokeStyle(sx(4), 0x000000)
       .setMask(featureShellMask);
+    this.featureFrameBase
+      .setInteractive({ useHandCursor: true })
+      .setData("menu-action", "start")
+      .on("pointerdown", () => {
+        this.resetAttract();
+        this.startSelected();
+      });
     this.featureFrameInner = this.add
       .rectangle(leftX, topY + previewH / 2, previewW - sx(16), previewH - sy(16), 0x2a2e38)
       .setStrokeStyle(sx(3), 0x6c7280, 0.85)
@@ -2129,7 +2152,14 @@ class MenuScene extends Phaser.Scene {
       .setOrigin(0.5)
       .setMask(featureShellMask);
 
-    this.add.rectangle(infoX, sy(198), sx(336), sy(82), 0x171920).setStrokeStyle(sx(3), 0x343844);
+    this.featureInfoCard = this.add.rectangle(infoX, sy(198), sx(336), sy(82), 0x171920).setStrokeStyle(sx(3), 0x343844);
+    this.featureInfoCard
+      .setInteractive({ useHandCursor: true })
+      .setData("menu-action", "start")
+      .on("pointerdown", () => {
+        this.resetAttract();
+        this.startSelected();
+      });
     this.featureLabel = this.add
       .text(infoX - sx(142), sy(176), "DESTINO", {
         fontFamily: '"Press Start 2P"',
