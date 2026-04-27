@@ -390,7 +390,9 @@ class ArcadeAudio {
           this.noise(0.04, 0.015);
         }
         if (current.hat) {
-          this.hat(0.01, current.hat === true ? 0.011 : current.hat, current.hat === "open");
+          const hatOpen = current.hat === "open";
+          const hatVolume = typeof current.hat === "number" ? current.hat : 0.011;
+          this.hat(0.01, hatVolume, hatOpen);
         }
         step += 1;
       },
