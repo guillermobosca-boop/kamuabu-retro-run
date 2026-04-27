@@ -3326,7 +3326,8 @@ class PlayScene extends Phaser.Scene {
     const nearestEnemy = this.getNearestEnemyAhead();
     const demoJump = this.demoMode && onGround && nearestObstacle && nearestObstacle.distance < sx(180);
     const left = !this.demoMode && (this.cursors.left.isDown || this.keys.left.isDown);
-    const right = this.demoMode || this.cursors.right.isDown || this.keys.right.isDown;
+    const rightPressed = this.cursors.right.isDown || this.keys.right.isDown;
+    const right = this.demoMode || rightPressed;
     const down = !this.demoMode && (this.cursors.down.isDown || this.keys.down.isDown);
     const rightTapped = Phaser.Input.Keyboard.JustDown(this.keys.right) || Phaser.Input.Keyboard.JustDown(this.cursors.right);
     const paceBoost = this.getDifficultyRamp() * 70;
@@ -3355,8 +3356,10 @@ class PlayScene extends Phaser.Scene {
     this.setDucking(down && onGround);
     this.tryBufferedJump(time);
 
-    const isTurbo = time < this.turboUntil && right && !this.isDucking;
-    const isSprinting = (time < this.sprintUntil || isTurbo) && right && !this.isDucking;
+    const autoForward = !this.demoMode && !left && !this.isDucking;
+    const movingForward = right || autoForward;
+    const isTurbo = time < this.turboUntil && movingForward && !this.isDucking;
+    const isSprinting = (time < this.sprintUntil || isTurbo) && movingForward && !this.isDucking;
     const moveSpeed = this.isDucking
       ? 120
       : isTurbo
@@ -3364,19 +3367,21 @@ class PlayScene extends Phaser.Scene {
         : isSprinting
           ? 360 + paceBoost * 0.35
           : 235 + paceBoost * 0.22;
+    const autoRunSpeed = this.isDucking ? 0 : moveSpeed * (isTurbo ? 0.92 : isSprinting ? 0.88 : 0.76);
     this.scrollSpeed = 0;
-    if (left && !right) {
+    if (left && !rightPressed) {
       this.runner.setVelocityX(-moveSpeed);
       this.runner.setFlipX(true);
-    } else if (right && !left) {
-      this.runner.setVelocityX(moveSpeed);
+    } else if (movingForward && !left) {
+      this.runner.setVelocityX(right ? moveSpeed : autoRunSpeed);
       this.runner.setFlipX(false);
     } else {
       this.runner.setVelocityX(0);
     }
 
-    if (right && this.runner.x > sx(420) && this.stageDistance < this.stageLength) {
-      this.scrollSpeed = moveSpeed + (isTurbo ? 138 : isSprinting ? 88 : 35) + paceBoost;
+    if (movingForward && this.runner.x > sx(420) && this.stageDistance < this.stageLength) {
+      const runSpeed = right ? moveSpeed : autoRunSpeed;
+      this.scrollSpeed = runSpeed + (isTurbo ? 138 : isSprinting ? 88 : 42) + paceBoost;
       this.runner.x = sx(420);
     }
 
