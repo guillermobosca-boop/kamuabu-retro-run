@@ -2778,6 +2778,15 @@ class PlayScene extends Phaser.Scene {
         roundel.add(this.add.rectangle(0, sy(2), sx(60), sy(2), 0xbcd7ef, 0.14));
         this.backdrop.add(roundel);
       }
+      this.sign = this.add
+        .text(sx(594), sy(72), this.city.sign, {
+          fontFamily: '"Press Start 2P"',
+          fontSize: `${Math.round(sx(17))}px`,
+          color: "#ffd95c",
+          stroke: "#14151c",
+          strokeThickness: Math.round(sx(5)),
+        })
+        .setOrigin(0.5);
       return;
     }
 
@@ -5586,9 +5595,11 @@ class PlayScene extends Phaser.Scene {
       this.backdrop.x = 0;
     }
 
-    this.sign.x -= speed * 0.13 * deltaSeconds;
-    if (this.sign.x < -sx(260)) {
-      this.sign.x = WIDTH + sx(260);
+    if (this.sign) {
+      this.sign.x -= speed * 0.13 * deltaSeconds;
+      if (this.sign.x < -sx(260)) {
+        this.sign.x = WIDTH + sx(260);
+      }
     }
 
     this.landmark.x -= speed * 0.08 * deltaSeconds;
