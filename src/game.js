@@ -3388,8 +3388,7 @@ class PlayScene extends Phaser.Scene {
     this.setDucking(down && onGround);
     this.tryBufferedJump(time);
 
-    const autoForward = !this.demoMode && !left && !this.isDucking;
-    const movingForward = right || autoForward;
+    const movingForward = right;
     const isTurbo = time < this.turboUntil && movingForward && !this.isDucking;
     const isSprinting = (time < this.sprintUntil || isTurbo) && movingForward && !this.isDucking;
     const moveSpeed = this.isDucking
@@ -3399,21 +3398,19 @@ class PlayScene extends Phaser.Scene {
         : isSprinting
           ? 360 + paceBoost * 0.35
           : 235 + paceBoost * 0.22;
-    const autoRunSpeed = this.isDucking ? 0 : moveSpeed * (isTurbo ? 0.92 : isSprinting ? 0.88 : 0.76);
     this.scrollSpeed = 0;
     if (left && !rightPressed) {
       this.runner.setVelocityX(-moveSpeed);
       this.runner.setFlipX(true);
     } else if (movingForward && !left) {
-      this.runner.setVelocityX(right ? moveSpeed : autoRunSpeed);
+      this.runner.setVelocityX(moveSpeed);
       this.runner.setFlipX(false);
     } else {
       this.runner.setVelocityX(0);
     }
 
     if (movingForward && this.runner.x > sx(420) && this.stageDistance < this.stageLength) {
-      const runSpeed = right ? moveSpeed : autoRunSpeed;
-      this.scrollSpeed = runSpeed + (isTurbo ? 138 : isSprinting ? 88 : 42) + paceBoost;
+      this.scrollSpeed = moveSpeed + (isTurbo ? 138 : isSprinting ? 88 : 42) + paceBoost;
       this.runner.x = sx(420);
     }
 
