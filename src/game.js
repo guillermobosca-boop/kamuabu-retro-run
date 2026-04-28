@@ -5733,13 +5733,25 @@ class PlayScene extends Phaser.Scene {
       return;
     }
 
-    const key = Phaser.Utils.Array.GetRandom(this.city.obstaclePool || ["barrel", "barricade", "drone"]);
+    const progress = this.stageDistance / this.stageLength;
+    const lateHazard =
+      progress > 0.55
+        ? (this.city.key === "venecia" || this.city.key === "valencia" ? "water-gap" : "lava-gap")
+        : null;
+    const pool = [...(this.city.obstaclePool || ["barrel", "barricade", "drone"])];
+    if (lateHazard && progress > 0.78) {
+      pool.push(lateHazard);
+    }
+    const key = Phaser.Utils.Array.GetRandom(pool);
     const x = Math.max(WIDTH + sx(130), this.lastHazardX + sx(380));
     this.spawnObstacleAt(key, x);
   }
 
   spawnObstacleAt(key, x) {
-    const y = key === "drone" ? GROUND_Y - sy(72) : GROUND_Y - sy(4);
+    const y =
+      key === "drone" ? GROUND_Y - sy(72)
+      : key === "water-gap" || key === "lava-gap" ? GROUND_Y + sy(10)
+      : GROUND_Y - sy(4);
     const obstacle = this.obstacles.create(x, y, key);
     obstacle.setOrigin(0.5, key === "drone" ? 0.5 : 1);
     obstacle.setVelocityX(0);
@@ -5749,6 +5761,9 @@ class PlayScene extends Phaser.Scene {
       obstacle.body.setSize(80, 22);
       obstacle.body.setOffset(12, 19);
       this.tweens.add({ targets: obstacle, y: y - sy(10), duration: 520, yoyo: true, repeat: -1, ease: "Sine.InOut" });
+    } else if (key === "water-gap" || key === "lava-gap") {
+      obstacle.body.setSize(156, 20);
+      obstacle.body.setOffset(10, 12);
     } else if (key === "barrel") {
       obstacle.body.setSize(34, 44);
       obstacle.body.setOffset(20, 24);
@@ -5757,7 +5772,7 @@ class PlayScene extends Phaser.Scene {
       obstacle.body.setOffset(24, 30);
     }
 
-    this.lastHazardX = x;
+    this.lastHazardX = key === "water-gap" || key === "lava-gap" ? x + sx(88) : x;
     this.lastObstacleAt = this.time.now;
     return obstacle;
   }
@@ -5953,6 +5968,14 @@ class PlayScene extends Phaser.Scene {
     const runnerTop = this.runner.body.top;
     const obstacleTop = obstacle.body.top;
     const overlapCenter = Math.abs(this.runner.body.center.x - obstacle.body.center.x);
+
+    if (type === "water-gap" || type === "lava-gap") {
+      if (this.runner.body.velocity.y >= 0 && runnerBottom <= obstacleTop + sy(6)) {
+        return;
+      }
+      this.handleHit();
+      return;
+    }
 
     if ((type === "barricade" || type === "barrel") && this.runner.body.velocity.y >= 0 && runnerBottom <= obstacleTop + sy(12)) {
       return;
