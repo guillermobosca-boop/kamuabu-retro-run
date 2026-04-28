@@ -2080,6 +2080,7 @@ class MenuScene extends Phaser.Scene {
     this.selected = 0;
     this.attractStartedAt = this.time.now;
     this.demoLaunched = false;
+    this.menuStarting = false;
     this.cameras.main.setBackgroundColor("#15151c");
     arcadeAudio.startMenuMusic(this);
     this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, 0x15151c);
@@ -2093,15 +2094,15 @@ class MenuScene extends Phaser.Scene {
     this.input.keyboard.on("keydown-RIGHT", () => { this.resetAttract(); this.pick(this.selected + 1); });
     this.input.keyboard.on("keydown-UP", () => { this.resetAttract(); this.moveVertical(-1); });
     this.input.keyboard.on("keydown-DOWN", () => { this.resetAttract(); this.moveVertical(1); });
-    this.input.keyboard.on("keydown-ENTER", () => { this.resetAttract(); this.startSelected(); });
-    this.input.keyboard.on("keydown-SPACE", () => { this.resetAttract(); this.startSelected(); });
+    this.input.keyboard.on("keydown-ENTER", () => { this.resetAttract(); this.requestStartSelected(); });
+    this.input.keyboard.on("keydown-SPACE", () => { this.resetAttract(); this.requestStartSelected(); });
     this.input.on("pointerdown", (pointer, targets) => {
       this.resetAttract();
       const clickedInteractive = targets.some((target) => target?.getData?.("menu-action"));
       if (clickedInteractive) {
         return;
       }
-      this.startSelected();
+      this.pickCityFromPointer(pointer);
     });
     this.updateCards();
   }
@@ -2155,7 +2156,7 @@ class MenuScene extends Phaser.Scene {
       .setData("menu-action", "start")
       .on("pointerdown", () => {
         this.resetAttract();
-        this.startSelected();
+        this.requestStartSelected();
       });
     this.tweens.add({
       targets: this.insertCoin,
@@ -2178,7 +2179,7 @@ class MenuScene extends Phaser.Scene {
       .setData("menu-action", "start")
       .on("pointerdown", () => {
         this.resetAttract();
-        this.startSelected();
+        this.requestStartSelected();
       });
   }
 
@@ -2209,7 +2210,7 @@ class MenuScene extends Phaser.Scene {
       .setData("menu-action", "start")
       .on("pointerdown", () => {
         this.resetAttract();
-        this.startSelected();
+        this.requestStartSelected();
       });
     this.featureFrameInner = this.add
       .rectangle(leftX, topY + previewH / 2, previewW - sx(16), previewH - sy(16), 0x2a2e38)
@@ -2242,7 +2243,7 @@ class MenuScene extends Phaser.Scene {
       .setData("menu-action", "start")
       .on("pointerdown", () => {
         this.resetAttract();
-        this.startSelected();
+        this.requestStartSelected();
       });
     this.featureLabel = this.add
       .text(infoX - sx(142), sy(176), "DESTINO", {
@@ -2320,8 +2321,12 @@ class MenuScene extends Phaser.Scene {
     tab.setMask(this.selectorRowMask);
     tab.setInteractive(new Phaser.Geom.Rectangle(-cardW / 2, -cardH / 2, cardW, cardH), Phaser.Geom.Rectangle.Contains);
     tab.on("pointerdown", () => {
+      this.resetAttract();
+      if (this.selected === index) {
+        this.requestStartSelected();
+        return;
+      }
       this.pick(index);
-      this.startSelected();
     });
     return { tab, base, inner, city };
   }
@@ -2419,12 +2424,31 @@ class MenuScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
     this.help = this.add
-      .text(WIDTH / 2, sy(612), "IZQ / DER para elegir   |   ENTER o ESPACIO para viajar   |   ESC vuelve al selector", {
+      .text(WIDTH / 2, sy(612), "TOCA una ciudad para elegir   |   INSERT COIN / ENTER para jugar", {
         fontFamily: '"Press Start 2P"',
         fontSize: `${helpFont}px`,
         color: "#40d8ff",
       })
       .setOrigin(0.5);
+  }
+
+  pickCityFromPointer(pointer) {
+    const rowY = sy(466);
+    const cardW = sx(154);
+    const cardH = sy(82);
+    const gap = sx(18);
+    const totalWidth = cardW * CITIES.length + gap * (CITIES.length - 1);
+    const startX = WIDTH / 2 - totalWidth / 2 + cardW / 2 + sx(10);
+    if (pointer.y < rowY - cardH / 2 || pointer.y > rowY + cardH / 2) {
+      return;
+    }
+    for (let i = 0; i < CITIES.length; i += 1) {
+      const x = startX + i * (cardW + gap);
+      if (pointer.x >= x - cardW / 2 && pointer.x <= x + cardW / 2) {
+        this.pick(i);
+        return;
+      }
+    }
   }
 
   getMenuBlurb(city) {
@@ -2449,6 +2473,13 @@ class MenuScene extends Phaser.Scene {
     return stamps[city.key];
   }
 
+  requestStartSelected() {
+    if (this.menuStarting) return;
+    this.menuStarting = true;
+    this.input.enabled = false;
+    this.time.delayedCall(80, () => this.startSelected());
+  }
+
   startSelected() {
     document.body.classList.remove("menu-active");
     this.scene.start("PlayScene", { cityKey: CITIES[this.selected].key });
@@ -2464,9 +2495,6 @@ class MenuScene extends Phaser.Scene {
     const idle = time - this.attractStartedAt;
     const remaining = Math.max(0, 9 - Math.floor(idle / 1000));
     this.attractText.setText(idle < 9000 ? `ATTRACT MODE IN ${String(remaining).padStart(2, "0")}` : "ATTRACT MODE READY");
-    if (idle > 3500 && !this.demoLaunched && Math.floor(idle / 1200) % 2 === 0) {
-      this.pick(this.selected + 1);
-    }
     if (idle > 9000 && !this.demoLaunched) {
       this.demoLaunched = true;
       this.scene.start("PlayScene", { cityKey: CITIES[this.selected].key, demoMode: true });
