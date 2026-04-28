@@ -2980,18 +2980,18 @@ class PlayScene extends Phaser.Scene {
 
   createWall() {
     if (this.city.key === "londres") {
-      const wall = this.add.rectangle(WIDTH / 2, sy(255), WIDTH + sx(100), sy(318), 0x626a75);
+      const wall = this.add.rectangle(WIDTH / 2, sy(298), WIDTH + sx(100), sy(226), 0x5a6270);
       wall.setStrokeStyle(5, 0x2c2d33);
       this.backdrop.add(wall);
-      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(116), WIDTH + sx(100), sy(50), 0x94a8bb, 0.12));
-      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(334), WIDTH + sx(100), sy(74), 0x21262f, 0.28));
-      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(150), WIDTH + sx(100), sy(6), 0xd8c98d, 0.08));
-      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(248), WIDTH + sx(100), sy(18), 0x9ec2df, 0.05));
+      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(198), WIDTH + sx(100), sy(38), 0xa0b4c4, 0.1));
+      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(384), WIDTH + sx(100), sy(56), 0x1f232c, 0.3));
+      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(210), WIDTH + sx(100), sy(5), 0xe3d7a0, 0.08));
+      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(286), WIDTH + sx(100), sy(14), 0xb4cee6, 0.05));
 
-      for (let row = 0; row < 15; row += 1) {
+      for (let row = 0; row < 11; row += 1) {
         for (let col = 0; col < 20; col += 1) {
           const x = col * sx(54) + (row % 2) * sx(27) - sx(38);
-          const y = sy(102) + row * sy(21);
+          const y = sy(188) + row * sy(21);
           const tint = row % 2 ? 0x676f7a : 0x59616b;
           const brick = this.add.rectangle(x, y, sx(50), sy(17), tint, 0.92);
           brick.setStrokeStyle(1, 0x343943, 0.72);
@@ -3007,7 +3007,7 @@ class PlayScene extends Phaser.Scene {
 
       for (let i = 0; i < 5; i += 1) {
         const x = sx(120) + i * sx(212);
-        const win = this.add.container(x, sy(206) + (i % 2 ? sy(16) : 0));
+        const win = this.add.container(x, sy(274) + (i % 2 ? sy(14) : 0));
         win.add(this.add.rectangle(0, 0, sx(84), sy(98), 0x17181e).setStrokeStyle(6, 0x404652));
         win.add(this.add.rectangle(-sx(22), -sy(8), sx(18), sy(58), 0x08090d));
         win.add(this.add.rectangle(sx(20), sy(12), sx(22), sy(48), 0x090b10));
@@ -3018,7 +3018,7 @@ class PlayScene extends Phaser.Scene {
       }
 
       for (const x of [sx(162), sx(550), sx(936), sx(1246)]) {
-        const station = this.add.container(x, sy(324));
+        const station = this.add.container(x, sy(378));
         station.add(this.add.rectangle(0, 0, sx(102), sy(30), 0x225f98).setStrokeStyle(3, 0xf2ead8));
         station.add(this.add.rectangle(0, sy(32), sx(12), sy(34), 0x434a56));
         station.add(this.add.rectangle(0, -sy(8), sx(82), sy(4), 0xbfd8f0, 0.16));
@@ -3026,7 +3026,7 @@ class PlayScene extends Phaser.Scene {
       }
 
       for (const x of [sx(262), sx(728), sx(1116)]) {
-        const roundel = this.add.container(x, sy(156));
+        const roundel = this.add.container(x, sy(224));
         roundel.add(this.add.circle(0, 0, sx(26), 0xc53343).setStrokeStyle(4, 0xf2ead8));
         roundel.add(this.add.rectangle(0, 0, sx(68), sy(12), 0x1f5a93));
         roundel.add(this.add.rectangle(0, sy(2), sx(60), sy(2), 0xbcd7ef, 0.14));
@@ -3044,17 +3044,17 @@ class PlayScene extends Phaser.Scene {
       return;
     }
 
-    const wall = this.add.rectangle(WIDTH / 2, sy(255), WIDTH + sx(100), sy(318), this.city.wall);
+    const wall = this.add.rectangle(WIDTH / 2, sy(304), WIDTH + sx(100), sy(214), this.city.wall);
     wall.setStrokeStyle(5, 0x2c2d33);
     this.backdrop.add(wall);
-    this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(115), WIDTH + sx(100), sy(54), tintColor(this.city.highlight, -0.2), 0.12));
-    this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(336), WIDTH + sx(100), sy(62), this.city.shadow, 0.22));
-    this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(154), WIDTH + sx(100), sy(6), this.city.glow, 0.08));
+    this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(212), WIDTH + sx(100), sy(42), tintColor(this.city.highlight, -0.2), 0.11));
+    this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(392), WIDTH + sx(100), sy(48), this.city.shadow, 0.22));
+    this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(222), WIDTH + sx(100), sy(5), this.city.glow, 0.08));
 
-    for (let row = 0; row < 15; row += 1) {
+    for (let row = 0; row < 10; row += 1) {
       for (let col = 0; col < 20; col += 1) {
         const x = col * sx(54) + (row % 2) * sx(27) - sx(38);
-        const y = sy(102) + row * sy(21);
+        const y = sy(196) + row * sy(21);
         const brick = this.add.rectangle(x, y, sx(50), sy(17), row % 2 ? this.city.brickA : this.city.brickB, 0.78);
         brick.setStrokeStyle(1, 0x25272e, 0.62);
         this.backdrop.add(brick);
@@ -3068,7 +3068,7 @@ class PlayScene extends Phaser.Scene {
 
     for (let i = 0; i < 5; i += 1) {
       const x = sx(126) + i * sx(190);
-      const window = this.add.rectangle(x, sy(201) + (i % 2) * sy(20), sx(72), sy(88), 0x17171d);
+      const window = this.add.rectangle(x, sy(276) + (i % 2) * sy(18), sx(72), sy(88), 0x17171d);
       window.setStrokeStyle(6, 0x3e414a);
       this.backdrop.add(window);
       this.backdrop.add(this.add.rectangle(x - sx(20), window.y - sy(26), sx(18), sy(5), this.city.highlight, 0.12));
@@ -3089,9 +3089,9 @@ class PlayScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     if (this.city.key === "valencia") {
-      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(322), WIDTH + sx(100), sy(30), 0xffd59f, 0.06));
+      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(372), WIDTH + sx(100), sy(26), 0xffd59f, 0.08));
       for (let i = 0; i < 12; i += 1) {
-        const tile = this.add.rectangle(sx(34) + i * sx(108), sy(336), sx(96), sy(24), 0xf2ead8).setStrokeStyle(3, 0x30343a);
+        const tile = this.add.rectangle(sx(34) + i * sx(108), sy(378), sx(96), sy(24), 0xf2ead8).setStrokeStyle(3, 0x30343a);
         const center = this.add.rectangle(tile.x, tile.y, sx(28), sy(10), 0x40d8ff);
         const sideA = this.add.rectangle(tile.x - sx(22), tile.y, sx(14), sy(10), 0xff8b22);
         const sideB = this.add.rectangle(tile.x + sx(22), tile.y, sx(14), sy(10), 0xff8b22);
@@ -3103,7 +3103,7 @@ class PlayScene extends Phaser.Scene {
         this.backdrop.add(shine);
       }
       for (const x of [sx(164), sx(546), sx(918), sx(1266)]) {
-        const facade = this.add.container(x, sy(320));
+        const facade = this.add.container(x, sy(364));
         facade.add(this.add.rectangle(0, 0, sx(102), sy(40), 0xf6ead9).setStrokeStyle(3, 0x30343a));
         facade.add(this.add.rectangle(0, -sy(10), sx(88), sy(6), 0xffb257));
         facade.add(this.add.rectangle(0, sy(12), sx(20), sy(20), 0x40d8ff, 0.32));
@@ -3113,7 +3113,7 @@ class PlayScene extends Phaser.Scene {
       }
     } else if (this.city.key === "roma") {
       for (const x of [sx(118), sx(478), sx(832), sx(1148)]) {
-        const column = this.add.container(x, sy(286));
+        const column = this.add.container(x, sy(336));
         column.add(this.add.rectangle(0, sy(8), sx(34), sy(116), 0x9f866b).setStrokeStyle(3, 0x2b221b));
         column.add(this.add.rectangle(0, -sy(44), sx(52), sy(14), 0xc7b08a));
         column.add(this.add.rectangle(0, sy(62), sx(58), sy(10), 0x7d6552));
@@ -3121,10 +3121,10 @@ class PlayScene extends Phaser.Scene {
         column.add(this.add.rectangle(sx(8), sy(18), sx(4), sy(64), 0x5f4a3b, 0.18));
         this.backdrop.add(column);
       }
-      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(332), WIDTH + sx(100), sy(22), 0x6d5444, 0.28));
+      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(388), WIDTH + sx(100), sy(20), 0x6d5444, 0.28));
     } else if (this.city.key === "paris") {
       for (const x of [sx(182), sx(546), sx(902), sx(1202)]) {
-        const awning = this.add.container(x, sy(334));
+        const awning = this.add.container(x, sy(378));
         awning.add(this.add.rectangle(0, 0, sx(82), sy(18), 0xf2ead8).setStrokeStyle(2, 0x202126));
         awning.add(this.add.rectangle(-sx(18), sy(20), sx(8), sy(40), 0x202126));
         awning.add(this.add.rectangle(sx(18), sy(20), sx(8), sy(40), 0x202126));
@@ -3133,7 +3133,7 @@ class PlayScene extends Phaser.Scene {
         this.backdrop.add(awning);
       }
       for (const x of [sx(304), sx(738), sx(1146)]) {
-        const shop = this.add.container(x, sy(314));
+        const shop = this.add.container(x, sy(358));
         shop.add(this.add.rectangle(0, 0, sx(116), sy(52), 0x253049, 0.62).setStrokeStyle(3, 0x1c2029));
         shop.add(this.add.rectangle(0, -sy(18), sx(88), sy(8), 0xf2ead8, 0.16));
         shop.add(this.add.rectangle(0, sy(8), sx(72), sy(18), 0x6fdff8, 0.08));
@@ -3143,7 +3143,7 @@ class PlayScene extends Phaser.Scene {
       }
     } else if (this.city.key === "venecia") {
       for (const x of [sx(120), sx(480), sx(860), sx(1180)]) {
-        const arch = this.add.container(x, sy(286));
+        const arch = this.add.container(x, sy(338));
         arch.add(this.add.rectangle(0, sy(30), sx(92), sy(84), 0x8c7d73));
         arch.add(this.add.arc(0, sy(12), sx(28), 180, 360, false, 0x203f50));
         arch.add(this.add.rectangle(0, sy(56), sx(44), sy(8), 0x203f50));
@@ -3151,17 +3151,17 @@ class PlayScene extends Phaser.Scene {
         arch.add(this.add.rectangle(sx(18), sy(18), sx(4), sy(30), 0x3e5c63, 0.16));
         this.backdrop.add(arch);
       }
-      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(342), WIDTH + sx(100), sy(18), 0x79e8e0, 0.12));
+      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(392), WIDTH + sx(100), sy(18), 0x79e8e0, 0.14));
     } else if (this.city.key === "londres") {
       for (const x of [sx(146), sx(540), sx(934), sx(1238)]) {
-        const sign = this.add.container(x, sy(324));
+        const sign = this.add.container(x, sy(378));
         sign.add(this.add.rectangle(0, 0, sx(92), sy(26), 0x1f5a93).setStrokeStyle(3, 0xf2ead8));
         sign.add(this.add.rectangle(0, sy(28), sx(10), sy(30), 0x3a3f49));
         this.backdrop.add(sign);
       }
 
       for (const x of [sx(260), sx(722), sx(1110)]) {
-        const roundel = this.add.container(x, sy(156));
+        const roundel = this.add.container(x, sy(222));
         roundel.add(this.add.circle(0, 0, sx(24), 0xc53343).setStrokeStyle(4, 0xf2ead8));
         roundel.add(this.add.rectangle(0, 0, sx(62), sy(12), 0x1f5a93));
         this.backdrop.add(roundel);
