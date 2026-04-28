@@ -59,7 +59,7 @@ const CITIES = [
   {
     key: "valencia",
     name: "Valencia",
-    sky: "#7e8c96",
+    sky: "#7bc4dc",
     wall: 0x8a8478,
     brickA: 0x9f9688,
     brickB: 0x756d62,
@@ -75,7 +75,7 @@ const CITIES = [
   {
     key: "roma",
     name: "Roma",
-    sky: "#8d735d",
+    sky: "#bc8667",
     wall: 0x8c694f,
     brickA: 0xa07a5d,
     brickB: 0x654b3a,
@@ -91,7 +91,7 @@ const CITIES = [
   {
     key: "paris",
     name: "Paris",
-    sky: "#526176",
+    sky: "#4a48c2",
     wall: 0x566074,
     brickA: 0x667489,
     brickB: 0x3f4858,
@@ -107,7 +107,7 @@ const CITIES = [
   {
     key: "venecia",
     name: "Venecia",
-    sky: "#5a7685",
+    sky: "#82b6be",
     wall: 0x768070,
     brickA: 0x8b9386,
     brickB: 0x566560,
@@ -123,7 +123,7 @@ const CITIES = [
   {
     key: "londres",
     name: "Londres",
-    sky: "#515c6d",
+    sky: "#415067",
     wall: 0x606671,
     brickA: 0x747c88,
     brickB: 0x434954,
@@ -139,6 +139,74 @@ const CITIES = [
 ];
 
 const getCity = (key) => CITIES.find((city) => city.key === key) || CITIES[0];
+
+const CITY_ART = {
+  valencia: {
+    top: 0x72bfe0,
+    mid: 0x8fd7de,
+    bottom: 0xffd2a1,
+    glow: 0xffa86f,
+    sun: 0xfff3c4,
+    haze: 0xf8ead3,
+    farA: 0x8fb0ba,
+    farB: 0x67889c,
+    nearA: 0x5b7487,
+    nearB: 0x4a6276,
+    water: 0x76d8d4,
+  },
+  roma: {
+    top: 0xb87d62,
+    mid: 0xdba06e,
+    bottom: 0xf2d1a1,
+    glow: 0xf1b07b,
+    sun: 0xffebbe,
+    haze: 0xe8c89d,
+    farA: 0x9c7a67,
+    farB: 0x755646,
+    nearA: 0x65483a,
+    nearB: 0x513629,
+    water: 0xcaa07b,
+  },
+  paris: {
+    top: 0x2e2aa8,
+    mid: 0x6058d1,
+    bottom: 0xe2c4ef,
+    glow: 0xff92d8,
+    sun: 0xf7f5ff,
+    haze: 0xd8d3ff,
+    farA: 0x433ab4,
+    farB: 0x2a2586,
+    nearA: 0x253049,
+    nearB: 0x1d2438,
+    water: 0x8ddff6,
+  },
+  venecia: {
+    top: 0x6e9fb1,
+    mid: 0xa7d2d2,
+    bottom: 0xe8d9c4,
+    glow: 0xffd5aa,
+    sun: 0xf4f3d1,
+    haze: 0xd4efe8,
+    farA: 0x7692a0,
+    farB: 0x4c6673,
+    nearA: 0x405c66,
+    nearB: 0x2b414a,
+    water: 0x7ce2d8,
+  },
+  londres: {
+    top: 0x273145,
+    mid: 0x47566f,
+    bottom: 0x97a4b4,
+    glow: 0xc99b64,
+    sun: 0xeae7cf,
+    haze: 0xa9b4c0,
+    farA: 0x354152,
+    farB: 0x222c3a,
+    nearA: 0x2a313d,
+    nearB: 0x1a1f28,
+    water: 0x8fb2c8,
+  },
+};
 
 const ENEMY_TYPES = {
   sprinter: {
@@ -2482,6 +2550,7 @@ class PlayScene extends Phaser.Scene {
   }
 
   createWorld() {
+    this.skyArt = this.add.layer();
     this.skyline = this.add.layer();
     this.midground = this.add.layer();
     this.backdrop = this.add.layer();
@@ -2491,6 +2560,7 @@ class PlayScene extends Phaser.Scene {
     this.weatherLayer = this.add.layer();
     this.speedLayer = this.add.layer();
 
+    this.createSkyBackdrop();
     this.createSkyline();
     this.createMidDepth();
     this.createWall();
@@ -2499,6 +2569,82 @@ class PlayScene extends Phaser.Scene {
     this.createStreet();
     this.createAtmosphere();
     this.createSpeedLines();
+  }
+
+  createSkyBackdrop() {
+    const art = CITY_ART[this.city.key] || CITY_ART.valencia;
+    this.skyArt.add(this.add.rectangle(WIDTH / 2, sy(82), WIDTH, sy(164), art.top));
+    this.skyArt.add(this.add.rectangle(WIDTH / 2, sy(232), WIDTH, sy(156), art.mid));
+    this.skyArt.add(this.add.rectangle(WIDTH / 2, sy(372), WIDTH, sy(182), art.bottom));
+    this.skyArt.add(this.add.rectangle(WIDTH / 2, sy(250), WIDTH, sy(68), art.glow, 0.14));
+
+    if (this.city.key === "valencia") {
+      this.skyArt.add(this.add.circle(sx(1070), sy(138), sx(92), art.sun, 0.92));
+      this.skyArt.add(this.add.rectangle(WIDTH / 2, sy(264), WIDTH, sy(10), art.haze, 0.18));
+      for (let i = 0; i < 10; i += 1) {
+        this.skyArt.add(this.add.rectangle(sx(70) + i * sx(136), sy(208) + (i % 2) * sy(10), sx(82), sy(6), 0xf8f3e7, 0.12));
+      }
+      for (let i = 0; i < 4; i += 1) {
+        const baseX = sx(96) + i * sx(330);
+        this.skyArt.add(this.add.triangle(baseX, sy(264), -sx(92), sy(82), 0, -sy(84), sx(110), sy(82), art.farA, 0.9));
+        this.skyArt.add(this.add.triangle(baseX + sx(40), sy(286), -sx(72), sy(76), 0, -sy(66), sx(92), sy(76), art.farB, 0.9));
+      }
+      this.skyArt.add(this.add.rectangle(WIDTH / 2, sy(312), WIDTH, sy(22), art.water, 0.28));
+      for (let i = 0; i < 10; i += 1) {
+        this.skyArt.add(this.add.rectangle(sx(86) + i * sx(124), sy(314), sx(46), sy(3), 0xf5fff8, 0.18));
+      }
+    } else if (this.city.key === "roma") {
+      this.skyArt.add(this.add.circle(sx(1064), sy(156), sx(86), art.sun, 0.88));
+      this.skyArt.add(this.add.rectangle(WIDTH / 2, sy(262), WIDTH, sy(14), art.haze, 0.16));
+      for (let i = 0; i < 5; i += 1) {
+        const baseX = sx(70) + i * sx(300);
+        this.skyArt.add(this.add.triangle(baseX, sy(274), -sx(116), sy(88), 0, -sy(74), sx(126), sy(88), art.farA, 0.9));
+        this.skyArt.add(this.add.triangle(baseX + sx(74), sy(292), -sx(96), sy(74), 0, -sy(64), sx(112), sy(74), art.farB, 0.92));
+      }
+      for (let i = 0; i < 6; i += 1) {
+        this.skyArt.add(this.add.rectangle(sx(124) + i * sx(188), sy(228) + (i % 2) * sy(10), sx(62), sy(5), 0xf7efd8, 0.09));
+      }
+    } else if (this.city.key === "paris") {
+      this.skyArt.add(this.add.circle(sx(1114), sy(122), sx(72), art.sun, 0.98));
+      for (let i = 0; i < 18; i += 1) {
+        const width = sx(72 + (i % 4) * 24);
+        this.skyArt.add(this.add.rectangle(sx(70) + i * sx(86), sy(116) + (i % 5) * sy(22), width, sy(4), 0xece8ff, i % 3 === 0 ? 0.28 : 0.16));
+      }
+      for (let i = 0; i < 6; i += 1) {
+        const baseX = sx(54) + i * sx(250);
+        this.skyArt.add(this.add.triangle(baseX, sy(292), -sx(102), sy(74), 0, -sy(66), sx(118), sy(74), art.farA, 0.9));
+        this.skyArt.add(this.add.triangle(baseX + sx(54), sy(314), -sx(86), sy(66), 0, -sy(54), sx(98), sy(66), art.farB, 0.92));
+      }
+      for (const star of [
+        [sx(110), sy(84), sx(8)], [sx(430), sy(72), sx(6)], [sx(808), sy(126), sx(7)], [sx(1160), sy(94), sx(10)]
+      ]) {
+        this.skyArt.add(this.add.rectangle(star[0], star[1], star[2], sy(3), 0xf7f5ff));
+        this.skyArt.add(this.add.rectangle(star[0], star[1], sx(3), star[2], 0xf7f5ff));
+      }
+    } else if (this.city.key === "venecia") {
+      this.skyArt.add(this.add.circle(sx(1078), sy(144), sx(84), art.sun, 0.88));
+      this.skyArt.add(this.add.rectangle(WIDTH / 2, sy(274), WIDTH, sy(18), art.haze, 0.16));
+      for (let i = 0; i < 6; i += 1) {
+        const baseX = sx(60) + i * sx(250);
+        this.skyArt.add(this.add.triangle(baseX, sy(292), -sx(110), sy(84), 0, -sy(72), sx(114), sy(84), art.farA, 0.84));
+        this.skyArt.add(this.add.triangle(baseX + sx(42), sy(316), -sx(92), sy(68), 0, -sy(56), sx(104), sy(68), art.farB, 0.9));
+      }
+      this.skyArt.add(this.add.rectangle(WIDTH / 2, sy(332), WIDTH, sy(48), art.water, 0.28));
+      for (let i = 0; i < 11; i += 1) {
+        this.skyArt.add(this.add.rectangle(sx(64) + i * sx(122), sy(336) + (i % 2) * sy(4), sx(56), sy(3), 0xe9fff8, 0.16));
+      }
+    } else if (this.city.key === "londres") {
+      this.skyArt.add(this.add.circle(sx(1110), sy(126), sx(70), art.sun, 0.68));
+      this.skyArt.add(this.add.rectangle(WIDTH / 2, sy(250), WIDTH, sy(28), art.haze, 0.14));
+      for (let i = 0; i < 16; i += 1) {
+        this.skyArt.add(this.add.rectangle(sx(76) + i * sx(88), sy(118) + (i % 4) * sy(18), sx(66 + (i % 3) * 28), sy(4), 0xe5edf5, i % 2 ? 0.06 : 0.12));
+      }
+      for (let i = 0; i < 7; i += 1) {
+        const baseX = sx(56) + i * sx(200);
+        this.skyArt.add(this.add.triangle(baseX, sy(304), -sx(100), sy(82), 0, -sy(72), sx(108), sy(82), art.farA, 0.86));
+        this.skyArt.add(this.add.triangle(baseX + sx(34), sy(326), -sx(92), sy(72), 0, -sy(60), sx(96), sy(72), art.farB, 0.94));
+      }
+    }
   }
 
   createMidDepth() {
