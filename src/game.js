@@ -2596,6 +2596,7 @@ class PlayScene extends Phaser.Scene {
     this.stageLength = 84000;
     this.scrollSpeed = 0;
     this.socks = 0;
+    this.scooters = 0;
     this.isPowered = false;
     this.health = 1;
     this.isDucking = false;
@@ -4232,10 +4233,13 @@ class PlayScene extends Phaser.Scene {
     this.tryBufferedJump(time);
 
     const movingForward = right;
+    const isScootering = time < this.scooterUntil && movingForward && !this.isDucking;
     const isTurbo = time < this.turboUntil && movingForward && !this.isDucking;
     const isSprinting = (time < this.sprintUntil || isTurbo) && movingForward && !this.isDucking;
     const moveSpeed = this.isDucking
       ? 120
+      : isScootering
+        ? 510 + paceBoost * 0.55
       : isTurbo
         ? 430 + paceBoost * 0.45
         : isSprinting
@@ -4253,7 +4257,7 @@ class PlayScene extends Phaser.Scene {
     }
 
     if (movingForward && this.runner.x > sx(420) && this.stageDistance < this.stageLength) {
-      this.scrollSpeed = moveSpeed + (isTurbo ? 138 : isSprinting ? 88 : 42) + paceBoost;
+      this.scrollSpeed = moveSpeed + (isScootering ? 176 : isTurbo ? 138 : isSprinting ? 88 : 42) + paceBoost;
       this.runner.x = sx(420);
     }
 
@@ -5889,9 +5893,16 @@ class PlayScene extends Phaser.Scene {
       this.cameras.main.flash(110, 255, 139, 34, false);
       this.showFeedback("ROCKET BLAST: cohetes pesados");
     } else if (key === "scooter") {
-      this.activateScooterMode();
-      this.cameras.main.flash(120, 255, 217, 92, false);
-      this.showFeedback("SCOOTER KAMUABU: modo especial de avenida");
+      this.scooters = Math.min(5, this.scooters + 1);
+      if (this.scooters >= 5) {
+        this.scooters = 0;
+        this.activateScooterMode();
+        this.cameras.main.flash(120, 255, 217, 92, false);
+        this.showFeedback("PATINETE KAMUABU: montado y a toda velocidad");
+      } else {
+        this.cameras.main.flash(90, 255, 217, 92, false);
+        this.showFeedback(`Patinete ${this.scooters}/5: sigue recogiendo para montarlo`);
+      }
     } else if (key === "shirt") {
       this.shieldUntil = Math.max(this.shieldUntil, this.time.now + 3200);
       this.cameras.main.flash(90, 199, 255, 58, false);
@@ -6124,7 +6135,7 @@ class PlayScene extends Phaser.Scene {
           : key === "rocket"
             ? "ROCKET"
             : key === "scooter"
-              ? "SCOOTER"
+              ? "PATINETE"
               : key === "shoe"
                 ? "TURBO"
                 : key === "shirt"
@@ -6361,11 +6372,10 @@ class PlayScene extends Phaser.Scene {
   }
 
   activateScooterMode() {
-    this.scooterUntil = this.time.now + 6500;
-    this.turboUntil = Math.max(this.turboUntil, this.time.now + 6500);
+    this.scooterUntil = Number.POSITIVE_INFINITY;
+    this.turboUntil = Number.POSITIVE_INFINITY;
     this.sprintUntil = Math.max(this.sprintUntil, this.time.now + 3200);
-    this.shieldUntil = Math.max(this.shieldUntil, this.time.now + 1200);
-    this.floatText("SCOOTER MODE!", this.runner.x + sx(40), this.runner.y - sy(116), "#4ae0c2");
+    this.floatText("PATINETE!", this.runner.x + sx(40), this.runner.y - sy(116), "#4ae0c2");
     this.cameras.main.shake(180, 0.005);
   }
 
@@ -6502,7 +6512,8 @@ class PlayScene extends Phaser.Scene {
     if (this.time.now < this.scooterUntil) {
       this.scooterUntil = 0;
       this.turboUntil = 0;
-      this.floatText("SCOOTER ROTO", this.runner.x + 52, this.runner.y - 96, "#4ae0c2");
+      this.scooters = 0;
+      this.floatText("PATINETE ROTO", this.runner.x + 52, this.runner.y - 96, "#4ae0c2");
       this.cameras.main.shake(220, 0.008);
       return;
     }
@@ -6927,21 +6938,23 @@ class PlayScene extends Phaser.Scene {
     socksEl.textContent = `${this.socks}/9`;
     stateEl.textContent =
       this.time.now < this.scooterUntil
-        ? "Scooter"
+        ? "Patinete"
         : this.time.now < this.superOutfitUntil
         ? "Outfit"
         : this.specialWeapon
           ? `${this.specialWeapon} ${this.specialAmmo}`
         : this.time.now < this.shieldUntil
           ? "Shield"
-          : this.time.now < this.turboUntil
+        : this.time.now < this.turboUntil
             ? "Turbo"
+            : this.scooters > 0
+              ? `PAT ${this.scooters}/5`
             : this.isPowered
               ? `XL F${this.fireLevel}`
               : "Normal";
     weaponEl.textContent =
       this.time.now < this.scooterUntil
-        ? "SCOOTER"
+        ? "PATINETE"
         : this.time.now < this.superOutfitUntil
         ? "OUTFIT"
         : this.specialWeapon === "Laser"
