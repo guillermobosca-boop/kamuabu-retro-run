@@ -158,17 +158,17 @@ const getCity = (key) => CITIES.find((city) => city.key === key) || CITIES[0];
 
 const CITY_ART = {
   valencia: {
-    top: 0x72bfe0,
-    mid: 0x8fd7de,
-    bottom: 0xffd2a1,
-    glow: 0xffa86f,
-    sun: 0xfff3c4,
-    haze: 0xf8ead3,
-    farA: 0x8fb0ba,
-    farB: 0x67889c,
-    nearA: 0x5b7487,
-    nearB: 0x4a6276,
-    water: 0x76d8d4,
+    top: 0x87d3ef,
+    mid: 0xa9e4eb,
+    bottom: 0xffd9a8,
+    glow: 0xffb36a,
+    sun: 0xfff3c7,
+    haze: 0xf7ecda,
+    farA: 0xc8dde6,
+    farB: 0x9dbccd,
+    nearA: 0x7296ab,
+    nearB: 0x56788e,
+    water: 0x82dedb,
   },
   roma: {
     top: 0xb87d62,
@@ -2717,26 +2717,19 @@ class PlayScene extends Phaser.Scene {
     addBand(sy(252), sy(76), art.glow, 0.18);
 
     if (this.city.key === "valencia") {
-      this.skyArt.add(this.add.circle(sx(1074), sy(132), sx(116), art.sun, 0.98));
-      for (let i = 0; i < 4; i += 1) {
-        this.skyArt.add(this.add.rectangle(sx(1074), sy(176) + i * sy(18), sx(174 - i * 18), sy(4), 0xfff1dc, 0.46));
+      this.skyArt.add(this.add.circle(sx(1116), sy(118), sx(124), art.sun, 0.98));
+      for (let i = 0; i < 5; i += 1) {
+        this.skyArt.add(this.add.rectangle(sx(1116), sy(168) + i * sy(16), sx(210 - i * 20), sy(4), 0xfff2d9, 0.38));
       }
-      addBand(sy(272), sy(16), art.haze, 0.22);
-      addBand(sy(322), sy(22), 0x7adcd6, 0.18);
-      for (let i = 0; i < 8; i += 1) {
-        this.skyArt.add(this.add.rectangle(sx(86) + i * sx(158), sy(198) + (i % 2) * sy(12), sx(96 + (i % 3) * 18), sy(5), 0xfff4df, 0.16));
+      addBand(sy(248), sy(24), art.haze, 0.18);
+      addBand(sy(294), sy(18), 0xe8f6f0, 0.14);
+      addBand(sy(334), sy(54), art.water, 0.34);
+      addBand(sy(352), sy(10), 0xf4fff8, 0.12);
+      for (let i = 0; i < 9; i += 1) {
+        this.skyArt.add(this.add.rectangle(sx(88) + i * sx(156), sy(178) + (i % 3) * sy(12), sx(90 + (i % 2) * 26), sy(5), 0xfff4df, 0.18));
       }
-      addRange([
-        { x: sx(110), w: sx(110), h: sy(88), peak: sy(102), offset: sx(42) },
-        { x: sx(386), w: sx(138), h: sy(98), peak: sy(126), offset: sx(58) },
-        { x: sx(694), w: sx(122), h: sy(90), peak: sy(114), offset: sx(50) },
-        { x: sx(1010), w: sx(146), h: sy(92), peak: sy(120), offset: sx(60) },
-        { x: sx(1280), w: sx(120), h: sy(84), peak: sy(108), offset: sx(50) },
-      ], 0x87a0be, 0x607b97, sy(286), sy(314));
-      this.skyArt.add(this.add.rectangle(WIDTH / 2, sy(330), WIDTH, sy(44), art.water, 0.4));
-      this.skyArt.add(this.add.rectangle(WIDTH / 2, sy(342), WIDTH, sy(12), 0xf4fff8, 0.1));
-      for (let i = 0; i < 12; i += 1) {
-        this.skyArt.add(this.add.rectangle(sx(72) + i * sx(118), sy(328) + (i % 3) * sy(5), sx(58 + (i % 2) * 16), sy(3), 0xf5fff8, 0.18));
+      for (let i = 0; i < 11; i += 1) {
+        this.skyArt.add(this.add.rectangle(sx(76) + i * sx(126), sy(336) + (i % 3) * sy(5), sx(70 + (i % 2) * 14), sy(3), 0xf5fff8, 0.18));
       }
       for (const bird of [
         [sx(164), sy(106), this.city.accent],
