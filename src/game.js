@@ -1279,6 +1279,49 @@ class BootScene extends Phaser.Scene {
     drone.fillRect(34, 25, 8, 2);
     drone.generateTexture("drone", 104, 58);
     drone.destroy();
+
+    const waterGap = this.make.graphics({ x: 0, y: 0, add: false });
+    waterGap.fillStyle(0x0e1724);
+    waterGap.fillRect(0, 24, 176, 24);
+    waterGap.fillStyle(0x17415c);
+    waterGap.fillRect(0, 8, 176, 26);
+    waterGap.fillStyle(0x2a718f);
+    waterGap.fillRect(0, 12, 176, 18);
+    waterGap.fillStyle(0x74d5db);
+    waterGap.fillRect(12, 14, 28, 4);
+    waterGap.fillRect(62, 16, 34, 4);
+    waterGap.fillRect(118, 15, 24, 4);
+    waterGap.fillStyle(0xb9efff);
+    waterGap.fillRect(24, 18, 12, 2);
+    waterGap.fillRect(86, 19, 10, 2);
+    waterGap.fillRect(130, 17, 8, 2);
+    waterGap.fillStyle(0x0b1017);
+    waterGap.fillRect(0, 0, 176, 10);
+    waterGap.fillRect(0, 48, 176, 12);
+    waterGap.generateTexture("water-gap", 176, 60);
+    waterGap.destroy();
+
+    const lavaGap = this.make.graphics({ x: 0, y: 0, add: false });
+    lavaGap.fillStyle(0x1a0908);
+    lavaGap.fillRect(0, 22, 176, 26);
+    lavaGap.fillStyle(0x602014);
+    lavaGap.fillRect(0, 8, 176, 24);
+    lavaGap.fillStyle(0xd94a1c);
+    lavaGap.fillRect(0, 12, 176, 16);
+    lavaGap.fillStyle(0xff9b2f);
+    lavaGap.fillRect(16, 14, 24, 6);
+    lavaGap.fillRect(58, 13, 28, 7);
+    lavaGap.fillRect(108, 15, 20, 6);
+    lavaGap.fillRect(142, 14, 18, 5);
+    lavaGap.fillStyle(0xffe17e);
+    lavaGap.fillRect(20, 16, 8, 2);
+    lavaGap.fillRect(64, 15, 10, 3);
+    lavaGap.fillRect(114, 17, 6, 2);
+    lavaGap.fillStyle(0x0b1017);
+    lavaGap.fillRect(0, 0, 176, 10);
+    lavaGap.fillRect(0, 48, 176, 12);
+    lavaGap.generateTexture("lava-gap", 176, 60);
+    lavaGap.destroy();
   }
 
   createRewardTextures() {
@@ -4040,7 +4083,7 @@ class PlayScene extends Phaser.Scene {
       this.nextCrate = this.getDirectorDelay("crate");
     }
 
-    if (this.platformTimer > this.nextPlatform && this.stageDistance < this.stageLength - 1800 && this.solidBoxes.countActive(true) < 14) {
+    if (this.platformTimer > this.nextPlatform && this.stageDistance < this.stageLength - 1800 && this.solidBoxes.countActive(true) < 18) {
       this.spawnSolidBox();
       this.platformTimer = 0;
       this.nextPlatform = this.getDirectorDelay("platform");
@@ -4432,10 +4475,12 @@ class PlayScene extends Phaser.Scene {
     script.push(
       { distance: 12800, kind: "specialEvent", eventType: "platformRush" },
       { distance: 24600, kind: "specialEvent", eventType: "pursuit" },
+      { distance: Math.floor(this.stageLength * 0.5) - 3200, kind: "specialEvent", eventType: "midBossApproach" },
       { distance: Math.floor(this.stageLength * 0.5), kind: "midBossSpawn" },
       { distance: 38200, kind: "specialEvent", eventType: "droneStorm" },
       { distance: 51800, kind: "specialEvent", eventType: "rainShift" },
       { distance: 65400, kind: "scooterDrop" },
+      { distance: this.stageLength - 7200, kind: "specialEvent", eventType: "finalBossApproach" },
       { distance: this.stageLength - 2600, kind: "bossSpawn" },
     );
 
@@ -4669,7 +4714,10 @@ class PlayScene extends Phaser.Scene {
     if (progress < 0.8) {
       return 4;
     }
-    return 5;
+    if (progress < 0.92) {
+      return 5;
+    }
+    return 6;
   }
 
   canSpawnThreat(type) {
@@ -4711,6 +4759,12 @@ class PlayScene extends Phaser.Scene {
 
   getDirectorDelay(type) {
     const ramp = this.getDifficultyRamp();
+    const progress = this.stageDistance / this.stageLength;
+    const tension =
+      progress > 0.9 ? 0.72
+      : progress > 0.78 ? 0.82
+      : progress > 0.46 ? 0.9
+      : 1;
     const cityPace = {
       valencia: { obstacle: 1.08, platform: 0.92, reward: 0.88 },
       roma: { obstacle: 0.95, platform: 1.02, reward: 1.04 },
@@ -4721,26 +4775,32 @@ class PlayScene extends Phaser.Scene {
 
     if (type === "obstacle") {
       return Phaser.Math.Between(
-        Math.max(1200, (6200 - ramp * 3400) * cityPace.obstacle),
-        Math.max(2200, (7600 - ramp * 3600) * cityPace.obstacle)
+        Math.max(900, (6200 - ramp * 3400) * cityPace.obstacle * tension),
+        Math.max(1800, (7600 - ramp * 3600) * cityPace.obstacle * tension)
       );
     }
     if (type === "enemy") {
-      return Phaser.Math.Between(Math.max(850, 2400 - ramp * 1200), Math.max(1300, 3200 - ramp * 1400));
+      return Phaser.Math.Between(
+        Math.max(650, (2400 - ramp * 1200) * tension),
+        Math.max(1000, (3200 - ramp * 1400) * tension)
+      );
     }
     if (type === "crate") {
-      return Phaser.Math.Between(Math.max(1400, 2600 - ramp * 700), Math.max(2200, 3600 - ramp * 850));
+      return Phaser.Math.Between(
+        Math.max(1100, (2600 - ramp * 700) * (progress > 0.82 ? 0.88 : 1)),
+        Math.max(1800, (3600 - ramp * 850) * (progress > 0.82 ? 0.88 : 1))
+      );
     }
     if (type === "platform") {
       return Phaser.Math.Between(
-        Math.max(1800, (5200 - ramp * 1800) * cityPace.platform),
-        Math.max(2600, (7000 - ramp * 2200) * cityPace.platform)
+        Math.max(1300, (5200 - ramp * 1800) * cityPace.platform * (progress > 0.76 ? 0.82 : 1)),
+        Math.max(2200, (7000 - ramp * 2200) * cityPace.platform * (progress > 0.76 ? 0.82 : 1))
       );
     }
     if (type === "reward") {
       return Phaser.Math.Between(
-        Math.max(1100, (2800 - ramp * 700) * cityPace.reward),
-        Math.max(1800, (4200 - ramp * 950) * cityPace.reward)
+        Math.max(1200, (2800 - ramp * 700) * cityPace.reward * (progress > 0.78 ? 1.14 : 1)),
+        Math.max(1900, (4200 - ramp * 950) * cityPace.reward * (progress > 0.78 ? 1.14 : 1))
       );
     }
     return Phaser.Math.Between(1700, 2600);
@@ -4802,6 +4862,28 @@ class PlayScene extends Phaser.Scene {
         this.spawnObstacleAt(key, WIDTH + sx(160) + index * sx(126));
       });
       this.spawnEnemyAt(WIDTH + sx(620), "shooter");
+      return;
+    }
+
+    if (eventType === "midBossApproach") {
+      this.showFeedback("SUBE LA PRESION: altura, huecos y peligro antes del mini-boss");
+      this.spawnPlatformLayout({
+        startX: WIDTH + sx(150),
+        pattern: [[1], [2], [3], [4], [5], [5], [4], [3], [2]],
+        reward: "shirt",
+        secretRewards: [{ column: 4, level: 7, key: "laser" }],
+        trailingSupport: true,
+      });
+      this.spawnObstacleAt(this.city.key === "venecia" || this.city.key === "valencia" ? "water-gap" : "lava-gap", WIDTH + sx(930));
+      this.spawnPlatformLayout({
+        startX: WIDTH + sx(1140),
+        pattern: [[2], [3], [4], [5], [4], [3], [2], [1]],
+        reward: "socks",
+        secretRewards: [{ column: 5, level: 6, key: "rocket" }],
+      });
+      ["sprinter", "shooter", "sprinter"].forEach((type, index) => {
+        this.spawnEnemyAt(WIDTH + sx(1620) + index * sx(158), type);
+      });
       return;
     }
 
@@ -4880,6 +4962,32 @@ class PlayScene extends Phaser.Scene {
       });
       ["sprinter", "sprinter", "shooter"].forEach((type, index) => {
         this.spawnEnemyAt(WIDTH + sx(620) + index * sx(156), type);
+      });
+      return;
+    }
+
+    if (eventType === "finalBossApproach") {
+      const hazardKey = this.city.key === "venecia" || this.city.key === "valencia" ? "water-gap" : "lava-gap";
+      this.showFeedback("ULTIMA SUBIDA: menos regalos, mas altura y zona de peligro total");
+      this.spawnPlatformLayout({
+        startX: WIDTH + sx(140),
+        pattern: [[1], [2], [3], [4], [5], [6], [5], [4], [3], [2]],
+        reward: "outfit",
+        secretRewards: [{ column: 5, level: 8, key: "shirt" }],
+        trailingSupport: true,
+      });
+      this.spawnObstacleAt(hazardKey, WIDTH + sx(1040));
+      this.spawnPlatformLayout({
+        startX: WIDTH + sx(1270),
+        pattern: [[2], [3], [4], [5], [6], [6], [5], [4], [3], [2], [1]],
+        reward: "laser",
+        secretRewards: [{ column: 8, level: 7, key: "rocket" }],
+      });
+      ["bruiser", "shooter", "sprinter", "shooter"].forEach((type, index) => {
+        this.spawnEnemyAt(WIDTH + sx(1860) + index * sx(168), type);
+      });
+      ["drone", "barricade", "drone"].forEach((key, index) => {
+        this.spawnObstacleAt(key, WIDTH + sx(2480) + index * sx(170));
       });
       return;
     }
@@ -5526,7 +5634,7 @@ class PlayScene extends Phaser.Scene {
   }
 
   spawnSolidBox() {
-    if (this.solidBoxes.countActive(true) >= 14 || this.time.now < this.scriptedSectionUntil) {
+    if (this.solidBoxes.countActive(true) >= 18 || this.time.now < this.scriptedSectionUntil) {
       return;
     }
 
@@ -5535,6 +5643,9 @@ class PlayScene extends Phaser.Scene {
       { pattern: [[1], [2], [3], [2], [1]], reward: "shirt", secretRewards: [{ column: 2, level: 4, key: "socks" }] },
       { pattern: [[2], [2], [1], [1], [2], [2]], reward: "socks" },
       { pattern: [[1], [1, 3], [2], [2, 4], [1]], reward: "shoe", secretRewards: [{ column: 3, level: 5, key: "shirt" }] },
+      { pattern: [[1], [2], [3], [4], [5], [4], [3], [2]], reward: "shoe", secretRewards: [{ column: 4, level: 7, key: "shirt" }] },
+      { pattern: [[2], [3], [4], [5], [6], [5], [4], [3], [2]], reward: "shirt", secretRewards: [{ column: 5, level: 7, key: "laser" }] },
+      { pattern: [[1], [2], [2, 4], [3, 5], [4, 6], [3, 5], [2, 4], [1]], reward: "rocket", secretRewards: [{ column: 4, level: 8, key: "outfit" }] },
     ];
     const template = Phaser.Utils.Array.GetRandom(templates);
     this.spawnPlatformLayout({
