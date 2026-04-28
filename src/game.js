@@ -6832,7 +6832,15 @@ class PlayScene extends Phaser.Scene {
 
     for (const group of [this.enemies, this.enemyBullets, this.crates, this.prisoners, this.solidBoxes]) {
       group.children.each((item) => {
-        if (item.x < -sx(160) || item.x > WIDTH + sx(280) || item.y > HEIGHT + sy(120)) {
+        const isEnemy = group === this.enemies;
+        const isBoss = isEnemy && item.getData("isBoss");
+        const rightCull =
+          isBoss
+            ? WIDTH + sx(520)
+            : isEnemy
+              ? WIDTH + sx(420)
+              : WIDTH + sx(280);
+        if (item.x < -sx(160) || item.x > rightCull || item.y > HEIGHT + sy(120)) {
           if (group === this.enemies) {
             const warn = item.getData("warning");
             if (warn) {
