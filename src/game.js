@@ -4469,6 +4469,7 @@ class PlayScene extends Phaser.Scene {
       },
       { distance: 3200, kind: "enemyWave", types: ["bruiser"], spacing: sx(150) },
       { distance: 4200, kind: "specialEvent", eventType: "openingSetPiece" },
+      { distance: 5200, kind: "scooterDrop" },
       { distance: 6400, kind: "scooterDrop" },
     ];
 
@@ -4553,10 +4554,13 @@ class PlayScene extends Phaser.Scene {
 
     script.push(
       { distance: 12800, kind: "specialEvent", eventType: "platformRush" },
+      { distance: 16800, kind: "scooterDrop" },
       { distance: 24600, kind: "specialEvent", eventType: "pursuit" },
+      { distance: 28400, kind: "scooterDrop" },
       { distance: Math.floor(this.stageLength * 0.5) - 3200, kind: "specialEvent", eventType: "midBossApproach" },
       { distance: Math.floor(this.stageLength * 0.5), kind: "midBossSpawn" },
       { distance: 38200, kind: "specialEvent", eventType: "droneStorm" },
+      { distance: 42800, kind: "scooterDrop" },
       { distance: 51800, kind: "specialEvent", eventType: "rainShift" },
       { distance: 65400, kind: "scooterDrop" },
       { distance: this.stageLength - 7200, kind: "specialEvent", eventType: "finalBossApproach" },
@@ -5860,7 +5864,7 @@ class PlayScene extends Phaser.Scene {
     if (this.rewards.countActive(true) >= 2 || this.time.now < this.platformSafeUntil || this.time.now < this.scriptedSectionUntil) {
       return;
     }
-    const items = ["shirt", "socks", "socks", "shoe", "outfit"];
+    const items = ["shirt", "socks", "socks", "shoe", "outfit", "scooter", "scooter"];
     const key = Phaser.Utils.Array.GetRandom(items);
     this.spawnRewardItem(WIDTH + sx(80), Phaser.Math.Between(sy(228), sy(350)), key);
   }
@@ -6158,7 +6162,7 @@ class PlayScene extends Phaser.Scene {
     if (this.rewards.countActive(true) >= 3) {
       return;
     }
-    const key = Phaser.Utils.Array.GetRandom(["shirt", "socks", "shoe", "outfit", "scooter", "laser", "rocket"]);
+    const key = Phaser.Utils.Array.GetRandom(["shirt", "socks", "socks", "shoe", "outfit", "scooter", "scooter", "laser", "rocket"]);
     this.spawnRewardItem(x, y, key);
   }
 
