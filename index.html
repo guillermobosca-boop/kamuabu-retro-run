@@ -72,9 +72,30 @@
           </div>
         </div>
         <div id="game"></div>
+        <div class="stage-progress" aria-label="Progreso del nivel">
+          <div class="stage-progress-top">
+            <span id="progress-label">Progreso de mision</span>
+            <strong id="progress-distance">META 100%</strong>
+          </div>
+          <div class="stage-progress-track">
+            <div id="progress-fill" class="stage-progress-fill"></div>
+            <div id="progress-marker" class="stage-progress-marker" aria-hidden="true"></div>
+          </div>
+        </div>
         <div class="controls">
           <span>A/D: moverse | Espacio: saltar | S/abajo: agacharse | J: disparar</span>
           <span>R: reiniciar | ESC: ciudades</span>
+        </div>
+        <div class="touch-controls" aria-label="Controles tactiles">
+          <div class="touch-move">
+            <button class="touch-btn touch-btn-left" data-touch="left" type="button">◀</button>
+            <button class="touch-btn touch-btn-right" data-touch="right" type="button">▶</button>
+          </div>
+          <div class="touch-actions">
+            <button class="touch-btn touch-btn-duck" data-touch="down" type="button">DUCK</button>
+            <button class="touch-btn touch-btn-jump" data-touch="jump" type="button">JUMP</button>
+            <button class="touch-btn touch-btn-shoot" data-touch="shoot" type="button">FIRE</button>
+          </div>
         </div>
       </section>
     </main>
