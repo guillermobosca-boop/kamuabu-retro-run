@@ -21,6 +21,18 @@ const progressFillEl = document.querySelector("#progress-fill");
 const progressDistanceEl = document.querySelector("#progress-distance");
 const progressLabelEl = document.querySelector("#progress-label");
 const touchButtons = Array.from(document.querySelectorAll("[data-touch]"));
+const mobilePortraitQuery = window.matchMedia("(max-width: 900px) and (orientation: portrait)");
+
+const updateViewportMode = () => {
+  document.body.classList.toggle("mobile-portrait", mobilePortraitQuery.matches);
+};
+updateViewportMode();
+if (typeof mobilePortraitQuery.addEventListener === "function") {
+  mobilePortraitQuery.addEventListener("change", updateViewportMode);
+} else if (typeof mobilePortraitQuery.addListener === "function") {
+  mobilePortraitQuery.addListener(updateViewportMode);
+}
+window.addEventListener("resize", updateViewportMode);
 
 const padScore = (value) => String(Math.floor(value)).padStart(6, "0");
 const clampByte = (value) => Math.max(0, Math.min(255, Math.round(value)));
