@@ -1398,6 +1398,38 @@ class BootScene extends Phaser.Scene {
     outfit.fillRect(30, 17, 20, 6);
     outfit.generateTexture("outfit", 82, 78);
     outfit.destroy();
+
+    const laser = this.make.graphics({ x: 0, y: 0, add: false });
+    laser.fillStyle(0x111218);
+    laser.fillRect(10, 28, 70, 12);
+    laser.fillStyle(0x40d8ff);
+    laser.fillRect(16, 31, 52, 6);
+    laser.fillStyle(0xbff7ff);
+    laser.fillRect(22, 33, 40, 2);
+    laser.fillStyle(0xffd95c);
+    laser.fillRect(66, 24, 10, 20);
+    laser.fillStyle(0x253049);
+    laser.fillRect(18, 24, 16, 20);
+    laser.generateTexture("laser", 90, 64);
+    laser.destroy();
+
+    const rocket = this.make.graphics({ x: 0, y: 0, add: false });
+    rocket.fillStyle(0x111218);
+    rocket.fillRect(8, 26, 58, 16);
+    rocket.fillStyle(0xd93542);
+    rocket.fillRect(12, 28, 38, 12);
+    rocket.fillStyle(0xff7c90);
+    rocket.fillRect(16, 30, 16, 4);
+    rocket.fillStyle(0xc7ff3a);
+    rocket.fillRect(50, 28, 12, 12);
+    rocket.fillStyle(0xffd95c);
+    rocket.fillRect(62, 30, 18, 8);
+    rocket.fillStyle(0xf2ead8);
+    rocket.fillRect(68, 32, 8, 4);
+    rocket.fillStyle(0x4e545d);
+    rocket.fillRect(6, 22, 12, 24);
+    rocket.generateTexture("rocket", 86, 64);
+    rocket.destroy();
   }
 
   createCombatTextures() {
@@ -2527,6 +2559,8 @@ class PlayScene extends Phaser.Scene {
     this.weapon = "Pistol";
     this.ammo = Infinity;
     this.fireLevel = 1;
+    this.specialWeapon = null;
+    this.specialAmmo = 0;
     this.shieldUntil = 0;
     this.turboUntil = 0;
     this.superOutfitUntil = 0;
@@ -2565,6 +2599,7 @@ class PlayScene extends Phaser.Scene {
     this.stageEventIndex = 0;
     this.missionPhase = "intro";
     this.activeBoss = null;
+    this.midBossSpawned = false;
     this.bossSpawned = false;
     this.bossDefeated = false;
     this.prevRunnerOnGround = false;
@@ -4397,6 +4432,7 @@ class PlayScene extends Phaser.Scene {
     script.push(
       { distance: 12800, kind: "specialEvent", eventType: "platformRush" },
       { distance: 24600, kind: "specialEvent", eventType: "pursuit" },
+      { distance: Math.floor(this.stageLength * 0.5), kind: "midBossSpawn" },
       { distance: 38200, kind: "specialEvent", eventType: "droneStorm" },
       { distance: 51800, kind: "specialEvent", eventType: "rainShift" },
       { distance: 65400, kind: "scooterDrop" },
@@ -4612,6 +4648,11 @@ class PlayScene extends Phaser.Scene {
       return;
     }
 
+    if (event.kind === "midBossSpawn" && !this.midBossSpawned) {
+      this.spawnStormMiniBoss();
+      return;
+    }
+
     if (event.kind === "bossSpawn" && !this.bossSpawned) {
       this.spawnMiniBoss();
     }
@@ -4632,6 +4673,10 @@ class PlayScene extends Phaser.Scene {
   }
 
   canSpawnThreat(type) {
+    if (this.activeBoss?.active) {
+      return false;
+    }
+
     if (this.stageDistance >= this.stageLength - 850) {
       return false;
     }
@@ -4841,7 +4886,16 @@ class PlayScene extends Phaser.Scene {
   }
 
   shoot(time) {
-    if (time - this.lastShotAt < 145) {
+    const fireCooldown =
+      this.time.now < this.superOutfitUntil
+        ? 120
+        : this.specialWeapon === "Laser"
+          ? 210
+          : this.specialWeapon === "Rocket"
+            ? 320
+            : 145;
+
+    if (time - this.lastShotAt < fireCooldown) {
       return;
     }
 
@@ -4850,6 +4904,17 @@ class PlayScene extends Phaser.Scene {
     const aimUp = this.cursors.up.isDown;
     const direction = this.runner.flipX ? -1 : 1;
     const bulletY = this.isDucking ? this.runner.y - 35 : this.runner.y - 54;
+
+    if (this.time.now >= this.superOutfitUntil && this.specialWeapon === "Laser" && this.specialAmmo > 0) {
+      this.fireLaser(time, direction, bulletY, aimUp);
+      return;
+    }
+
+    if (this.time.now >= this.superOutfitUntil && this.specialWeapon === "Rocket" && this.specialAmmo > 0) {
+      this.fireRocket(time, direction, bulletY);
+      return;
+    }
+
     const spread =
       this.fireLevel >= 4
         ? [-0.34, -0.12, 0.12, 0.34]
@@ -4879,6 +4944,79 @@ class PlayScene extends Phaser.Scene {
 
     this.cameras.main.shake(35, 0.0015);
     this.runner.x -= direction * 3;
+  }
+
+  fireLaser(time, direction, bulletY, aimUp) {
+    this.specialAmmo = Math.max(0, this.specialAmmo - 1);
+    const beamColor = 0x40d8ff;
+    this.spawnMuzzleFlash(this.runner.x + direction * sx(54), bulletY, direction, beamColor);
+    this.spawnSmokePuff(this.runner.x + direction * sx(34), bulletY - sy(4));
+    const beam = this.add.rectangle(
+      this.runner.x + direction * sx(280),
+      bulletY,
+      sx(470),
+      sy(10),
+      beamColor,
+      0.62
+    ).setOrigin(direction < 0 ? 1 : 0, 0.5);
+    beam.setStrokeStyle(sx(3), 0xbff7ff, 0.95);
+    this.foreground.add(beam);
+    this.tweens.add({
+      targets: beam,
+      alpha: 0,
+      scaleY: 1.6,
+      duration: 120,
+      ease: "Quad.Out",
+      onComplete: () => beam.destroy(),
+    });
+
+    const bullet = this.playerBullets.create(this.runner.x + direction * sx(50), bulletY, "player-bullet");
+    bullet.setTint(beamColor);
+    bullet.setScale(1.35, 0.9);
+    bullet.setOrigin(0.5);
+    bullet.setVelocity(aimUp ? direction * 340 : direction * 920, aimUp ? -680 : 0);
+    bullet.setData("damage", 4);
+    bullet.setData("born", time);
+    bullet.setData("piercing", true);
+    bullet.setData("weaponType", "laser");
+    bullet.body.setSize(34, 10);
+    const angle = aimUp ? Phaser.Math.Angle.Between(0, 0, direction * 340, -680) : direction < 0 ? Math.PI : 0;
+    this.spawnBulletTrail(bullet.x, bullet.y, angle, beamColor, 1.45);
+    this.floatText(`LASER ${this.specialAmmo}`, this.runner.x + direction * sx(58), this.runner.y - sy(106), "#40d8ff");
+    if (this.specialAmmo <= 0) {
+      this.specialWeapon = null;
+      this.showFeedback("LASER agotado: vuelves al arsenal base");
+    } else {
+      this.showFeedback("LASER KAMUABU: atraviesa la calle");
+    }
+    this.cameras.main.flash(50, 64, 216, 255, false);
+    this.cameras.main.shake(70, 0.0028);
+  }
+
+  fireRocket(time, direction, bulletY) {
+    this.specialAmmo = Math.max(0, this.specialAmmo - 1);
+    const rocketTint = 0xff8b22;
+    this.spawnMuzzleFlash(this.runner.x + direction * sx(54), bulletY, direction, rocketTint);
+    this.spawnSmokePuff(this.runner.x + direction * sx(28), bulletY - sy(2));
+    const rocket = this.playerBullets.create(this.runner.x + direction * sx(46), bulletY + sy(2), "rocket");
+    rocket.setOrigin(0.5);
+    rocket.setFlipX(direction < 0);
+    rocket.setVelocity(direction * 430, 0);
+    rocket.setData("damage", 5);
+    rocket.setData("born", time);
+    rocket.setData("weaponType", "rocket");
+    rocket.setData("splashRadius", sx(126));
+    rocket.setTint(rocketTint);
+    rocket.body.setSize(34, 12);
+    this.spawnBulletTrail(rocket.x, rocket.y, direction < 0 ? Math.PI : 0, rocketTint, 1.15);
+    this.floatText(`ROCKET ${this.specialAmmo}`, this.runner.x + direction * sx(58), this.runner.y - sy(106), "#ff8b22");
+    if (this.specialAmmo <= 0) {
+      this.specialWeapon = null;
+      this.showFeedback("COHETES agotados: vuelves al arsenal base");
+    } else {
+      this.showFeedback("ROCKET BLAST: impacto pesado y explosion");
+    }
+    this.cameras.main.shake(90, 0.0032);
   }
 
   updateEnemyAI(time, deltaSeconds) {
@@ -4923,8 +5061,41 @@ class PlayScene extends Phaser.Scene {
         const nextSpecial = enemy.getData("nextSpecial") ?? 0;
         const isCasting = enemy.getData("bossCasting");
         const isDashing = enemy.getData("bossDashUntil") > time;
+        const isMidBoss = enemy.getData("midBoss");
 
-        if (isDashing) {
+        if (isMidBoss) {
+          const phase = hpRatio > 0.6 ? 1 : 2;
+          if (phase !== enemy.getData("bossPhase")) {
+            enemy.setData("bossPhase", phase);
+            arcadeAudio.playSfx("boss", "phase");
+            this.showFeedback(phase === 2 ? "STORM CORE: segunda fase, mas rayos y menos huecos" : "STORM CORE: tormenta electrica en camino");
+          }
+
+          if (!isCasting && time > nextSpecial && absDistance < sx(460)) {
+            this.startBossCast(enemy, time, {
+              type: "storm-rays",
+              label: phase === 2 ? "MEGA VOLT" : "STORM GRID",
+              color: "#c7ff3a",
+              tint: 0xc7ff3a,
+              duration: phase === 2 ? 520 : 680,
+              payload: { phase },
+            });
+            state = "attack";
+          } else if (distance > sx(320)) {
+            targetVelocity = -def.moveSpeed * 0.72;
+            state = "run";
+          } else if (distance < sx(120)) {
+            targetVelocity = def.retreatSpeed * 1.2;
+            state = "brake";
+          } else if (def.canShoot && !enemy.getData("charging") && time > enemy.getData("nextShot")) {
+            this.telegraphEnemyShot(enemy, time);
+            enemy.setData("nextShot", time + (phase === 2 ? 860 : 1080));
+            state = "attack";
+          } else {
+            targetVelocity = 0;
+            state = "idle";
+          }
+        } else if (isDashing) {
           targetVelocity = -def.moveSpeed * 3.1;
           state = "attack";
         } else if (this.city.key === "londres") {
@@ -5258,7 +5429,59 @@ class PlayScene extends Phaser.Scene {
       this.spawnObstacleAt("drone", WIDTH + sx(240));
       enemy.setData("nextSpecial", time + 1850);
       this.showFeedback("CLOCK STRIKE: abanico rojo y dron de cierre");
+      return;
     }
+
+    if (type === "storm-rays") {
+      const phase = enemy.getData("bossCastPayload")?.phase ?? 1;
+      const baseX = Phaser.Math.Clamp(this.runner.x + sx(120), sx(240), WIDTH - sx(180));
+      const offsets = phase === 2 ? [-220, -120, 0, 120, 220] : [-180, -60, 60, 180];
+      offsets.forEach((offset, index) => {
+        const strikeX = Phaser.Math.Clamp(baseX + sx(offset), sx(120), WIDTH - sx(80));
+        this.time.delayedCall(index * 90, () => {
+          if (!enemy.active) return;
+          this.spawnLightningStrike(strikeX, time + index * 90);
+        });
+      });
+      enemy.setData("nextSpecial", time + (phase === 2 ? 2200 : 2800));
+      this.showFeedback(phase === 2 ? "MEGA VOLT: rayos por todos los lados" : "STORM GRID: lee el patron y busca hueco");
+    }
+  }
+
+  spawnLightningStrike(x, time) {
+    const warning = this.add.rectangle(x, HEIGHT / 2, sx(14), GROUND_Y - sy(64), 0xc7ff3a, 0.2);
+    this.weatherLayer.add(warning);
+    this.tweens.add({
+      targets: warning,
+      alpha: 0.56,
+      duration: 110,
+      yoyo: true,
+      repeat: 1,
+      onComplete: () => warning.destroy(),
+    });
+    this.time.delayedCall(150, () => {
+      const bolt = this.add.rectangle(x, HEIGHT / 2, sx(18), GROUND_Y - sy(40), 0xf2ead8, 0.86);
+      const core = this.add.rectangle(x, HEIGHT / 2, sx(8), GROUND_Y - sy(40), 0x40d8ff, 0.94);
+      this.foreground.add(bolt);
+      this.foreground.add(core);
+      this.spawnEnemyBullet(x, sy(92), Math.PI / 2, 560, time, {
+        tint: 0xc7ff3a,
+        scale: 1.22,
+        bodyWidth: 18,
+        bodyHeight: 34,
+      });
+      this.cameras.main.flash(70, 199, 255, 58, false);
+      this.cameras.main.shake(110, 0.004);
+      this.tweens.add({
+        targets: [bolt, core],
+        alpha: 0,
+        duration: 170,
+        onComplete: () => {
+          bolt.destroy();
+          core.destroy();
+        },
+      });
+    });
   }
 
   spawnEnemy() {
@@ -5456,6 +5679,14 @@ class PlayScene extends Phaser.Scene {
       this.sprintUntil = Math.max(this.sprintUntil, this.time.now + 2200);
       this.cameras.main.flash(90, 199, 255, 58, false);
       this.showFeedback("Zapatillas turbo: corre mas rapido y abre hueco");
+    } else if (key === "laser") {
+      this.activateSpecialWeapon("Laser", 16);
+      this.cameras.main.flash(110, 64, 216, 255, false);
+      this.showFeedback("LASER KAMUABU: rayo super potente");
+    } else if (key === "rocket") {
+      this.activateSpecialWeapon("Rocket", 10);
+      this.cameras.main.flash(110, 255, 139, 34, false);
+      this.showFeedback("ROCKET BLAST: cohetes pesados");
     } else if (key === "scooter") {
       this.activateScooterMode();
       this.cameras.main.flash(120, 255, 217, 92, false);
@@ -5479,10 +5710,34 @@ class PlayScene extends Phaser.Scene {
   }
 
   hitEnemy(bullet, enemy) {
-    const hp = enemy.getData("hp") - bullet.getData("damage");
+    const damage = bullet.getData("damage");
+    const splashRadius = bullet.getData("splashRadius");
+    if (splashRadius) {
+      this.explodeRocket(enemy.x, enemy.y - sy(44), splashRadius, damage, enemy);
+      bullet.destroy();
+      return;
+    }
+    bullet.destroy();
+    this.applyEnemyDamage(enemy, damage);
+  }
+
+  breakCrate(bullet, crate) {
+    const damage = bullet.getData("damage");
+    const splashRadius = bullet.getData("splashRadius");
+    if (splashRadius) {
+      this.explodeRocket(crate.x, crate.y - sy(30), splashRadius, damage, null, crate);
+      bullet.destroy();
+      return;
+    }
+    bullet.destroy();
+    this.applyCrateDamage(crate, damage);
+  }
+
+  applyEnemyDamage(enemy, damage) {
+    if (!enemy?.active) return;
+    const hp = enemy.getData("hp") - damage;
     const def = enemy.getData("typeDef") ?? ENEMY_TYPES.shooter;
     const spritePrefix = enemy.getData("spritePrefix") ?? def.prefix;
-    bullet.destroy();
     enemy.setData("hp", hp);
     this.spawnBurst(enemy.x, enemy.y - 48);
 
@@ -5500,11 +5755,16 @@ class PlayScene extends Phaser.Scene {
         this.spawnRewardAt(enemy.x, enemy.y - 70);
       }
       if (enemy.getData("isBoss")) {
+        const isMidBoss = enemy.getData("midBoss");
         this.activeBoss = null;
-        this.bossDefeated = true;
-        this.stageDistance = this.stageLength;
-        this.spawnRewardItem(enemy.x + sx(26), enemy.y - sy(92), "outfit");
-        this.showFeedback(`BOSS KO: ${enemy.getData("bossLabel")} fuera de combate`);
+        if (!isMidBoss) {
+          this.bossDefeated = true;
+          this.stageDistance = this.stageLength;
+          this.spawnRewardItem(enemy.x + sx(26), enemy.y - sy(92), "outfit");
+        } else {
+          this.spawnRewardItem(enemy.x + sx(26), enemy.y - sy(92), Phaser.Utils.Array.GetRandom(["laser", "rocket", "outfit"]));
+          this.showFeedback(`MID-BOSS KO: ${enemy.getData("bossLabel")} abatido`);
+        }
         arcadeAudio.playSfx("boss", "ko");
         this.bossHudGlow.setVisible(false);
         this.bossBarShell.setVisible(false);
@@ -5516,6 +5776,9 @@ class PlayScene extends Phaser.Scene {
         this.bossPortrait.setVisible(false);
         this.bossNameText.setVisible(false);
         this.bossPhaseText.setVisible(false);
+        if (!isMidBoss) {
+          this.showFeedback(`BOSS KO: ${enemy.getData("bossLabel")} fuera de combate`);
+        }
       }
       enemy.setData("falling", true);
       enemy.setData("charging", false);
@@ -5544,12 +5807,12 @@ class PlayScene extends Phaser.Scene {
     }
   }
 
-  breakCrate(bullet, crate) {
-    const hp = crate.getData("hp") - bullet.getData("damage");
-    bullet.destroy();
+  applyCrateDamage(crate, damage) {
+    if (!crate?.active) return;
+    const hp = crate.getData("hp") - damage;
     crate.setData("hp", hp);
     crate.setTint(0xffd95c);
-    this.time.delayedCall(90, () => crate.clearTint());
+    this.time.delayedCall(90, () => crate.active && crate.clearTint());
 
     if (hp <= 0) {
       this.spawnBurst(crate.x, crate.y - 34);
@@ -5641,10 +5904,22 @@ class PlayScene extends Phaser.Scene {
     const reward = this.rewards.create(x, y, key);
     reward.setOrigin(0.5);
     reward.setVelocityX(0);
-    reward.setData("value", key === "outfit" ? 260 : key === "scooter" ? 220 : key === "shoe" ? 180 : key === "shirt" ? 130 : 90);
+    reward.setData("value", key === "outfit" ? 260 : key === "laser" ? 240 : key === "rocket" ? 240 : key === "scooter" ? 220 : key === "shoe" ? 180 : key === "shirt" ? 130 : 90);
     reward.setData(
       "label",
-      key === "outfit" ? "SUPER OUTFIT" : key === "scooter" ? "SCOOTER" : key === "shoe" ? "TURBO" : key === "shirt" ? "CAMISETA" : "CALCETINES"
+      key === "outfit"
+        ? "SUPER OUTFIT"
+        : key === "laser"
+          ? "LASER"
+          : key === "rocket"
+            ? "ROCKET"
+            : key === "scooter"
+              ? "SCOOTER"
+              : key === "shoe"
+                ? "TURBO"
+                : key === "shirt"
+                  ? "CAMISETA"
+                  : "CALCETINES"
     );
     reward.body.setSize(56, 48);
     this.tweens.add({
@@ -5662,7 +5937,7 @@ class PlayScene extends Phaser.Scene {
     if (this.rewards.countActive(true) >= 3) {
       return;
     }
-    const key = Phaser.Utils.Array.GetRandom(["shirt", "socks", "shoe", "outfit", "scooter"]);
+    const key = Phaser.Utils.Array.GetRandom(["shirt", "socks", "shoe", "outfit", "scooter", "laser", "rocket"]);
     this.spawnRewardItem(x, y, key);
   }
 
@@ -5774,6 +6049,47 @@ class PlayScene extends Phaser.Scene {
     });
   }
 
+  explodeRocket(x, y, radius, damage, directEnemy = null, directCrate = null) {
+    arcadeAudio.playSfx("boss", "phase");
+    const blastBack = this.add.circle(x, y, radius * 0.36, 0xff8b22, 0.34);
+    const blastCore = this.add.circle(x, y, radius * 0.18, 0xffd95c, 0.88);
+    const ring = this.add.circle(x, y, radius * 0.12).setStrokeStyle(sx(6), 0xf2ead8, 0.92);
+    this.foreground.add(blastBack);
+    this.foreground.add(blastCore);
+    this.foreground.add(ring);
+    this.spawnBurst(x, y);
+    this.cameras.main.shake(160, 0.006);
+    this.tweens.add({
+      targets: [blastBack, blastCore, ring],
+      alpha: 0,
+      scaleX: 1.5,
+      scaleY: 1.5,
+      duration: 220,
+      ease: "Quad.Out",
+      onComplete: () => {
+        blastBack.destroy();
+        blastCore.destroy();
+        ring.destroy();
+      },
+    });
+
+    this.enemies.children.each((enemy) => {
+      if (!enemy.active) return;
+      const dist = Phaser.Math.Distance.Between(x, y, enemy.x, enemy.y - sy(44));
+      if (enemy === directEnemy || dist <= radius) {
+        this.applyEnemyDamage(enemy, damage);
+      }
+    });
+
+    this.crates.children.each((crate) => {
+      if (!crate.active) return;
+      const dist = Phaser.Math.Distance.Between(x, y, crate.x, crate.y - sy(30));
+      if (crate === directCrate || dist <= radius) {
+        this.applyCrateDamage(crate, damage);
+      }
+    });
+  }
+
   updateComboFeel() {
     if (this.combo >= 3 && this.combo > this.comboTierShown) {
       this.comboTierShown = this.combo;
@@ -5843,6 +6159,50 @@ class PlayScene extends Phaser.Scene {
     this.cameras.main.shake(180, 0.005);
   }
 
+  activateSpecialWeapon(type, ammo) {
+    this.specialWeapon = type;
+    this.specialAmmo = ammo;
+    this.floatText(`${type.toUpperCase()} READY`, this.runner.x + sx(42), this.runner.y - sy(114), type === "Laser" ? "#40d8ff" : "#ff8b22");
+  }
+
+  spawnStormMiniBoss() {
+    this.midBossSpawned = true;
+    this.scriptedSectionUntil = Math.max(this.scriptedSectionUntil, this.time.now + 4200);
+    const configs = {
+      valencia: { type: "sprinter", hp: 9, label: "SOLAR STORM", x: WIDTH + sx(280) },
+      roma: { type: "bruiser", hp: 11, label: "TEMPESTA CORE", x: WIDTH + sx(300) },
+      paris: { type: "shooter", hp: 10, label: "NEON STORM", x: WIDTH + sx(300) },
+      venecia: { type: "shooter", hp: 10, label: "LAGUNA VOLT", x: WIDTH + sx(300) },
+      londres: { type: "shooter", hp: 12, label: "THUNDER WARDEN", x: WIDTH + sx(320) },
+    };
+    const bossConfig = configs[this.city.key] || configs.londres;
+    const boss = this.spawnEnemyAt(bossConfig.x, bossConfig.type);
+    const def = boss.getData("typeDef");
+    boss.setTexture(`boss-${this.city.key}-idle`);
+    boss.setScale(def.scale * 1.12);
+    boss.body.setSize(def.body.width + 8, def.body.height + 10);
+    boss.setData("hp", bossConfig.hp);
+    boss.setData("maxHp", bossConfig.hp);
+    boss.setData("isBoss", true);
+    boss.setData("midBoss", true);
+    boss.setData("bossLabel", bossConfig.label);
+    boss.setData("score", 900);
+    boss.setData("bossPhase", 1);
+    boss.setData("nextShot", this.time.now + 820);
+    boss.setData("nextSpecial", this.time.now + 1200);
+    boss.setData("spritePrefix", `boss-${this.city.key}`);
+    boss.setData("bossCasting", false);
+    boss.setData("bossCastType", null);
+    boss.setData("bossCastUntil", 0);
+    boss.setData("bossDashUntil", 0);
+    this.activeBoss = boss;
+    arcadeAudio.playSfx("boss", "spawn");
+    this.showFeedback(`MID-BOSS: ${bossConfig.label}`);
+    this.floatText(`MID ${bossConfig.label}`, WIDTH / 2, sy(170), "#c7ff3a");
+    this.spawnObstacleAt("barricade", WIDTH + sx(190));
+    this.spawnObstacleAt("drone", WIDTH + sx(340));
+  }
+
   spawnMiniBoss() {
     this.bossSpawned = true;
     const configs = {
@@ -5874,8 +6234,8 @@ class PlayScene extends Phaser.Scene {
     this.activeBoss = boss;
     arcadeAudio.startBossMusic(this, this.city.key);
     arcadeAudio.playSfx("boss", "spawn");
-    this.showFeedback(`MINI-BOSS: ${bossConfig.label}`);
-    this.floatText(`BOSS ${bossConfig.label}`, WIDTH / 2, sy(170), "#ff365f");
+    this.showFeedback(`FINAL BOSS: ${bossConfig.label}`);
+    this.floatText(`FINAL ${bossConfig.label}`, WIDTH / 2, sy(170), "#ff365f");
     if (this.city.key === "londres") {
       this.spawnObstacleAt("barricade", WIDTH + sx(210));
       this.spawnEnemyAt(WIDTH + sx(420), "sprinter");
@@ -5933,6 +6293,16 @@ class PlayScene extends Phaser.Scene {
       this.scooterUntil = 0;
       this.turboUntil = 0;
       this.floatText("SCOOTER ROTO", this.runner.x + 52, this.runner.y - 96, "#4ae0c2");
+      this.cameras.main.shake(220, 0.008);
+      return;
+    }
+
+    if (this.specialWeapon && this.specialAmmo > 0) {
+      const lostWeapon = this.specialWeapon;
+      this.specialWeapon = null;
+      this.specialAmmo = 0;
+      this.floatText(`${lostWeapon.toUpperCase()} PERDIDA`, this.runner.x + 52, this.runner.y - 96, lostWeapon === "Laser" ? "#40d8ff" : "#ff8b22");
+      this.showFeedback(`Golpe recibido: pierdes ${lostWeapon === "Laser" ? "el laser" : "los cohetes"}`);
       this.cameras.main.shake(220, 0.008);
       return;
     }
@@ -6342,6 +6712,8 @@ class PlayScene extends Phaser.Scene {
         ? "Scooter"
         : this.time.now < this.superOutfitUntil
         ? "Outfit"
+        : this.specialWeapon
+          ? `${this.specialWeapon} ${this.specialAmmo}`
         : this.time.now < this.shieldUntil
           ? "Shield"
           : this.time.now < this.turboUntil
@@ -6354,6 +6726,10 @@ class PlayScene extends Phaser.Scene {
         ? "SCOOTER"
         : this.time.now < this.superOutfitUntil
         ? "OUTFIT"
+        : this.specialWeapon === "Laser"
+          ? `LASER ${this.specialAmmo}`
+          : this.specialWeapon === "Rocket"
+            ? `ROCKET ${this.specialAmmo}`
         : this.fireLevel >= 4
           ? "WIDE x4"
           : `P x${this.fireLevel}`;
