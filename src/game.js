@@ -4744,7 +4744,7 @@ class PlayScene extends Phaser.Scene {
         this.time.now - this.lastDamageAt > Math.max(900, 2100 - this.getDifficultyRamp() * 900) &&
         this.time.now - this.lastEnemyAt > Math.max(750, 1300 - this.getDifficultyRamp() * 420) &&
         this.time.now >= this.platformSafeUntil &&
-        this.solidBoxes.countActive(true) < 10
+        this.solidBoxes.countActive(true) < 14
       );
     }
 
@@ -4753,7 +4753,7 @@ class PlayScene extends Phaser.Scene {
       activeBullets < 4 + Math.floor(this.getDifficultyRamp() * 3) &&
       this.time.now - this.lastObstacleAt > Math.max(700, 1500 - this.getDifficultyRamp() * 550) &&
       this.time.now >= this.platformSafeUntil &&
-      this.solidBoxes.countActive(true) < 14
+      this.solidBoxes.countActive(true) < 18
     );
   }
 
