@@ -17,6 +17,10 @@ const socksEl = document.querySelector("#socks");
 const stateEl = document.querySelector("#state");
 const weaponEl = document.querySelector("#weapon");
 const missionEl = document.querySelector("#mission");
+const progressFillEl = document.querySelector("#progress-fill");
+const progressDistanceEl = document.querySelector("#progress-distance");
+const progressLabelEl = document.querySelector("#progress-label");
+const touchButtons = Array.from(document.querySelectorAll("[data-touch]"));
 
 const padScore = (value) => String(Math.floor(value)).padStart(6, "0");
 const clampByte = (value) => Math.max(0, Math.min(255, Math.round(value)));
@@ -2461,6 +2465,8 @@ class MenuScene extends Phaser.Scene {
 class PlayScene extends Phaser.Scene {
   constructor() {
     super("PlayScene");
+    this.touchState = { left: false, right: false, down: false, jump: false, shoot: false };
+    this.touchJumpQueued = false;
   }
 
   create(data) {
@@ -3869,6 +3875,45 @@ class PlayScene extends Phaser.Scene {
       }
     });
     this.input.on("pointerup", () => this.setDucking(false));
+
+    const setTouch = (action, active) => {
+      if (action === "jump") {
+        if (active) {
+          this.touchJumpQueued = true;
+        }
+        this.touchState.jump = active;
+        return;
+      }
+      this.touchState[action] = active;
+    };
+
+    touchButtons.forEach((button) => {
+      const action = button.dataset.touch;
+      if (!action) {
+        return;
+      }
+
+      const activate = (event) => {
+        event.preventDefault();
+        setTouch(action, true);
+        button.classList.add("is-active");
+      };
+
+      const deactivate = (event) => {
+        event.preventDefault();
+        setTouch(action, false);
+        button.classList.remove("is-active");
+      };
+
+      button.addEventListener("pointerdown", activate);
+      button.addEventListener("pointerup", deactivate);
+      button.addEventListener("pointercancel", deactivate);
+      button.addEventListener("pointerleave", (event) => {
+        if (event.pointerType === "mouse") {
+          deactivate(event);
+        }
+      });
+    });
   }
 
   update(time, delta) {
@@ -3907,7 +3952,7 @@ class PlayScene extends Phaser.Scene {
     this.crateTimer += delta;
     this.platformTimer += delta;
 
-    if (this.keys.shoot.isDown) {
+    if (this.keys.shoot.isDown || this.touchState.shoot) {
       this.shoot(time);
     }
 
@@ -3960,19 +4005,21 @@ class PlayScene extends Phaser.Scene {
     const nearestObstacle = this.getNearestObstacleAhead();
     const nearestEnemy = this.getNearestEnemyAhead();
     const demoJump = this.demoMode && onGround && nearestObstacle && nearestObstacle.distance < sx(180);
-    const left = !this.demoMode && (this.cursors.left.isDown || this.keys.left.isDown);
+    const left = !this.demoMode && (this.cursors.left.isDown || this.keys.left.isDown || this.touchState.left);
     const rightPressed = this.cursors.right.isDown || this.keys.right.isDown;
-    const right = this.demoMode || rightPressed;
-    const down = !this.demoMode && (this.cursors.down.isDown || this.keys.down.isDown);
+    const right = this.demoMode || rightPressed || this.touchState.right;
+    const down = !this.demoMode && (this.cursors.down.isDown || this.keys.down.isDown || this.touchState.down);
     const rightTapped = Phaser.Input.Keyboard.JustDown(this.keys.right) || Phaser.Input.Keyboard.JustDown(this.cursors.right);
     const paceBoost = this.getDifficultyRamp() * 70;
+    const touchJump = this.touchJumpQueued;
 
-    if (demoJump || Phaser.Input.Keyboard.JustDown(this.keys.space) || Phaser.Input.Keyboard.JustDown(this.cursors.up)) {
+    if (demoJump || touchJump || Phaser.Input.Keyboard.JustDown(this.keys.space) || Phaser.Input.Keyboard.JustDown(this.cursors.up)) {
       this.jumpBufferUntil = time + 180;
       if (!onGround && time >= this.coyoteUntil) {
         this.tryAirJump(time);
       }
     }
+    this.touchJumpQueued = false;
 
     if (rightTapped) {
       if (time - this.lastRightTapAt < 280) {
@@ -4002,7 +4049,7 @@ class PlayScene extends Phaser.Scene {
           ? 360 + paceBoost * 0.35
           : 235 + paceBoost * 0.22;
     this.scrollSpeed = 0;
-    if (left && !rightPressed) {
+    if (left && !(rightPressed || this.touchState.right)) {
       this.runner.setVelocityX(-moveSpeed);
       this.runner.setFlipX(true);
     } else if (movingForward && !left) {
@@ -6244,6 +6291,7 @@ class PlayScene extends Phaser.Scene {
 
   syncHud() {
     const missionPct = Math.floor((this.stageDistance / this.stageLength) * 100);
+    const remainingPct = Math.max(0, 100 - missionPct);
     scoreEl.textContent = padScore(this.score);
     comboEl.textContent = `x${this.combo}`;
     bestEl.textContent = padScore(this.best || 0);
@@ -6272,6 +6320,15 @@ class PlayScene extends Phaser.Scene {
     missionEl.textContent = `${missionPct}%`;
     socksEl.parentElement?.style.setProperty("--meter", `${(this.socks / 9) * 100}%`);
     missionEl.parentElement?.style.setProperty("--meter", `${Phaser.Math.Clamp(missionPct, 0, 100)}%`);
+    if (progressFillEl) {
+      progressFillEl.style.width = `${Phaser.Math.Clamp(missionPct, 0, 100)}%`;
+    }
+    if (progressDistanceEl) {
+      progressDistanceEl.textContent = remainingPct <= 0 ? "META" : `FALTA ${remainingPct}%`;
+    }
+    if (progressLabelEl) {
+      progressLabelEl.textContent = `${this.city.name.toUpperCase()} STAGE`;
+    }
   }
 
   updateBossHud() {
