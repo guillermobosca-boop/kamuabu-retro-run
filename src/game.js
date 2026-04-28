@@ -5735,7 +5735,8 @@ class PlayScene extends Phaser.Scene {
 
   applyEnemyDamage(enemy, damage) {
     if (!enemy?.active) return;
-    const hp = enemy.getData("hp") - damage;
+    const appliedDamage = enemy.getData("midBoss") ? 1 : damage;
+    const hp = enemy.getData("hp") - appliedDamage;
     const def = enemy.getData("typeDef") ?? ENEMY_TYPES.shooter;
     const spritePrefix = enemy.getData("spritePrefix") ?? def.prefix;
     enemy.setData("hp", hp);
@@ -6169,7 +6170,7 @@ class PlayScene extends Phaser.Scene {
     this.midBossSpawned = true;
     this.scriptedSectionUntil = Math.max(this.scriptedSectionUntil, this.time.now + 4200);
     const configs = {
-      valencia: { type: "sprinter", hp: 9, label: "SOLAR STORM", x: WIDTH + sx(280) },
+      valencia: { type: "sprinter", hp: 10, label: "SOLAR STORM", x: WIDTH + sx(280) },
       roma: { type: "bruiser", hp: 11, label: "TEMPESTA CORE", x: WIDTH + sx(300) },
       paris: { type: "shooter", hp: 10, label: "NEON STORM", x: WIDTH + sx(300) },
       venecia: { type: "shooter", hp: 10, label: "LAGUNA VOLT", x: WIDTH + sx(300) },
