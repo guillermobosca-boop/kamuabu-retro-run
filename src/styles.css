@@ -214,7 +214,9 @@ body::before {
 }
 
 .menu-active .hud,
-.menu-active .controls {
+.menu-active .controls,
+.menu-active .stage-progress,
+.menu-active .touch-controls {
   display: none;
 }
 
@@ -420,6 +422,80 @@ body::before {
   transform: translateZ(0);
 }
 
+.stage-progress {
+  margin-top: 10px;
+  padding: 8px 10px 10px;
+  border: 3px solid #000;
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 38%),
+    linear-gradient(180deg, #1e2129, #12141b);
+  box-shadow:
+    inset 0 0 0 3px rgba(255, 255, 255, 0.06),
+    0 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+.stage-progress-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  font-family: "Press Start 2P", monospace;
+}
+
+.stage-progress-top span {
+  color: var(--city-glow);
+  font-size: 9px;
+  line-height: 1.2;
+}
+
+.stage-progress-top strong {
+  color: var(--cream);
+  font-size: 10px;
+  line-height: 1.2;
+  text-align: right;
+}
+
+.stage-progress-track {
+  position: relative;
+  height: 18px;
+  overflow: hidden;
+  border: 3px solid #000;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 40%),
+    #191b22;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.06);
+}
+
+.stage-progress-fill {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background:
+    linear-gradient(90deg, var(--city-accent), var(--city-glow) 72%, var(--cream));
+  box-shadow:
+    inset 0 -2px 0 rgba(0, 0, 0, 0.2),
+    0 0 18px rgba(64, 216, 255, 0.28);
+  transition: width 140ms linear;
+}
+
+.stage-progress-marker {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #000;
+  border-radius: 50%;
+  background: var(--cream);
+  transform: translate(-150%, -50%);
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.08),
+    0 0 12px rgba(255, 217, 92, 0.4);
+}
+
 .controls {
   display: flex;
   justify-content: space-between;
@@ -427,6 +503,81 @@ body::before {
   padding-top: 9px;
   color: var(--blue);
   font-size: 20px;
+}
+
+.touch-controls {
+  display: none;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.touch-move,
+.touch-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.touch-actions {
+  justify-content: flex-end;
+}
+
+.touch-btn {
+  min-width: 72px;
+  min-height: 56px;
+  padding: 0 14px;
+  border: 3px solid #000;
+  border-radius: 12px;
+  color: var(--cream);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 38%),
+    linear-gradient(180deg, #313745, #151821);
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.08),
+    0 4px 0 rgba(0, 0, 0, 0.28);
+  font-family: "Press Start 2P", monospace;
+  font-size: 13px;
+  line-height: 1;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.touch-btn:active,
+.touch-btn.is-active {
+  transform: translateY(2px);
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.12),
+    0 2px 0 rgba(0, 0, 0, 0.24);
+  filter: brightness(1.12);
+}
+
+.touch-btn-left,
+.touch-btn-right {
+  min-width: 64px;
+  font-size: 24px;
+  color: var(--city-glow);
+}
+
+.touch-btn-jump {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 38%),
+    linear-gradient(180deg, #2e5677, #142031);
+  color: #c9f3ff;
+}
+
+.touch-btn-shoot {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), transparent 38%),
+    linear-gradient(180deg, #7b2a38, #2a0f17);
+  color: #ffd9c1;
+}
+
+.touch-btn-duck {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), transparent 38%),
+    linear-gradient(180deg, #4e5430, #171b0f);
+  color: #d7ff76;
 }
 
 @media (min-width: 1280px) {
@@ -448,6 +599,14 @@ body::before {
 
   .brand-panel {
     box-shadow: 8px 8px 0 var(--shadow);
+  }
+
+  .touch-controls {
+    display: flex;
+  }
+
+  .touch-btn {
+    min-height: 58px;
   }
 }
 
@@ -494,6 +653,33 @@ body::before {
   .controls {
     flex-direction: column;
     font-size: 21px;
+  }
+
+  .stage-progress-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .stage-progress-top strong {
+    text-align: left;
+  }
+
+  .touch-move,
+  .touch-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .touch-btn {
+    flex: 1 1 0;
+    min-height: 60px;
+    font-size: 12px;
+  }
+
+  .touch-btn-left,
+  .touch-btn-right {
+    max-width: 140px;
+    flex: 0 1 140px;
   }
 }
 
