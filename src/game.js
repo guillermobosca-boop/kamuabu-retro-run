@@ -1606,6 +1606,18 @@ class BootScene extends Phaser.Scene {
     enemyBullet.generateTexture("enemy-bullet", 18, 18);
     enemyBullet.destroy();
 
+    const enemyCigarette = this.make.graphics({ x: 0, y: 0, add: false });
+    enemyCigarette.fillStyle(0xf4efe2);
+    enemyCigarette.fillRect(0, 3, 20, 6);
+    enemyCigarette.fillStyle(0xd89e52);
+    enemyCigarette.fillRect(14, 3, 6, 6);
+    enemyCigarette.fillStyle(0xff5b3d);
+    enemyCigarette.fillRect(0, 3, 3, 6);
+    enemyCigarette.fillStyle(0x8cc9ff, 0.55);
+    enemyCigarette.fillRect(-4, 4, 4, 4);
+    enemyCigarette.generateTexture("enemy-cigarette", 24, 12);
+    enemyCigarette.destroy();
+
     const warning = this.make.graphics({ x: 0, y: 0, add: false });
     warning.fillStyle(0xfff2a8);
     warning.fillRect(8, 0, 8, 24);
@@ -1712,6 +1724,39 @@ class BootScene extends Phaser.Scene {
         pants: 0x45484f,
         shoes: base.shoes,
         arm: base.white,
+        gear: base.outline,
+      },
+      {
+        prefix: "enemy-paris-sprinter",
+        head: 0xf0c18f,
+        hair: 0x1b1516,
+        shirt: 0x172c63,
+        stripe: 0xe23e57,
+        pants: 0x24304a,
+        shoes: 0xf2ead8,
+        arm: 0xf2ead8,
+        gear: base.outline,
+      },
+      {
+        prefix: "enemy-paris-bruiser",
+        head: 0xd9a77f,
+        hair: 0x231414,
+        shirt: 0x172c63,
+        stripe: 0xffffff,
+        pants: 0x2b3854,
+        shoes: 0x15151c,
+        arm: 0xf2ead8,
+        gear: base.outline,
+      },
+      {
+        prefix: "enemy-paris-shooter",
+        head: 0xf0c18f,
+        hair: 0x2b1718,
+        shirt: 0x172c63,
+        stripe: 0xe23e57,
+        pants: 0x2c3653,
+        shoes: 0xf2ead8,
+        arm: 0xf2ead8,
         gear: base.outline,
       },
     ];
@@ -5466,11 +5511,14 @@ class PlayScene extends Phaser.Scene {
     const def = enemy.getData("typeDef") ?? ENEMY_TYPES.shooter;
     const spritePrefix = enemy.getData("spritePrefix") ?? def.prefix;
     const direction = enemy.flipX ? -1 : 1;
+    const parisShooter = spritePrefix.startsWith("enemy-paris-");
     enemy.setTexture(`${spritePrefix}-attack`);
     const angle = Phaser.Math.Angle.Between(enemy.x, enemy.y - sy(52), this.runner.x, this.runner.y - sy(48));
-    this.spawnMuzzleFlash(enemy.x + direction * sx(28), enemy.y - sy(56), direction, 0xff365f);
+    this.spawnMuzzleFlash(enemy.x + direction * sx(28), enemy.y - sy(56), direction, parisShooter ? 0xf2ead8 : 0xff365f);
     this.spawnSmokePuff(enemy.x + direction * sx(22), enemy.y - sy(58));
-    this.spawnEnemyBullet(enemy.x + direction * sx(34), enemy.y - sy(56), angle, 285, time);
+    this.spawnEnemyBullet(enemy.x + direction * sx(34), enemy.y - sy(56), angle, 285, time, parisShooter
+      ? { texture: "enemy-cigarette", tint: 0xffffff, scale: 0.92, bodyWidth: 20, bodyHeight: 8 }
+      : {});
   }
 
   telegraphEnemyShot(enemy, time) {
@@ -5681,13 +5729,15 @@ class PlayScene extends Phaser.Scene {
 
   spawnEnemyAt(x, type = "shooter") {
     const def = ENEMY_TYPES[type] ?? ENEMY_TYPES.shooter;
-    const enemy = this.enemies.create(x, GROUND_Y, `${def.prefix}-idle`);
+    const spritePrefix = this.city.key === "paris" ? `enemy-paris-${def.key}` : def.prefix;
+    const enemy = this.enemies.create(x, GROUND_Y, `${spritePrefix}-idle`);
     enemy.setOrigin(0.5, 1);
     enemy.setScale(def.scale);
     enemy.body.setSize(def.body.width, def.body.height);
     enemy.body.setOffset(def.body.offsetX, def.body.offsetY);
     enemy.setData("enemyType", def.key);
     enemy.setData("typeDef", def);
+    enemy.setData("spritePrefix", spritePrefix);
     enemy.setData("hp", def.hp);
     enemy.setData("hurtUntil", 0);
     enemy.setData("charging", false);
