@@ -1,6 +1,7 @@
 const PLAYER_STORAGE_KEY = "kamuabu-retro-run-player";
 const LOCAL_RUNS_KEY = "kamuabu-retro-run-offline-runs";
 const ACTIVE_SCOPE_KEY = "kamuabu-retro-run-board-scope";
+const REMOTE_API_ORIGIN = "https://kamuabu-retro-run.vercel.app";
 
 const CITY_LABELS = {
   valencia: "Valencia",
@@ -38,7 +39,11 @@ const randomId = () => {
 class CompetitionClient {
   constructor() {
     this.player = safeJsonParse(localStorage.getItem(PLAYER_STORAGE_KEY), null);
-    this.remoteEnabled = window.location.protocol !== "file:";
+    this.remoteEnabled = true;
+    this.apiBase =
+      window.location.protocol === "file:"
+        ? REMOTE_API_ORIGIN
+        : window.location.origin;
     this.currentSession = null;
   }
 
@@ -57,7 +62,8 @@ class CompetitionClient {
   }
 
   async request(path, options = {}) {
-    const response = await fetch(path, {
+    const target = path.startsWith("/api/") ? `${this.apiBase}${path}` : path;
+    const response = await fetch(target, {
       method: options.method || "GET",
       headers: {
         "Content-Type": "application/json",
