@@ -82,11 +82,8 @@ body::before {
 
 .brand-header {
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 12px;
+  display: block;
   margin-bottom: 14px;
-  padding-right: 92px;
 }
 
 .eyebrow {
@@ -102,13 +99,15 @@ body::before {
   margin: 0;
   color: var(--orange);
   font-family: "Press Start 2P", monospace;
-  text-shadow: 5px 5px 0 #000, 8px 8px 0 var(--red);
+  text-shadow: 4px 4px 0 #000, 6px 6px 0 var(--red);
+  max-width: 100%;
 }
 
 .brand-logo-main,
 .brand-logo-sub {
   display: block;
   white-space: nowrap;
+  max-width: 100%;
 }
 
 .brand-logo-main {
@@ -122,22 +121,6 @@ body::before {
   font-size: clamp(17px, 1.34vw, 26px);
   line-height: 0.96;
   letter-spacing: -0.035em;
-}
-
-.bit-badge {
-  position: absolute;
-  top: 10px;
-  right: 0;
-  padding: 10px 14px 9px;
-  color: var(--ink);
-  background: var(--lime);
-  border: 4px solid var(--ink);
-  border-radius: 999px;
-  font-family: "Press Start 2P", monospace;
-  font-size: 9px;
-  line-height: 1;
-  transform: rotate(-6deg);
-  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.42);
 }
 
 .coin-callout {
@@ -583,16 +566,18 @@ body::before {
 }
 
 .menu-active .brand-logo {
-  text-shadow: 4px 4px 0 #000, 6px 6px 0 var(--red);
+  text-shadow: 3px 3px 0 #000, 5px 5px 0 var(--red);
 }
 
 .menu-active .brand-logo-main {
-  font-size: clamp(18px, 1.28vw, 24px);
+  font-size: clamp(16px, 1.12vw, 21px);
+  letter-spacing: -0.045em;
 }
 
 .menu-active .brand-logo-sub {
-  margin-top: 8px;
-  font-size: clamp(14px, 1.05vw, 20px);
+  margin-top: 7px;
+  font-size: clamp(12px, 0.92vw, 17px);
+  letter-spacing: -0.04em;
 }
 
 .menu-active .pitch {
@@ -606,15 +591,7 @@ body::before {
 }
 
 .menu-active .brand-header {
-  gap: 10px;
   margin-bottom: 10px;
-  padding-right: 84px;
-}
-
-.menu-active .bit-badge {
-  top: 4px;
-  padding: 9px 12px 8px;
-  font-size: 7px;
 }
 
 .menu-active .coin-callout {
@@ -1182,16 +1159,6 @@ body.mobile-portrait .menu-active .game-card {
 
   .brand-panel {
     padding: 18px;
-  }
-
-  .brand-header {
-    padding-right: 0;
-  }
-
-  .bit-badge {
-    position: static;
-    justify-self: start;
-    margin-top: 4px;
   }
 
   .brand-logo-main {
