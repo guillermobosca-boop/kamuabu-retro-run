@@ -2,6 +2,31 @@
 
 Prototipo jugable de navegador para KAMUABU: una mision arcade 2D de estilo run-and-gun retro de mayor definicion visual, con selector de ciudades, enemigos, disparos, cajas rompibles, rescates, premios de ropa deportiva, combo, power-up de calcetines y puntuacion.
 
+## Competicion online
+
+El juego ya incluye estructura de competicion:
+
+- apodo de jugador
+- ranking global
+- ranking semanal
+- ranking por ciudad
+- pantalla final con posicion y top de referencia
+
+En local funciona en modo `offline` con `localStorage`.
+En produccion, el sistema queda listo para usar Supabase + Vercel API.
+
+Guia completa:
+
+- [docs/competition-setup.md](/Users/guillermoboscaolmos/Documents/Codex/2026-04-23-game-studio-plugin-game-studio-openai/docs/competition-setup.md)
+
+Esquema SQL:
+
+- [supabase/schema.sql](/Users/guillermoboscaolmos/Documents/Codex/2026-04-23-game-studio-plugin-game-studio-openai/supabase/schema.sql)
+
+Variables necesarias:
+
+- [/.env.example](/Users/guillermoboscaolmos/Documents/Codex/2026-04-23-game-studio-plugin-game-studio-openai/.env.example)
+
 ## Ejecutar
 
 Desde esta carpeta:
