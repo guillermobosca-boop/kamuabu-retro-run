@@ -84,14 +84,17 @@ class CompetitionClient {
     if (cleanNickname.length < 3) {
       throw new Error("El apodo debe tener al menos 3 caracteres.");
     }
+    const currentSlug = slugifyNickname(this.player?.nickname || "");
+    const nextSlug = slugifyNickname(cleanNickname);
+    const isSameIdentity = !!this.player && currentSlug === nextSlug;
 
     if (!this.remoteEnabled) {
       const player = this.savePlayer({
-        id: this.player?.id || randomId(),
+        id: isSameIdentity ? this.player?.id || randomId() : randomId(),
         nickname: cleanNickname,
         slug: slugifyNickname(cleanNickname),
-        bestScore: this.player?.bestScore || 0,
-        createdAt: this.player?.createdAt || new Date().toISOString(),
+        bestScore: isSameIdentity ? this.player?.bestScore || 0 : 0,
+        createdAt: isSameIdentity ? this.player?.createdAt || new Date().toISOString() : new Date().toISOString(),
       });
       return { ok: true, player, source: "offline" };
     }
@@ -101,18 +104,18 @@ class CompetitionClient {
         method: "POST",
         body: {
           nickname: cleanNickname,
-          playerId: this.player?.id || null,
+          playerId: isSameIdentity ? this.player?.id || null : null,
         },
       });
       const player = this.savePlayer(payload.player);
       return { ...payload, player, source: "remote" };
     } catch (error) {
       const player = this.savePlayer({
-        id: this.player?.id || randomId(),
+        id: isSameIdentity ? this.player?.id || randomId() : randomId(),
         nickname: cleanNickname,
         slug: slugifyNickname(cleanNickname),
-        bestScore: this.player?.bestScore || 0,
-        createdAt: this.player?.createdAt || new Date().toISOString(),
+        bestScore: isSameIdentity ? this.player?.bestScore || 0 : 0,
+        createdAt: isSameIdentity ? this.player?.createdAt || new Date().toISOString() : new Date().toISOString(),
       });
       return {
         ok: true,
@@ -350,6 +353,9 @@ class CompetitionUI {
     this.renderPlayer();
     this.syncTabs();
     this.refreshLeaderboard();
+    if (this.client.player?.nickname) {
+      this.syncRemotePlayer();
+    }
   }
 
   setCity(cityKey) {
@@ -442,6 +448,20 @@ class CompetitionUI {
       }
     } catch (error) {
       this.refs.playerFormStatus.textContent = error.message || "No se pudo guardar el apodo.";
+    }
+  }
+
+  async syncRemotePlayer() {
+    const nickname = this.client.player?.nickname;
+    if (!nickname) {
+      return;
+    }
+    try {
+      await this.client.registerPlayer(nickname);
+      this.renderPlayer();
+      await this.refreshLeaderboard();
+    } catch {
+      // Keep local profile if the remote sync fails; the game remains playable.
     }
   }
 
