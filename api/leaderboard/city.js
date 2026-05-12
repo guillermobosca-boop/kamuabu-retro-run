@@ -1,5 +1,5 @@
 const { handleOptions, sendJson, sendMethodNotAllowed } = require("../_lib/http");
-const { fetchLeaderboard, normalizeEntries } = require("../_lib/leaderboard");
+const { computeSelfEntry, fetchLeaderboard, normalizeEntries } = require("../_lib/leaderboard");
 const { validateCity } = require("../_lib/score");
 
 module.exports = async function handler(req, res) {
@@ -13,6 +13,7 @@ module.exports = async function handler(req, res) {
   try {
     const cityKey = String(req.query?.city || "");
     const limit = req.query?.limit || 10;
+    const playerId = String(req.query?.playerId || "");
 
     if (!validateCity(cityKey)) {
       return sendJson(res, 400, { ok: false, error: "invalid_city" });
@@ -22,6 +23,7 @@ module.exports = async function handler(req, res) {
     return sendJson(res, 200, {
       ok: true,
       entries: normalizeEntries(rows),
+      selfEntry: playerId ? await computeSelfEntry("city", { playerId, cityKey }) : null,
       scope: "city",
       cityKey,
       source: "remote",
