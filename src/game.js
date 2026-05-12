@@ -450,148 +450,269 @@ class ArcadeAudio {
     this.musicScene = null;
   }
 
-  startPattern(scene, pattern, bpm = 140) {
+  startPattern(scene, pattern, bpm = 128) {
     this.stopMusic();
     this.musicScene = scene;
+    const phrases = Array.isArray(pattern[0]) ? pattern : [pattern];
     let step = 0;
+    let phraseIndex = 0;
     const interval = (60 / bpm) * 1000 / 2;
     this.musicEvent = scene.time.addEvent({
       delay: interval,
       loop: true,
       callback: () => {
-        const current = pattern[step % pattern.length];
+        const phrase = phrases[phraseIndex % phrases.length];
+        const current = phrase[step];
         if (current.lead) {
-          this.tone(NOTE_FREQ[current.lead], 0.12, "square", 0.022);
+          this.tone(NOTE_FREQ[current.lead], 0.11, "square", 0.018);
         }
         if (current.harmony) {
-          this.tone(NOTE_FREQ[current.harmony], 0.1, "triangle", 0.016, 0.01);
+          this.tone(NOTE_FREQ[current.harmony], 0.09, "triangle", 0.013, 0.01);
         }
         if (current.arp) {
-          current.arp.forEach((note, index) => this.tone(NOTE_FREQ[note], 0.045, "square", 0.016, index * 0.035));
+          current.arp.forEach((note, index) =>
+            this.tone(NOTE_FREQ[note], 0.04, "square", 0.012, index * 0.032),
+          );
         }
         if (current.bass) {
-          this.tone(NOTE_FREQ[current.bass], 0.16, "triangle", 0.03);
+          this.tone(NOTE_FREQ[current.bass], 0.15, "triangle", 0.024);
         }
         if (current.kick) {
-          this.kick(0, current.kick === true ? 0.055 : current.kick);
+          this.kick(0, current.kick === true ? 0.045 : current.kick);
         }
         if (current.snare) {
-          this.noise(0.04, 0.015);
+          this.noise(0.035, 0.011);
         }
         if (current.hat) {
           const hatOpen = current.hat === "open";
-          const hatVolume = typeof current.hat === "number" ? current.hat : 0.011;
+          const hatVolume = typeof current.hat === "number" ? current.hat : 0.007;
           this.hat(0.01, hatVolume, hatOpen);
         }
         step += 1;
+        if (step >= phrase.length) {
+          step = 0;
+          phraseIndex += 1;
+        }
       },
     });
   }
 
   startMenuMusic(scene) {
     const pattern = [
-      { lead: "C5", harmony: "E5", bass: "C4", kick: true, hat: true },
-      { arp: ["E5", "G5"], hat: true },
-      { lead: "G5", harmony: "C5", bass: "G4", snare: true, hat: "open" },
-      { lead: "E5", hat: true },
-      { lead: "D5", harmony: "F5", bass: "A4", kick: true, hat: true },
-      { arp: ["F5", "A5"], hat: true },
-      { lead: "A5", harmony: "C5", bass: "F4", snare: true, hat: "open" },
-      { lead: "G5", bass: "C4", hat: true },
+      [
+        { lead: "C5", harmony: "E5", bass: "C4", kick: true },
+        {},
+        { arp: ["E5", "G5"], hat: 0.006 },
+        {},
+        { lead: "G5", harmony: "C5", bass: "G4", snare: true, hat: "open" },
+        {},
+        { lead: "E5", hat: 0.005 },
+        {},
+      ],
+      [
+        { lead: "D5", harmony: "F5", bass: "A4", kick: true },
+        {},
+        { arp: ["F5", "A5"], hat: 0.006 },
+        {},
+        { lead: "A5", harmony: "C5", bass: "F4", snare: true, hat: "open" },
+        {},
+        { lead: "G5", bass: "C4" },
+        {},
+      ],
     ];
-    this.startPattern(scene, pattern, 138);
+    this.startPattern(scene, pattern, 118);
   }
 
   startCityMusic(scene, cityKey) {
     const patterns = {
       valencia: [
-        { lead: "E5", harmony: "A5", bass: "A4", kick: true, hat: true },
-        { arp: ["G5", "A5"], hat: true },
-        { lead: "A5", harmony: "E5", bass: "E4", snare: true, hat: "open" },
-        { lead: "E5", hat: true },
-        { lead: "D5", harmony: "F5", bass: "F4", kick: true, hat: true },
-        { arp: ["E5", "G5"], hat: true },
-        { lead: "G5", harmony: "A5", bass: "D4", snare: true, hat: "open" },
-        { lead: "A5", bass: "A4", hat: true },
+        [
+          { lead: "E5", harmony: "A5", bass: "A4", kick: true },
+          {},
+          { arp: ["G5", "A5"], hat: 0.006 },
+          {},
+          { lead: "A5", harmony: "E5", bass: "E4", snare: true, hat: "open" },
+          {},
+          { lead: "E5", bass: "A4" },
+          {},
+        ],
+        [
+          { lead: "D5", harmony: "F5", bass: "F4", kick: true },
+          {},
+          { arp: ["E5", "G5"], hat: 0.006 },
+          {},
+          { lead: "G5", harmony: "A5", bass: "D4", snare: true, hat: "open" },
+          {},
+          { lead: "A5", bass: "A4", hat: 0.005 },
+          {},
+        ],
       ],
       roma: [
-        { lead: "C5", harmony: "G4", bass: "C4", kick: true, hat: true },
-        { arp: ["D5", "F5"], hat: true },
-        { lead: "G5", harmony: "D5", bass: "G4", snare: true, hat: "open" },
-        { lead: "F5", hat: true },
-        { lead: "E5", harmony: "A4", bass: "A4", kick: true, hat: true },
-        { arp: ["D5", "C5"], hat: true },
-        { lead: "C5", harmony: "F4", bass: "F4", snare: true, hat: "open" },
-        { lead: "G4", bass: "C4", hat: true },
+        [
+          { lead: "C5", harmony: "G4", bass: "C4", kick: true },
+          {},
+          { arp: ["D5", "F5"], hat: 0.006 },
+          {},
+          { lead: "G5", harmony: "D5", bass: "G4", snare: true, hat: "open" },
+          {},
+          { lead: "F5", bass: "C4" },
+          {},
+        ],
+        [
+          { lead: "E5", harmony: "A4", bass: "A4", kick: true },
+          {},
+          { arp: ["D5", "C5"], hat: 0.006 },
+          {},
+          { lead: "C5", harmony: "F4", bass: "F4", snare: true, hat: "open" },
+          {},
+          { lead: "G4", bass: "C4", hat: 0.005 },
+          {},
+        ],
       ],
       paris: [
-        { lead: "G5", harmony: "B4", bass: "E4", kick: true, hat: true },
-        { arp: ["A5", "G5"], hat: true },
-        { lead: "E5", harmony: "B4", bass: "B4", snare: true, hat: "open" },
-        { lead: "D5", hat: true },
-        { lead: "F5", harmony: "A5", bass: "D4", kick: true, hat: true },
-        { arp: ["A5", "G5"], hat: true },
-        { lead: "G5", harmony: "E5", bass: "C4", snare: true, hat: "open" },
-        { lead: "E5", bass: "E4", hat: true },
+        [
+          { lead: "G5", harmony: "B4", bass: "E4", kick: true },
+          {},
+          { arp: ["A5", "G5"], hat: 0.006 },
+          {},
+          { lead: "E5", harmony: "B4", bass: "B4", snare: true, hat: "open" },
+          {},
+          { lead: "D5", bass: "E4" },
+          {},
+        ],
+        [
+          { lead: "F5", harmony: "A5", bass: "D4", kick: true },
+          {},
+          { arp: ["A5", "G5"], hat: 0.006 },
+          {},
+          { lead: "G5", harmony: "E5", bass: "C4", snare: true, hat: "open" },
+          {},
+          { lead: "E5", bass: "E4", hat: 0.005 },
+          {},
+        ],
       ],
       venecia: [
-        { lead: "A4", harmony: "C5", bass: "F4", kick: true, hat: true },
-        { arp: ["C5", "E5"], hat: true },
-        { lead: "E5", harmony: "A5", bass: "A4", snare: true, hat: "open" },
-        { lead: "D5", hat: true },
-        { lead: "C5", harmony: "A4", bass: "G4", kick: true, hat: true },
-        { arp: ["A4", "C5"], hat: true },
-        { lead: "F4", harmony: "A4", bass: "E4", snare: true, hat: "open" },
-        { lead: "E5", bass: "A4", hat: true },
+        [
+          { lead: "A4", harmony: "C5", bass: "F4", kick: true },
+          {},
+          { arp: ["C5", "E5"], hat: 0.006 },
+          {},
+          { lead: "E5", harmony: "A5", bass: "A4", snare: true, hat: "open" },
+          {},
+          { lead: "D5", bass: "F4" },
+          {},
+        ],
+        [
+          { lead: "C5", harmony: "A4", bass: "G4", kick: true },
+          {},
+          { arp: ["A4", "C5"], hat: 0.006 },
+          {},
+          { lead: "F4", harmony: "A4", bass: "E4", snare: true, hat: "open" },
+          {},
+          { lead: "E5", bass: "A4", hat: 0.005 },
+          {},
+        ],
       ],
       londres: [
-        { lead: "D5", harmony: "A4", bass: "D4", kick: true, hat: true },
-        { arp: ["F5", "A5"], hat: true },
-        { lead: "A5", harmony: "D5", bass: "D4", snare: true, hat: "open" },
-        { lead: "G5", hat: true },
-        { lead: "E5", harmony: "G5", bass: "C4", kick: true, hat: true },
-        { arp: ["D5", "F5"], hat: true },
-        { lead: "F5", harmony: "A4", bass: "A4", snare: true, hat: "open" },
-        { lead: "C5", bass: "D4", hat: true },
+        [
+          { lead: "D5", harmony: "A4", bass: "D4", kick: true },
+          {},
+          { arp: ["F5", "A5"], hat: 0.006 },
+          {},
+          { lead: "A5", harmony: "D5", bass: "D4", snare: true, hat: "open" },
+          {},
+          { lead: "G5", bass: "D4" },
+          {},
+        ],
+        [
+          { lead: "E5", harmony: "G5", bass: "C4", kick: true },
+          {},
+          { arp: ["D5", "F5"], hat: 0.006 },
+          {},
+          { lead: "F5", harmony: "A4", bass: "A4", snare: true, hat: "open" },
+          {},
+          { lead: "C5", bass: "D4", hat: 0.005 },
+          {},
+        ],
       ],
     };
-    this.startPattern(scene, patterns[cityKey] || patterns.londres, 148);
+    this.startPattern(scene, patterns[cityKey] || patterns.londres, 126);
   }
 
   startBossMusic(scene, cityKey) {
     const patterns = {
       valencia: [
-        { lead: "A4", harmony: "C5", bass: "A3", kick: true, hat: true },
-        { arp: ["C5", "E5"], hat: true },
-        { lead: "E5", harmony: "A5", bass: "E4", snare: true, hat: "open" },
-        { lead: "D5", bass: "A3", hat: true },
+        [
+          { lead: "A4", harmony: "C5", bass: "A3", kick: true, hat: 0.007 },
+          { arp: ["C5", "E5"] },
+          { lead: "E5", harmony: "A5", bass: "E4", snare: true, hat: "open" },
+          { lead: "D5", bass: "A3" },
+        ],
+        [
+          { lead: "G4", harmony: "C5", bass: "F3", kick: true, hat: 0.007 },
+          { arp: ["C5", "D5"] },
+          { lead: "F5", harmony: "A5", bass: "D4", snare: true, hat: "open" },
+          { lead: "E5", bass: "A3" },
+        ],
       ],
       roma: [
-        { lead: "C5", harmony: "F4", bass: "C4", kick: true, hat: true },
-        { arp: ["D5", "G5"], hat: true },
-        { lead: "G5", harmony: "C5", bass: "G4", snare: true, hat: "open" },
-        { lead: "F5", bass: "C4", hat: true },
+        [
+          { lead: "C5", harmony: "F4", bass: "C4", kick: true, hat: 0.007 },
+          { arp: ["D5", "G5"] },
+          { lead: "G5", harmony: "C5", bass: "G4", snare: true, hat: "open" },
+          { lead: "F5", bass: "C4" },
+        ],
+        [
+          { lead: "A4", harmony: "D5", bass: "A3", kick: true, hat: 0.007 },
+          { arp: ["C5", "F5"] },
+          { lead: "F5", harmony: "A4", bass: "F4", snare: true, hat: "open" },
+          { lead: "D5", bass: "C4" },
+        ],
       ],
       paris: [
-        { lead: "E5", harmony: "G5", bass: "E4", kick: true, hat: true },
-        { arp: ["G5", "A5"], hat: true },
-        { lead: "A5", harmony: "E5", bass: "B3", snare: true, hat: "open" },
-        { lead: "G5", bass: "E4", hat: true },
+        [
+          { lead: "E5", harmony: "G5", bass: "E4", kick: true, hat: 0.007 },
+          { arp: ["G5", "A5"] },
+          { lead: "A5", harmony: "E5", bass: "B3", snare: true, hat: "open" },
+          { lead: "G5", bass: "E4" },
+        ],
+        [
+          { lead: "D5", harmony: "F5", bass: "D4", kick: true, hat: 0.007 },
+          { arp: ["F5", "G5"] },
+          { lead: "G5", harmony: "D5", bass: "A3", snare: true, hat: "open" },
+          { lead: "E5", bass: "E4" },
+        ],
       ],
       venecia: [
-        { lead: "A4", harmony: "E5", bass: "A3", kick: true, hat: true },
-        { arp: ["C5", "E5"], hat: true },
-        { lead: "E5", harmony: "A5", bass: "F4", snare: true, hat: "open" },
-        { lead: "D5", bass: "A3", hat: true },
+        [
+          { lead: "A4", harmony: "E5", bass: "A3", kick: true, hat: 0.007 },
+          { arp: ["C5", "E5"] },
+          { lead: "E5", harmony: "A5", bass: "F4", snare: true, hat: "open" },
+          { lead: "D5", bass: "A3" },
+        ],
+        [
+          { lead: "G4", harmony: "C5", bass: "G3", kick: true, hat: 0.007 },
+          { arp: ["A4", "C5"] },
+          { lead: "F5", harmony: "A5", bass: "E4", snare: true, hat: "open" },
+          { lead: "E5", bass: "A3" },
+        ],
       ],
       londres: [
-        { lead: "D5", harmony: "F5", bass: "D4", kick: true, hat: true },
-        { arp: ["F5", "A5"], hat: true },
-        { lead: "A5", harmony: "D5", bass: "A3", snare: true, hat: "open" },
-        { lead: "F5", bass: "D4", hat: true },
+        [
+          { lead: "D5", harmony: "F5", bass: "D4", kick: true, hat: 0.007 },
+          { arp: ["F5", "A5"] },
+          { lead: "A5", harmony: "D5", bass: "A3", snare: true, hat: "open" },
+          { lead: "F5", bass: "D4" },
+        ],
+        [
+          { lead: "C5", harmony: "E5", bass: "C4", kick: true, hat: 0.007 },
+          { arp: ["E5", "G5"] },
+          { lead: "G5", harmony: "C5", bass: "G3", snare: true, hat: "open" },
+          { lead: "D5", bass: "D4" },
+        ],
       ],
     };
-    this.startPattern(scene, patterns[cityKey] || patterns.londres, 164);
+    this.startPattern(scene, patterns[cityKey] || patterns.londres, 142);
   }
 }
 
@@ -619,6 +740,7 @@ class BootScene extends Phaser.Scene {
     this.createRunnerBigRunMidTexture();
     this.createRunnerBigRunAltTexture();
     this.createRunnerDuckTexture();
+    this.createRunnerBigDuckTexture();
     this.createRunnerJumpTextures();
     this.createRunnerScooterTextures();
     this.createObstacleTextures();
@@ -1047,6 +1169,57 @@ class BootScene extends Phaser.Scene {
       armSwing: 1,
       weaponLift: 2,
     });
+  }
+
+  createRunnerBigDuckTexture() {
+    const g = this.make.graphics({ x: 0, y: 0, add: false });
+    g.fillStyle(0x111218);
+    g.fillRect(20, 66, 12, 36);
+    g.fillRect(70, 72, 56, 12);
+    g.fillRect(28, 96, 40, 16);
+    g.fillRect(72, 94, 22, 16);
+    g.fillStyle(0xf1c798);
+    g.fillRect(46, 34, 34, 24);
+    g.fillRect(78, 73, 16, 10);
+    g.fillStyle(0xffd95c);
+    g.fillRect(42, 30, 40, 7);
+    g.fillRect(73, 37, 16, 5);
+    g.fillStyle(0x5d2c1d);
+    g.fillRect(37, 37, 13, 23);
+    g.fillStyle(0xf2ead8);
+    g.fillRect(35, 58, 54, 12);
+    g.fillStyle(0xd93542);
+    g.fillRect(30, 70, 60, 20);
+    g.fillStyle(0xf16b53);
+    g.fillRect(34, 73, 22, 5);
+    g.fillStyle(0x8c1e2e);
+    g.fillRect(76, 70, 10, 20);
+    g.fillStyle(0xff8b22);
+    g.fillRect(48, 75, 24, 5);
+    g.fillStyle(0x40d8ff);
+    g.fillRect(14, 67, 18, 9);
+    g.fillRect(89, 72, 12, 5);
+    g.fillStyle(0x6e785c);
+    g.fillRect(34, 90, 26, 18);
+    g.fillRect(66, 89, 24, 20);
+    g.fillStyle(0x879372);
+    g.fillRect(37, 93, 9, 6);
+    g.fillRect(69, 92, 9, 7);
+    g.fillStyle(0x47513f);
+    g.fillRect(50, 90, 10, 18);
+    g.fillRect(79, 89, 11, 20);
+    g.fillStyle(0x202126);
+    g.fillRect(24, 108, 38, 8);
+    g.fillRect(66, 109, 34, 8);
+    g.fillStyle(0x4e545d);
+    g.fillRect(26, 108, 14, 3);
+    g.fillRect(68, 109, 12, 3);
+    g.fillStyle(0x3d4249);
+    g.fillRect(98, 72, 30, 9);
+    g.fillStyle(0x686f77);
+    g.fillRect(99, 72, 12, 3);
+    g.generateTexture("runner-big-duck", 146, 136);
+    g.destroy();
   }
 
   createRunnerJumpTextures() {
@@ -2747,6 +2920,9 @@ class PlayScene extends Phaser.Scene {
     super("PlayScene");
     this.touchState = { left: false, right: false, down: false, jump: false, shoot: false };
     this.touchJumpQueued = false;
+    this.boundTouchButtons = [];
+    this.handleWindowBlur = null;
+    this.handleVisibilityChange = null;
   }
 
   create(data) {
@@ -2824,7 +3000,30 @@ class PlayScene extends Phaser.Scene {
 
     this.cameras.main.setBackgroundColor(this.city.sky);
     this.physics.world.setBounds(0, 0, WIDTH, HEIGHT);
-    this.events.once("shutdown", () => arcadeAudio.stopMusic());
+    this.events.once("shutdown", () => {
+      this.resetTransientInput();
+      if (this.handleWindowBlur) {
+        window.removeEventListener("blur", this.handleWindowBlur);
+      }
+      if (this.handleWindowPointerUp) {
+        window.removeEventListener("pointerup", this.handleWindowPointerUp, true);
+      }
+      if (this.handleWindowPointerCancel) {
+        window.removeEventListener("pointercancel", this.handleWindowPointerCancel, true);
+      }
+      if (this.handleVisibilityChange) {
+        document.removeEventListener("visibilitychange", this.handleVisibilityChange);
+      }
+      this.boundTouchButtons.forEach(({ button, activate, deactivate, handleLeave }) => {
+        button.removeEventListener("pointerdown", activate);
+        button.removeEventListener("pointerup", deactivate);
+        button.removeEventListener("pointercancel", deactivate);
+        button.removeEventListener("pointerleave", handleLeave);
+        button.removeEventListener("lostpointercapture", deactivate);
+      });
+      this.boundTouchButtons = [];
+      arcadeAudio.stopMusic();
+    });
     arcadeAudio.startCityMusic(this, this.city.key);
 
     this.createWorld();
@@ -2837,6 +3036,39 @@ class PlayScene extends Phaser.Scene {
     if (!this.demoMode) {
       competitionUi.startRun(this.city.key);
     }
+  }
+
+  resetTransientInput() {
+    this.touchState = { left: false, right: false, down: false, jump: false, shoot: false };
+    this.touchJumpQueued = false;
+    this.lastRightTapAt = -9999;
+    this.sprintUntil = 0;
+    if (this.runner?.body) {
+      this.runner.setVelocityX(0);
+    }
+    if (!this.isGameOver) {
+      this.setDucking(false);
+    }
+    [this.cursors?.left, this.cursors?.right, this.cursors?.down, this.cursors?.up, this.keys?.left, this.keys?.right, this.keys?.down, this.keys?.shoot, this.keys?.space].forEach((key) => {
+      if (key?.reset) {
+        key.reset();
+      } else if (key) {
+        key.isDown = false;
+        key.isUp = true;
+        key.duration = 0;
+        key.repeats = 0;
+        key.timeDown = 0;
+        key.timeUp = this.time?.now || 0;
+      }
+    });
+    this.input?.keyboard?.resetKeys?.();
+    this.boundTouchButtons.forEach(({ button }) => button.classList.remove("is-active"));
+  }
+
+  resetTouchInputOnly() {
+    this.touchState = { left: false, right: false, down: false, jump: false, shoot: false };
+    this.touchJumpQueued = false;
+    this.boundTouchButtons.forEach(({ button }) => button.classList.remove("is-active"));
   }
 
   applyCityTheme() {
@@ -4742,6 +4974,27 @@ class PlayScene extends Phaser.Scene {
       }
     });
     this.input.on("pointerup", () => this.setDucking(false));
+    this.handleWindowBlur = () => this.resetTransientInput();
+    this.handleVisibilityChange = () => {
+      if (document.hidden) {
+        this.resetTransientInput();
+      }
+    };
+    this.handleWindowPointerUp = () => this.resetTouchInputOnly();
+    this.handleWindowPointerCancel = () => this.resetTouchInputOnly();
+    window.addEventListener("blur", this.handleWindowBlur);
+    window.addEventListener("pointerup", this.handleWindowPointerUp, true);
+    window.addEventListener("pointercancel", this.handleWindowPointerCancel, true);
+    document.addEventListener("visibilitychange", this.handleVisibilityChange);
+
+    const touchUiEnabled =
+      document.body.classList.contains("mobile-portrait") ||
+      globalThis.matchMedia?.("(pointer: coarse)")?.matches ||
+      globalThis.matchMedia?.("(hover: none)")?.matches;
+
+    if (!touchUiEnabled) {
+      return;
+    }
 
     const setTouch = (action, active) => {
       if (action === "jump") {
@@ -4762,24 +5015,43 @@ class PlayScene extends Phaser.Scene {
 
       const activate = (event) => {
         event.preventDefault();
+        this.resetTouchInputOnly();
         setTouch(action, true);
         button.classList.add("is-active");
+        if (button.setPointerCapture && typeof event.pointerId === "number") {
+          try {
+            button.setPointerCapture(event.pointerId);
+          } catch {
+            // Ignore browsers that reject pointer capture on these controls.
+          }
+        }
       };
 
       const deactivate = (event) => {
         event.preventDefault();
         setTouch(action, false);
         button.classList.remove("is-active");
+        if (button.releasePointerCapture && typeof event.pointerId === "number") {
+          try {
+            button.releasePointerCapture(event.pointerId);
+          } catch {
+            // Ignore browsers that reject pointer capture release.
+          }
+        }
+      };
+
+      const handleLeave = (event) => {
+        if (event.pointerType === "mouse") {
+          deactivate(event);
+        }
       };
 
       button.addEventListener("pointerdown", activate);
       button.addEventListener("pointerup", deactivate);
       button.addEventListener("pointercancel", deactivate);
-      button.addEventListener("pointerleave", (event) => {
-        if (event.pointerType === "mouse") {
-          deactivate(event);
-        }
-      });
+      button.addEventListener("pointerleave", handleLeave);
+      button.addEventListener("lostpointercapture", deactivate);
+      this.boundTouchButtons.push({ button, activate, deactivate, handleLeave });
     });
   }
 
@@ -4811,8 +5083,10 @@ class PlayScene extends Phaser.Scene {
 
     this.updatePlayerInput(time);
     this.updateEnemyAI(time, deltaSeconds);
-    this.score += deltaSeconds * (7 + this.scrollSpeed * 0.04) * this.combo;
-    this.stageDistance = Math.min(this.stageLength, this.stageDistance + this.scrollSpeed * deltaSeconds);
+    const distanceAdvance = Math.max(0, this.scrollSpeed * deltaSeconds);
+    const scoreAdvance = distanceAdvance * (1 + Math.max(0, this.combo - 1) * 0.12);
+    this.score += scoreAdvance * 0.18;
+    this.stageDistance = Math.min(this.stageLength, this.stageDistance + distanceAdvance);
     this.spawnTimer += delta;
     this.rewardTimer += delta;
     this.enemyTimer += delta;
@@ -5031,37 +5305,95 @@ class PlayScene extends Phaser.Scene {
   }
 
   setDucking(value) {
-    if (this.isDucking === value || this.isGameOver) {
+    if (this.isGameOver || !this.runner) {
+      return;
+    }
+    if (!value && this.isDucking && !this.canStandUp()) {
+      return;
+    }
+    if (this.isDucking === value) {
       return;
     }
     this.isDucking = value;
     this.applyRunnerBody();
   }
 
+  getRunnerBodyConfig(powered = this.isPowered, ducking = this.isDucking) {
+    if (ducking) {
+      if (powered) {
+        return {
+          texture: "runner-big-duck",
+          bodyWidth: 60,
+          bodyHeight: 54,
+          offsetX: 28,
+          offsetY: 70,
+          scaleX: 0.94,
+          scaleY: 0.94,
+        };
+      }
+      return {
+        texture: "runner-duck",
+        bodyWidth: 54,
+        bodyHeight: 34,
+        offsetX: 18,
+        offsetY: 54,
+        scaleX: 0.84,
+        scaleY: 0.84,
+      };
+    }
+
+    if (powered) {
+      return {
+        texture: "runner-big",
+        bodyWidth: 54,
+        bodyHeight: 102,
+        offsetX: 33,
+        offsetY: 22,
+        scaleX: 0.94,
+        scaleY: 0.94,
+      };
+    }
+
+    return {
+      texture: "runner-small",
+      bodyWidth: 42,
+      bodyHeight: 72,
+      offsetX: 26,
+      offsetY: 16,
+      scaleX: 0.84,
+      scaleY: 0.84,
+    };
+  }
+
+  applyRunnerBodyConfig(config) {
+    this.runner.setTexture(config.texture);
+    this.runner.body.setSize(config.bodyWidth, config.bodyHeight);
+    this.runner.body.setOffset(config.offsetX, config.offsetY);
+    this.runner.setScale(config.scaleX, config.scaleY);
+    this.runner.body.updateFromGameObject();
+  }
+
+  canStandUp() {
+    if (!this.runner || !this.isDucking) {
+      return true;
+    }
+
+    const duckConfig = this.getRunnerBodyConfig(this.isPowered, true);
+    const standConfig = this.getRunnerBodyConfig(this.isPowered, false);
+
+    this.applyRunnerBodyConfig(standConfig);
+    const blocked =
+      this.physics.world.overlap(this.runner, this.solidBoxes) ||
+      this.physics.world.overlap(this.runner, this.crates);
+    this.applyRunnerBodyConfig(duckConfig);
+    return !blocked;
+  }
+
   applyRunnerBody() {
     if (!this.runner) {
       return;
     }
-
-    if (this.isDucking) {
-      this.runner.setTexture("runner-duck");
-      this.runner.body.setSize(66, 38);
-      this.runner.body.setOffset(20, 42);
-      this.runner.setScale(this.isPowered ? 1.02 : 0.88);
-      return;
-    }
-
-    if (this.isPowered) {
-      this.runner.setTexture("runner-big");
-      this.runner.body.setSize(54, 102);
-      this.runner.body.setOffset(33, 22);
-      this.runner.setScale(0.94);
-    } else {
-      this.runner.setTexture("runner-small");
-      this.runner.body.setSize(42, 72);
-      this.runner.body.setOffset(26, 16);
-      this.runner.setScale(0.84);
-    }
+    this.applyRunnerBodyConfig(this.getRunnerBodyConfig());
   }
 
   updateMissionPhase() {
