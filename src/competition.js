@@ -199,12 +199,13 @@ class CompetitionClient {
       };
     }
 
+    const playerQuery = this.player?.id ? `&playerId=${encodeURIComponent(this.player.id)}` : "";
     const endpoint =
       scope === "weekly"
-        ? `/api/leaderboard/weekly?limit=${limit}`
+        ? `/api/leaderboard/weekly?limit=${limit}${playerQuery}`
         : scope === "city"
-          ? `/api/leaderboard/city?city=${encodeURIComponent(cityKey)}&limit=${limit}`
-          : `/api/leaderboard/global?limit=${limit}`;
+          ? `/api/leaderboard/city?city=${encodeURIComponent(cityKey)}&limit=${limit}${playerQuery}`
+          : `/api/leaderboard/global?limit=${limit}${playerQuery}`;
 
     try {
       return await this.request(endpoint);
@@ -244,10 +245,9 @@ class CompetitionClient {
       createdAt: new Date().toISOString(),
     };
 
-    const bestScore = Math.max(this.player?.bestScore || 0, localRun.score);
-    this.savePlayer({ ...this.player, bestScore });
-
     if (!this.remoteEnabled) {
+      const bestScore = Math.max(this.player?.bestScore || 0, localRun.score);
+      this.savePlayer({ ...this.player, bestScore });
       const runs = this.getOfflineRuns();
       runs.push(localRun);
       this.setOfflineRuns(runs);
@@ -267,6 +267,8 @@ class CompetitionClient {
       }
       return response;
     } catch {
+      const bestScore = Math.max(this.player?.bestScore || 0, localRun.score);
+      this.savePlayer({ ...this.player, bestScore });
       const runs = this.getOfflineRuns();
       runs.push(localRun);
       this.setOfflineRuns(runs);
@@ -475,6 +477,16 @@ class CompetitionUI {
         `;
         this.refs.list.appendChild(item);
       });
+      if (payload.selfEntry && !entries.some((entry) => entry.playerId === payload.selfEntry.playerId)) {
+        const item = document.createElement("li");
+        item.className = "leaderboard-item is-self";
+        item.innerHTML = `
+          <span class="leaderboard-rank">#${payload.selfEntry.rank}</span>
+          <span class="leaderboard-name">${payload.selfEntry.nickname}</span>
+          <strong class="leaderboard-score">${padScore(payload.selfEntry.score)}</strong>
+        `;
+        this.refs.list.appendChild(item);
+      }
     }
     const suffix =
       this.activeScope === "city"
