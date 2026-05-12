@@ -1155,12 +1155,14 @@ body.mobile-portrait .menu-active .game-card {
     box-shadow: 8px 8px 0 var(--shadow);
   }
 
-  .touch-controls {
-    display: flex;
-  }
-
   .touch-btn {
     min-height: 58px;
+  }
+}
+
+@media (max-width: 900px) and (hover: none), (max-width: 900px) and (pointer: coarse) {
+  .touch-controls {
+    display: flex;
   }
 }
 
