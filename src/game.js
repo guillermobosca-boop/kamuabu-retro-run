@@ -20,6 +20,9 @@ const missionEl = document.querySelector("#mission");
 const progressFillEl = document.querySelector("#progress-fill");
 const progressDistanceEl = document.querySelector("#progress-distance");
 const progressLabelEl = document.querySelector("#progress-label");
+const progressPhaseEl = document.querySelector("#progress-phase");
+const progressMiniEl = document.querySelector("#progress-mini");
+const progressBossEl = document.querySelector("#progress-boss");
 const touchButtons = Array.from(document.querySelectorAll("[data-touch]"));
 const mobilePortraitQuery = window.matchMedia("(max-width: 900px) and (orientation: portrait)");
 
@@ -75,17 +78,17 @@ const CITIES = [
   {
     key: "valencia",
     name: "Valencia",
-    sky: "#7bc4dc",
-    wall: 0x8a8478,
-    brickA: 0x9f9688,
-    brickB: 0x756d62,
-    road: 0x464138,
-    accent: 0xff7a4e,
-    highlight: 0xffdd9a,
-    shadow: 0x4f473d,
-    glow: 0x4ed9d1,
-    sign: "KAMUABU VLC",
-    landmark: "PALMERAS + AZULEJOS",
+    sky: "#93d8e8",
+    wall: 0x7f8178,
+    brickA: 0x9e9b90,
+    brickB: 0x6d6960,
+    road: 0x3e3c38,
+    accent: 0xff8b47,
+    highlight: 0xffe2a7,
+    shadow: 0x45413a,
+    glow: 0x5ee2d8,
+    sign: "VALENCIA SUN RUN",
+    landmark: "CIUTAT + SERRANOS",
     obstaclePool: ["barrel", "barrel", "barricade"],
   },
   {
@@ -158,17 +161,17 @@ const getCity = (key) => CITIES.find((city) => city.key === key) || CITIES[0];
 
 const CITY_ART = {
   valencia: {
-    top: 0x87d3ef,
-    mid: 0xa9e4eb,
-    bottom: 0xffd9a8,
-    glow: 0xffb36a,
-    sun: 0xfff3c7,
-    haze: 0xf7ecda,
-    farA: 0xc8dde6,
-    farB: 0x9dbccd,
-    nearA: 0x7296ab,
-    nearB: 0x56788e,
-    water: 0x82dedb,
+    top: 0x9dddf2,
+    mid: 0xcdecef,
+    bottom: 0xffcf9b,
+    glow: 0xffa96d,
+    sun: 0xfff3c5,
+    haze: 0xffefd4,
+    farA: 0xcfe6ec,
+    farB: 0xa8c8d3,
+    nearA: 0x6f99b1,
+    nearB: 0x4f718c,
+    water: 0x73ddd8,
   },
   roma: {
     top: 0xb87d62,
@@ -1641,24 +1644,133 @@ class BootScene extends Phaser.Scene {
     crate.generateTexture("crate", 66, 66);
     crate.destroy();
 
-    const solidBox = this.make.graphics({ x: 0, y: 0, add: false });
-    solidBox.fillStyle(0x111218);
-    solidBox.fillRect(0, 0, 78, 58);
-    solidBox.fillStyle(0x9d5f2c);
-    solidBox.fillRect(4, 4, 70, 50);
-    solidBox.fillStyle(0xd8904a);
-    solidBox.fillRect(8, 8, 62, 12);
-    solidBox.fillRect(8, 34, 62, 12);
-    solidBox.fillStyle(0x6d3e1d);
-    solidBox.fillRect(34, 4, 10, 50);
-    solidBox.fillRect(8, 24, 62, 8);
-    solidBox.fillStyle(0xf2ead8);
-    solidBox.fillRect(14, 10, 12, 6);
-    solidBox.fillRect(52, 10, 12, 6);
-    solidBox.fillRect(14, 36, 12, 6);
-    solidBox.fillRect(52, 36, 12, 6);
-    solidBox.generateTexture("solid-box", 78, 58);
-    solidBox.destroy();
+    const makePlatformTexture = (key, palette) => {
+      const platform = this.make.graphics({ x: 0, y: 0, add: false });
+      platform.fillStyle(palette.outline);
+      platform.fillRect(0, 0, 78, 58);
+      platform.fillStyle(palette.bodyDark);
+      platform.fillRect(3, 4, 72, 50);
+      platform.fillStyle(palette.top);
+      platform.fillRect(4, 4, 70, 12);
+      platform.fillStyle(palette.topHighlight);
+      platform.fillRect(8, 7, 62, 4);
+      platform.fillStyle(palette.topShadow);
+      platform.fillRect(6, 15, 66, 3);
+      platform.fillStyle(palette.bodyMid);
+      platform.fillRect(4, 18, 70, 34);
+      platform.fillStyle(palette.bodyHighlight);
+      platform.fillRect(8, 23, 16, 4);
+      platform.fillRect(30, 30, 12, 3);
+      platform.fillRect(54, 25, 14, 4);
+      platform.fillRect(18, 40, 10, 3);
+      platform.fillStyle(palette.bodyShadow);
+      platform.fillRect(10, 34, 58, 4);
+      platform.fillRect(12, 46, 54, 3);
+      platform.fillStyle(palette.motifA);
+      platform.fillRect(10, 20, 16, 8);
+      platform.fillRect(32, 20, 14, 8);
+      platform.fillRect(52, 20, 16, 8);
+      platform.fillStyle(palette.motifB);
+      platform.fillRect(14, 22, 8, 4);
+      platform.fillRect(36, 22, 6, 4);
+      platform.fillRect(56, 22, 8, 4);
+      platform.fillStyle(palette.rim);
+      platform.fillRect(4, 52, 70, 3);
+      platform.fillStyle(palette.shadowEdge);
+      platform.fillRect(4, 55, 70, 3);
+      platform.generateTexture(key, 78, 58);
+      platform.destroy();
+    };
+
+    makePlatformTexture("solid-box", {
+      outline: 0x15151c,
+      top: 0x9ece5c,
+      topHighlight: 0xc6ef86,
+      topShadow: 0x6d8a39,
+      bodyMid: 0xa8663c,
+      bodyDark: 0x7a4326,
+      bodyHighlight: 0xd38f60,
+      bodyShadow: 0x5b311d,
+      motifA: 0x7f4b2e,
+      motifB: 0xc48a60,
+      rim: 0x6f3e25,
+      shadowEdge: 0x312016,
+    });
+
+    makePlatformTexture("solid-box-valencia", {
+      outline: 0x1e323c,
+      top: 0xf8f2e4,
+      topHighlight: 0xffffff,
+      topShadow: 0xdccca9,
+      bodyMid: 0xe5d3b3,
+      bodyDark: 0xb99267,
+      bodyHighlight: 0xf8ead4,
+      bodyShadow: 0x8d6846,
+      motifA: 0xff8d33,
+      motifB: 0x4ddfe3,
+      rim: 0x2f596d,
+      shadowEdge: 0x14232c,
+    });
+
+    makePlatformTexture("solid-box-roma", {
+      outline: 0x1d1714,
+      top: 0xd8c39f,
+      topHighlight: 0xf2e3c2,
+      topShadow: 0xb49771,
+      bodyMid: 0x9e7759,
+      bodyDark: 0x73503d,
+      bodyHighlight: 0xcda27c,
+      bodyShadow: 0x573b2e,
+      motifA: 0xe0c38b,
+      motifB: 0x8a5d41,
+      rim: 0x6d4f3d,
+      shadowEdge: 0x2d211a,
+    });
+
+    makePlatformTexture("solid-box-paris", {
+      outline: 0x171925,
+      top: 0xe8e1d9,
+      topHighlight: 0xf9f5ef,
+      topShadow: 0xc9c0b6,
+      bodyMid: 0x536073,
+      bodyDark: 0x3a4455,
+      bodyHighlight: 0x74859d,
+      bodyShadow: 0x29303c,
+      motifA: 0x46d9ff,
+      motifB: 0xf7d0ea,
+      rim: 0x252b36,
+      shadowEdge: 0x11141b,
+    });
+
+    makePlatformTexture("solid-box-venecia", {
+      outline: 0x18272f,
+      top: 0xdce7db,
+      topHighlight: 0xf2faf2,
+      topShadow: 0xb8c9bb,
+      bodyMid: 0x6f8982,
+      bodyDark: 0x516760,
+      bodyHighlight: 0x93b0a8,
+      bodyShadow: 0x374842,
+      motifA: 0x50dfd0,
+      motifB: 0xc79d71,
+      rim: 0x28424a,
+      shadowEdge: 0x131d22,
+    });
+
+    makePlatformTexture("solid-box-londres", {
+      outline: 0x16181f,
+      top: 0x9eafbf,
+      topHighlight: 0xc2d3df,
+      topShadow: 0x788899,
+      bodyMid: 0x55616d,
+      bodyDark: 0x3d4650,
+      bodyHighlight: 0x738190,
+      bodyShadow: 0x2c333b,
+      motifA: 0xc5b06c,
+      motifB: 0xb9d9f4,
+      rim: 0x242932,
+      shadowEdge: 0x111319,
+    });
 
     const pow = this.make.graphics({ x: 0, y: 0, add: false });
     pow.fillStyle(0xf1d2aa);
@@ -2721,26 +2833,238 @@ class PlayScene extends Phaser.Scene {
 
   createWorld() {
     this.skyArt = this.add.layer();
+    this.vistaLayer = this.add.layer();
     this.skyline = this.add.layer();
     this.midground = this.add.layer();
     this.backdrop = this.add.layer();
     this.landmarkLayer = this.add.layer();
     this.propLayer = this.add.layer();
+    this.frontDepth = this.add.layer();
     this.foreground = this.add.layer();
     this.weatherLayer = this.add.layer();
     this.gradeLayer = this.add.layer();
     this.speedLayer = this.add.layer();
 
     this.createSkyBackdrop();
+    this.createVista();
     this.createSkyline();
     this.createMidDepth();
     this.createWall();
     this.createLandmark();
     this.createStreetProps();
+    this.createForegroundDepth();
     this.createStreet();
     this.createAtmosphere();
     this.createColorGrade();
     this.createSpeedLines();
+  }
+
+  createVista() {
+    const addHorizonBand = (y, h, color, alpha = 1) => {
+      this.vistaLayer.add(this.add.rectangle(WIDTH / 2, y, WIDTH, h, color, alpha));
+    };
+    const addGlow = (x, y, w, h, color, alpha = 0.16) => {
+      this.vistaLayer.add(this.add.ellipse(x, y, w, h, color, alpha));
+    };
+
+    if (this.city.key === "valencia") {
+      addHorizonBand(sy(248), sy(20), 0xfff0c6, 0.24);
+      addHorizonBand(sy(304), sy(84), 0x7fe0da, 0.24);
+      addHorizonBand(sy(338), sy(18), 0xf7fffb, 0.14);
+      addGlow(sx(1120), sy(154), sx(520), sy(194), 0xffc176, 0.2);
+
+      const postcard = this.add.container(sx(92), sy(292));
+      postcard.add(this.add.rectangle(sx(624), sy(58), sx(1326), sy(10), 0x294d60, 0.94));
+      postcard.add(this.add.rectangle(sx(624), sy(72), sx(1326), sy(6), 0xcafcf3, 0.12));
+
+      const agora = this.add.container(sx(6), -sy(4));
+      agora.add(this.add.triangle(0, 0, -sx(118), sy(4), 0, -sy(138), sx(118), sy(4), 0x7b3f88, 0.96));
+      for (let i = 0; i < 8; i += 1) {
+        agora.add(this.add.rectangle(-sx(78) + i * sx(20), -sy(58) + i * sy(14), sx(164 - i * 18), sy(5), 0xffc655, 0.86));
+      }
+      agora.add(this.add.rectangle(0, sy(6), sx(236), sy(10), 0x2f2738));
+      postcard.add(agora);
+
+      const sciences = this.add.container(sx(282), -sy(6));
+      sciences.add(this.add.rectangle(0, sy(64), sx(350), sy(10), 0x234a5b));
+      sciences.add(this.add.arc(-sx(120), sy(22), sx(104), 180, 360, false, 0xf8fcff, 0.96));
+      sciences.add(this.add.arc(-sx(120), sy(22), sx(80), 180, 360, false, 0xffbf74, 0.2));
+      sciences.add(this.add.arc(-sx(8), sy(28), sx(64), 180, 360, false, 0xf8fcff, 0.92));
+      sciences.add(this.add.arc(-sx(8), sy(28), sx(44), 180, 360, false, 0x86e2e0, 0.18));
+      sciences.add(this.add.triangle(sx(132), -sy(12), sx(36), sy(64), sx(122), -sy(62), sx(188), sy(64), 0xf8fcff, 0.98));
+      sciences.add(this.add.triangle(sx(138), sy(2), sx(52), sy(52), sx(126), -sy(34), sx(178), sy(52), 0x88e1e0, 0.32));
+      sciences.add(this.add.rectangle(sx(134), sy(60), sx(130), sy(8), 0x203946));
+      sciences.add(this.add.rectangle(-sx(10), sy(56), sx(94), sy(8), 0x203946));
+      postcard.add(sciences);
+
+      const oldTown = this.add.container(sx(836), -sy(18));
+      const miguelete = this.add.container(-sx(44), 0);
+      miguelete.add(this.add.rectangle(0, 0, sx(34), sy(156), 0xd59f34, 0.96).setOrigin(0.5, 1));
+      miguelete.add(this.add.rectangle(0, -sy(122), sx(50), sy(14), 0x35545f));
+      miguelete.add(this.add.circle(0, -sy(100), sx(9), 0x35545f));
+      miguelete.add(this.add.rectangle(0, -sy(146), sx(6), sy(20), 0x35545f));
+      oldTown.add(miguelete);
+
+      const cathedral = this.add.container(sx(112), sy(14));
+      cathedral.add(this.add.rectangle(0, sy(34), sx(164), sy(84), 0x703565, 0.92).setOrigin(0.5, 1));
+      cathedral.add(this.add.rectangle(0, -sy(18), sx(92), sy(14), 0x703565));
+      cathedral.add(this.add.circle(0, sy(0), sx(26), 0xffd95c, 0.94).setStrokeStyle(4, 0x703565));
+      cathedral.add(this.add.triangle(0, sy(16), -sx(30), sy(48), 0, -sy(20), sx(30), sy(48), 0xffd95c, 0.92));
+      cathedral.add(this.add.rectangle(0, sy(42), sx(30), sy(36), 0x5c2420));
+      cathedral.add(this.add.rectangle(-sx(60), sy(20), sx(22), sy(62), 0xc94838, 0.9));
+      cathedral.add(this.add.rectangle(sx(60), sy(20), sx(22), sy(62), 0xc94838, 0.9));
+      oldTown.add(cathedral);
+
+      const basilica = this.add.container(sx(258), sy(22));
+      basilica.add(this.add.rectangle(0, sy(38), sx(138), sy(70), 0xa6c548, 0.9).setOrigin(0.5, 1));
+      basilica.add(this.add.circle(0, -sy(4), sx(32), 0x2d8f49, 0.96));
+      basilica.add(this.add.rectangle(0, -sy(42), sx(12), sy(28), 0xffd95c, 0.92));
+      basilica.add(this.add.triangle(0, -sy(58), -sx(12), -sy(32), 0, -sy(76), sx(12), -sy(32), 0xffd95c));
+      oldTown.add(basilica);
+      postcard.add(oldTown);
+
+      const serranos = this.add.container(sx(1178), sy(4));
+      serranos.add(this.add.rectangle(0, sy(44), sx(176), sy(78), 0x59a9df, 0.92).setOrigin(0.5, 1));
+      serranos.add(this.add.rectangle(-sx(56), -sy(6), sx(42), sy(88), 0x44b7f4, 0.96));
+      serranos.add(this.add.rectangle(sx(56), -sy(6), sx(42), sy(88), 0x44b7f4, 0.96));
+      serranos.add(this.add.rectangle(0, sy(46), sx(32), sy(36), 0x2a607d));
+      serranos.add(this.add.rectangle(-sx(56), -sy(34), sx(50), sy(8), 0xe6f6ff, 0.22));
+      serranos.add(this.add.rectangle(sx(56), -sy(34), sx(50), sy(8), 0xe6f6ff, 0.22));
+      postcard.add(serranos);
+
+      for (const x of [sx(128), sx(396), sx(1046), sx(1284)]) {
+        const palm = this.add.container(x, sy(302));
+        palm.add(this.add.rectangle(0, sy(18), sx(7), sy(58), 0x6f4720));
+        palm.add(this.add.triangle(0, -sy(10), -sx(32), sy(12), 0, -sy(38), sx(32), sy(12), 0x30c977));
+        palm.add(this.add.triangle(-sx(18), sy(2), -sx(34), sy(14), -sx(12), -sy(22), sx(4), sy(14), 0x4ddd8c));
+        postcard.add(palm);
+      }
+      for (let i = 0; i < 7; i += 1) {
+        postcard.add(this.add.rectangle(sx(162) + i * sx(168), sy(74) + (i % 2) * sy(6), sx(92), sy(3), 0xf6fffb, i % 2 ? 0.08 : 0.16));
+      }
+      this.vistaLayer.add(postcard);
+      return;
+    }
+
+    if (this.city.key === "roma") {
+      addHorizonBand(sy(274), sy(22), 0xf6ddb4, 0.1);
+      addGlow(sx(1090), sy(164), sx(480), sy(180), 0xf1b071, 0.14);
+
+      const hills = [
+        [sx(54), sy(296), sx(280), sy(96), 0x7c5d4d],
+        [sx(300), sy(284), sx(340), sy(110), 0x946f59],
+        [sx(632), sy(292), sx(300), sy(90), 0x6c4d3e],
+        [sx(916), sy(286), sx(360), sy(108), 0x855f4b],
+        [sx(1220), sy(298), sx(260), sy(84), 0x684638],
+      ];
+      hills.forEach(([x, y, w, h, c]) => {
+        this.vistaLayer.add(this.add.arc(x, y, w, h, 180, 360, false, c, 0.88));
+      });
+
+      const rome = this.add.container(sx(720), sy(282));
+      rome.add(this.add.rectangle(0, sy(46), sx(720), sy(8), 0x2e231e));
+      rome.add(this.add.arc(-sx(128), sy(18), sx(92), 180, 360, false, 0x73584a, 0.96));
+      for (let i = 0; i < 4; i += 1) {
+        rome.add(this.add.rectangle(-sx(164) + i * sx(28), sy(26), sx(16), sy(58), 0x2f2520, 0.86));
+      }
+      rome.add(this.add.rectangle(sx(30), sy(22), sx(128), sy(64), 0x6f5445, 0.92));
+      rome.add(this.add.arc(sx(30), sy(2), sx(42), 180, 360, false, 0xb38d6f, 0.28));
+      rome.add(this.add.rectangle(sx(172), sy(10), sx(188), sy(22), 0x8f705a, 0.86));
+      for (let i = 0; i < 5; i += 1) {
+        rome.add(this.add.arc(sx(108) + i * sx(20), sy(10), sx(14), 180, 360, false, 0x2b211c, 0.7));
+      }
+      rome.add(this.add.circle(-sx(258), -sy(20), sx(22), 0x8f6b59, 0.94));
+      rome.add(this.add.rectangle(-sx(258), sy(22), sx(54), sy(48), 0x7d5d4b, 0.92));
+      this.vistaLayer.add(rome);
+
+      for (const x of [sx(164), sx(410), sx(1178)]) {
+        const cypress = this.add.container(x, sy(314));
+        cypress.add(this.add.triangle(0, 0, -sx(16), sy(8), 0, -sy(70), sx(16), sy(8), 0x223427, 0.92));
+        cypress.add(this.add.rectangle(0, sy(18), sx(4), sy(22), 0x6c4d35, 0.5));
+        this.vistaLayer.add(cypress);
+      }
+      return;
+    }
+
+    if (this.city.key === "paris") {
+      addHorizonBand(sy(278), sy(22), 0xf7ddf1, 0.08);
+      addGlow(sx(1122), sy(126), sx(340), sy(180), 0xf7f3ff, 0.14);
+      this.vistaLayer.add(this.add.circle(sx(1122), sy(122), sx(72), 0xf8f6ff, 0.94));
+
+      for (let i = 0; i < 14; i += 1) {
+        this.vistaLayer.add(this.add.rectangle(sx(80) + i * sx(98), sy(110) + (i % 4) * sy(16), sx(72 + (i % 3) * 22), sy(3), 0xf8f3ff, i % 2 ? 0.14 : 0.24));
+      }
+
+      const roofs = this.add.container(sx(112), sy(286));
+      for (let i = 0; i < 7; i += 1) {
+        const baseX = i * sx(176);
+        roofs.add(this.add.rectangle(baseX, sy(42), sx(124), sy(54), 0x394459, 0.88).setOrigin(0.5, 1));
+        roofs.add(this.add.triangle(baseX, -sy(8), -sx(62), sy(42), 0, -sy(30), sx(62), sy(42), 0x232942, 0.94));
+        roofs.add(this.add.rectangle(baseX, sy(14), sx(98), sy(3), 0x93ddff, 0.08));
+      }
+      const tower = this.add.container(sx(744), sy(270));
+      tower.add(this.add.triangle(0, -sy(12), 0, -sy(138), -sx(42), sy(88), sx(42), sy(88), 0x58d5ff, 0.92));
+      tower.add(this.add.triangle(-sx(8), -sy(16), -sx(2), -sy(108), -sx(28), sy(62), sx(4), sy(62), 0xf1eadf, 0.32));
+      roofs.add(tower);
+      this.vistaLayer.add(roofs);
+      return;
+    }
+
+    if (this.city.key === "venecia") {
+      addHorizonBand(sy(284), sy(26), 0xf3e8d9, 0.08);
+      addHorizonBand(sy(316), sy(78), 0x7de3da, 0.18);
+      addGlow(sx(1110), sy(152), sx(420), sy(180), 0xffd6a9, 0.12);
+
+      const lagoon = this.add.container(sx(116), sy(286));
+      lagoon.add(this.add.rectangle(sx(620), sy(40), sx(1300), sy(8), 0x2a575f, 0.92));
+      lagoon.add(this.add.rectangle(sx(620), sy(56), sx(1300), sy(6), 0xbaf6ef, 0.12));
+      for (let i = 0; i < 8; i += 1) {
+        lagoon.add(this.add.rectangle(i * sx(158), sy(56) + (i % 2) * sy(6), sx(58), sy(3), 0xe8fff8, i % 2 ? 0.1 : 0.16));
+      }
+      const palazzoX = [sx(80), sx(280), sx(470), sx(668), sx(868), sx(1052)];
+      palazzoX.forEach((x, i) => {
+        lagoon.add(this.add.rectangle(x, sy(34), sx(124), sy(58 + (i % 3) * 10), i % 2 ? 0x566f75 : 0x6b837f, 0.88).setOrigin(0.5, 1));
+        lagoon.add(this.add.arc(x, sy(10), sx(26), 180, 360, false, i % 2 ? 0x9e8a71 : 0xc0a889, 0.24));
+      });
+      const campanile = this.add.container(sx(822), -sy(10));
+      campanile.add(this.add.rectangle(0, sy(20), sx(24), sy(142), 0xb99566, 0.94).setOrigin(0.5, 1));
+      campanile.add(this.add.rectangle(0, -sy(92), sx(42), sy(16), 0xcbb596));
+      campanile.add(this.add.triangle(0, -sy(112), -sx(14), -sy(88), 0, -sy(138), sx(14), -sy(88), 0xc66f5a));
+      lagoon.add(campanile);
+      const dome = this.add.container(sx(558), sy(14));
+      dome.add(this.add.circle(0, 0, sx(36), 0xb9d2ca, 0.96));
+      dome.add(this.add.rectangle(0, sy(38), sx(96), sy(34), 0x68837c, 0.88));
+      dome.add(this.add.rectangle(0, -sy(34), sx(10), sy(20), 0xd4c5ab));
+      lagoon.add(dome);
+      this.vistaLayer.add(lagoon);
+      return;
+    }
+
+    if (this.city.key === "londres") {
+      addHorizonBand(sy(276), sy(28), 0xb6c3cf, 0.08);
+      addGlow(sx(1098), sy(122), sx(360), sy(180), 0xc7b070, 0.12);
+
+      const parliament = this.add.container(sx(120), sy(288));
+      parliament.add(this.add.rectangle(sx(560), sy(44), sx(1160), sy(8), 0x1a1f28, 0.94));
+      for (let i = 0; i < 7; i += 1) {
+        parliament.add(this.add.rectangle(sx(96) + i * sx(146), sy(14), sx(108), sy(68 + (i % 2) * 8), 0x313a46, 0.9).setOrigin(0.5, 1));
+      }
+      const bigBen = this.add.container(sx(820), -sy(12));
+      bigBen.add(this.add.rectangle(0, sy(28), sx(26), sy(146), 0x324051, 0.96).setOrigin(0.5, 1));
+      bigBen.add(this.add.rectangle(0, -sy(90), sx(46), sy(20), 0xc5b06c));
+      bigBen.add(this.add.rectangle(0, -sy(116), sx(10), sy(20), 0x324051));
+      bigBen.add(this.add.triangle(0, -sy(136), -sx(14), -sy(108), 0, -sy(162), sx(14), -sy(108), 0xc5b06c));
+      bigBen.add(this.add.circle(0, -sy(90), sx(7), 0xf2ead8));
+      parliament.add(bigBen);
+      const bridge = this.add.container(sx(1086), sy(12));
+      bridge.add(this.add.rectangle(0, 0, sx(210), sy(8), 0x171b22));
+      bridge.add(this.add.rectangle(-sx(72), -sy(28), sx(12), sy(58), 0x334051));
+      bridge.add(this.add.rectangle(sx(72), -sy(28), sx(12), sy(58), 0x334051));
+      bridge.add(this.add.rectangle(-sx(72), -sy(46), sx(34), sy(8), 0xc5b06c, 0.72));
+      bridge.add(this.add.rectangle(sx(72), -sy(46), sx(34), sy(8), 0xc5b06c, 0.72));
+      parliament.add(bridge);
+      this.vistaLayer.add(parliament);
+    }
   }
 
   createSkyBackdrop() {
@@ -2763,30 +3087,41 @@ class PlayScene extends Phaser.Scene {
     addBand(sy(252), sy(76), art.glow, 0.18);
 
     if (this.city.key === "valencia") {
-      this.skyArt.add(this.add.circle(sx(1116), sy(116), sx(132), art.sun, 0.98));
-      for (let i = 0; i < 6; i += 1) {
-        this.skyArt.add(this.add.rectangle(sx(1116), sy(170) + i * sy(16), sx(230 - i * 24), sy(4), 0xfff2d9, 0.42));
+      this.skyArt.add(this.add.circle(sx(1128), sy(126), sx(150), 0xffe0a8, 0.98));
+      this.skyArt.add(this.add.circle(sx(1128), sy(126), sx(112), 0xfff4db, 0.92));
+      for (let i = 0; i < 7; i += 1) {
+        this.skyArt.add(this.add.rectangle(sx(1128), sy(176) + i * sy(15), sx(264 - i * 28), sy(4), 0xfff4df, 0.36));
       }
-      addBand(sy(236), sy(20), 0xfff1ce, 0.08);
-      addBand(sy(250), sy(26), art.haze, 0.22);
-      addBand(sy(290), sy(22), 0xe8f6f0, 0.16);
-      addBand(sy(330), sy(64), art.water, 0.42);
-      addBand(sy(350), sy(10), 0xf4fff8, 0.16);
-      addBand(sy(370), sy(12), 0x6acfcf, 0.1);
-      for (let i = 0; i < 10; i += 1) {
-        this.skyArt.add(this.add.rectangle(sx(88) + i * sx(144), sy(174) + (i % 3) * sy(12), sx(106 + (i % 2) * 24), sy(5), 0xfff4df, i % 3 === 0 ? 0.26 : 0.16));
+      addBand(sy(198), sy(28), 0xfff0cf, 0.12);
+      addBand(sy(228), sy(24), 0xffd8a9, 0.08);
+      addBand(sy(254), sy(30), art.haze, 0.2);
+      addBand(sy(292), sy(24), 0xd6f3ee, 0.14);
+      addBand(sy(332), sy(70), art.water, 0.5);
+      addBand(sy(350), sy(8), 0xf7fffb, 0.2);
+      addBand(sy(368), sy(10), 0x6fd3d0, 0.14);
+      for (const cloud of [
+        [sx(132), sy(92), sx(210), sy(18), 0xfff9ef, 0.3],
+        [sx(376), sy(128), sx(158), sy(16), 0xfff7e8, 0.22],
+        [sx(700), sy(88), sx(224), sy(16), 0xfffbf2, 0.24],
+        [sx(948), sy(138), sx(172), sy(14), 0xfff5e1, 0.18],
+      ]) {
+        this.skyArt.add(this.add.rectangle(cloud[0], cloud[1], cloud[2], cloud[3], cloud[4], cloud[5]));
+        this.skyArt.add(this.add.rectangle(cloud[0] + sx(28), cloud[1] - sy(7), cloud[2] * 0.48, sy(6), cloud[4], cloud[5] * 0.9));
       }
-      for (let i = 0; i < 12; i += 1) {
-        this.skyArt.add(this.add.rectangle(sx(70) + i * sx(120), sy(338) + (i % 3) * sy(5), sx(72 + (i % 2) * 18), sy(3), 0xf5fff8, i % 2 ? 0.16 : 0.24));
+      for (let i = 0; i < 11; i += 1) {
+        this.skyArt.add(this.add.rectangle(sx(86) + i * sx(138), sy(182) + (i % 3) * sy(12), sx(112 + (i % 2) * 20), sy(5), 0xfff4df, i % 3 === 0 ? 0.24 : 0.14));
+      }
+      for (let i = 0; i < 14; i += 1) {
+        this.skyArt.add(this.add.rectangle(sx(62) + i * sx(110), sy(338) + (i % 3) * sy(5), sx(82 + (i % 2) * 16), sy(3), 0xf6fffb, i % 2 ? 0.14 : 0.22));
       }
       for (const bird of [
-        [sx(164), sy(106), this.city.accent],
-        [sx(322), sy(132), 0xffd95c],
-        [sx(518), sy(118), 0x40d8ff],
-        [sx(1182), sy(112), 0xffd95c],
+        [sx(170), sy(108), 0xff8e3b],
+        [sx(342), sy(132), 0xffd95c],
+        [sx(560), sy(116), 0x4ddfe3],
+        [sx(1180), sy(108), 0xffd95c],
       ]) {
-        this.skyArt.add(this.add.rectangle(bird[0], bird[1], sx(10), sy(2), bird[2], 0.7).setAngle(-26));
-        this.skyArt.add(this.add.rectangle(bird[0] + sx(8), bird[1] + sy(1), sx(8), sy(2), bird[2], 0.7).setAngle(26));
+        this.skyArt.add(this.add.rectangle(bird[0], bird[1], sx(12), sy(2), bird[2], 0.72).setAngle(-28));
+        this.skyArt.add(this.add.rectangle(bird[0] + sx(8), bird[1] + sy(1), sx(9), sy(2), bird[2], 0.72).setAngle(28));
       }
     } else if (this.city.key === "roma") {
       this.skyArt.add(this.add.circle(sx(1082), sy(150), sx(104), art.sun, 0.9));
@@ -2909,6 +3244,37 @@ class PlayScene extends Phaser.Scene {
         colonnade.add(this.add.rectangle(sx(56), -sy(36), sx(26), sy(8), 0xb68b66, 0.1));
         this.midground.add(colonnade);
       }
+    } else if (this.city.key === "valencia") {
+      this.midground.add(this.add.rectangle(WIDTH / 2, sy(190), WIDTH + sx(120), sy(34), 0xfff0cf, 0.08));
+      this.midground.add(this.add.rectangle(WIDTH / 2, sy(302), WIDTH + sx(120), sy(70), 0x88dfda, 0.14));
+      this.midground.add(this.add.rectangle(WIDTH / 2, sy(330), WIDTH + sx(120), sy(16), 0xf8fffb, 0.12));
+
+      const lagoon = this.add.container(WIDTH / 2, sy(280));
+      lagoon.add(this.add.rectangle(0, sy(54), WIDTH + sx(120), sy(16), 0x2c5f74, 0.52));
+      lagoon.add(this.add.rectangle(0, sy(60), WIDTH + sx(120), sy(5), 0xeafff7, 0.16));
+      for (let i = 0; i < 14; i += 1) {
+        lagoon.add(this.add.rectangle(sx(-720) + i * sx(112), sy(44) + (i % 2) * sy(5), sx(78 + (i % 3) * 10), sy(3), 0xf6fff9, i % 2 ? 0.08 : 0.16));
+      }
+      this.midground.add(lagoon);
+
+      const silhouette = this.add.container(WIDTH / 2, sy(256));
+      silhouette.add(this.add.rectangle(-sx(420), sy(10), sx(220), sy(62), 0x7092a8, 0.16).setOrigin(0.5, 1));
+      silhouette.add(this.add.rectangle(-sx(430), -sy(46), sx(18), sy(104), 0x916f31, 0.28));
+      silhouette.add(this.add.rectangle(-sx(430), -sy(76), sx(32), sy(10), 0x33586a, 0.24));
+      silhouette.add(this.add.rectangle(-sx(430), -sy(96), sx(6), sy(18), 0x33586a, 0.24));
+      silhouette.add(this.add.rectangle(sx(462), sy(18), sx(178), sy(72), 0x6eb0dc, 0.18).setOrigin(0.5, 1));
+      silhouette.add(this.add.rectangle(sx(414), -sy(14), sx(26), sy(92), 0x5f9fcb, 0.22));
+      silhouette.add(this.add.rectangle(sx(510), -sy(14), sx(26), sy(92), 0x5f9fcb, 0.22));
+      silhouette.add(this.add.rectangle(sx(462), sy(10), sx(34), sy(42), 0x386782, 0.22));
+      this.midground.add(silhouette);
+
+      for (const x of [sx(188), sx(520), sx(1114), sx(1368)]) {
+        const palm = this.add.container(x, sy(314));
+        palm.add(this.add.rectangle(0, sy(18), sx(8), sy(54), 0x714821, 0.2));
+        palm.add(this.add.triangle(0, -sy(8), -sx(28), sy(10), 0, -sy(34), sx(28), sy(10), 0x31c474, 0.18));
+        palm.add(this.add.triangle(-sx(14), sy(4), -sx(34), sy(18), -sx(12), -sy(20), sx(2), sy(16), 0x4ddd8c, 0.16));
+        this.midground.add(palm);
+      }
     } else if (this.city.key === "paris") {
       this.midground.add(this.add.rectangle(WIDTH / 2, sy(176), WIDTH + sx(120), sy(28), 0xf0eadc, 0.05));
       for (let i = 0; i < 6; i += 1) {
@@ -3003,85 +3369,89 @@ class PlayScene extends Phaser.Scene {
     }
 
     if (this.city.key === "valencia") {
-      this.skyline.add(this.add.rectangle(WIDTH / 2, sy(162), WIDTH + sx(120), sy(42), 0xffe2b4, 0.12));
-      this.skyline.add(this.add.circle(sx(1118), sy(106), sx(84), 0xffd95c, 0.2));
+      this.skyline.add(this.add.rectangle(WIDTH / 2, sy(162), WIDTH + sx(120), sy(34), 0xfff2c8, 0.12));
+      this.skyline.add(this.add.rectangle(WIDTH / 2, sy(316), WIDTH + sx(120), sy(14), 0xc7f6ef, 0.14));
 
-      const agora = this.add.container(sx(164), sy(258));
-      agora.add(this.add.triangle(0, 0, -sx(102), sy(2), 0, -sy(126), sx(102), sy(2), 0x8a367e, 0.92));
-      for (let i = 0; i < 8; i += 1) {
-        agora.add(this.add.rectangle(-sx(66) + i * sx(18), -sy(52) + i * sy(14), sx(148 - i * 14), sy(5), 0xffbf4c, 0.86));
+      const skyline = this.add.container(sx(120), sy(286));
+      skyline.add(this.add.rectangle(sx(620), sy(44), sx(1320), sy(8), 0x285363, 0.92));
+      skyline.add(this.add.rectangle(sx(620), sy(52), sx(1320), sy(4), 0xf9fff8, 0.12));
+
+      const agora = this.add.container(sx(16), -sy(4));
+      agora.add(this.add.triangle(0, 0, -sx(108), sy(4), 0, -sy(134), sx(108), sy(4), 0x6e3a86, 0.96));
+      for (let i = 0; i < 9; i += 1) {
+        agora.add(this.add.rectangle(-sx(76) + i * sx(18), -sy(62) + i * sy(12), sx(164 - i * 14), sy(5), 0xffc548, 0.88));
       }
-      agora.add(this.add.rectangle(0, sy(6), sx(208), sy(10), 0x33283a));
-      this.skyline.add(agora);
+      agora.add(this.add.rectangle(0, sy(6), sx(228), sy(10), 0x30263b));
+      skyline.add(agora);
 
-      const hemisferic = this.add.container(sx(420), sy(262));
-      hemisferic.add(this.add.rectangle(0, sy(48), sx(230), sy(10), 0x2b5165));
-      hemisferic.add(this.add.arc(0, sy(18), sx(108), 180, 360, false, 0xf7fafb, 0.98));
-      hemisferic.add(this.add.arc(0, sy(18), sx(90), 180, 360, false, 0xffbc6e, 0.22));
-      hemisferic.add(this.add.rectangle(0, sy(34), sx(150), sy(4), 0x7fe0e0, 0.38));
-      hemisferic.add(this.add.rectangle(-sx(74), sy(24), sx(18), sy(8), 0xf3e6d3, 0.6));
-      hemisferic.add(this.add.rectangle(sx(74), sy(24), sx(18), sy(8), 0xf3e6d3, 0.6));
-      this.skyline.add(hemisferic);
+      const arts = this.add.container(sx(286), -sy(2));
+      arts.add(this.add.rectangle(0, sy(50), sx(424), sy(10), 0x21495d));
+      arts.add(this.add.arc(-sx(134), sy(26), sx(112), 180, 360, false, 0xf8fbfc, 0.98));
+      arts.add(this.add.arc(-sx(134), sy(26), sx(92), 180, 360, false, 0xffbe70, 0.18));
+      arts.add(this.add.arc(-sx(14), sy(34), sx(70), 180, 360, false, 0xf8fbfc, 0.92));
+      arts.add(this.add.arc(-sx(14), sy(34), sx(52), 180, 360, false, 0x78e3dd, 0.2));
+      arts.add(this.add.triangle(sx(136), -sy(8), sx(30), sy(62), sx(124), -sy(62), sx(196), sy(62), 0xf7fbfc, 0.98));
+      arts.add(this.add.triangle(sx(140), sy(4), sx(48), sy(54), sx(126), -sy(40), sx(188), sy(54), 0x8de7df, 0.32));
+      arts.add(this.add.rectangle(sx(140), sy(58), sx(136), sy(8), 0x203846));
+      arts.add(this.add.rectangle(-sx(12), sy(54), sx(106), sy(8), 0x203846));
+      skyline.add(arts);
 
-      const science = this.add.container(sx(614), sy(248));
-      science.add(this.add.rectangle(0, sy(48), sx(276), sy(10), 0x285468));
-      science.add(this.add.arc(-sx(94), sy(18), sx(86), 180, 360, false, 0xf6fafb, 0.94));
-      science.add(this.add.arc(-sx(94), sy(18), sx(64), 180, 360, false, 0xffb459, 0.18));
-      science.add(this.add.arc(sx(0), sy(28), sx(62), 180, 360, false, 0xf6fafb, 0.9));
-      science.add(this.add.arc(sx(0), sy(28), sx(44), 180, 360, false, 0x76dfe0, 0.18));
-      science.add(this.add.triangle(sx(106), -sy(16), sx(24), sy(56), sx(92), -sy(54), sx(162), sy(56), 0xf6fafb, 0.96));
-      science.add(this.add.triangle(sx(114), -sy(4), sx(40), sy(48), sx(98), -sy(36), sx(150), sy(48), 0x86dfe0, 0.32));
-      science.add(this.add.rectangle(sx(106), sy(46), sx(120), sy(8), 0x223846));
-      science.add(this.add.rectangle(-sx(6), sy(44), sx(82), sy(8), 0x223846));
-      this.skyline.add(science);
-
-      const miguelete = this.add.container(sx(826), sy(228));
-      miguelete.add(this.add.rectangle(0, 0, sx(34), sy(150), 0xd39b31, 0.96).setOrigin(0.5, 1));
-      miguelete.add(this.add.rectangle(0, -sy(118), sx(48), sy(14), 0x35545f));
-      miguelete.add(this.add.circle(0, -sy(96), sx(9), 0x35545f));
-      miguelete.add(this.add.rectangle(0, -sy(142), sx(6), sy(20), 0x35545f));
-      miguelete.add(this.add.rectangle(-sx(8), -sy(22), sx(4), sy(88), 0xf2ead8, 0.16));
-      this.skyline.add(miguelete);
-
-      const cathedral = this.add.container(sx(970), sy(246));
-      cathedral.add(this.add.rectangle(0, sy(24), sx(182), sy(86), 0x6a3465, 0.94).setOrigin(0.5, 1));
-      cathedral.add(this.add.rectangle(0, -sy(34), sx(96), sy(16), 0x6a3465));
-      cathedral.add(this.add.circle(0, -sy(6), sx(28), 0xffd95c, 0.94).setStrokeStyle(4, 0x6a3465));
-      cathedral.add(this.add.triangle(0, sy(10), -sx(34), sy(48), 0, -sy(24), sx(34), sy(48), 0xffd95c, 0.92));
-      cathedral.add(this.add.rectangle(0, sy(34), sx(34), sy(40), 0x59201f));
-      cathedral.add(this.add.rectangle(-sx(62), sy(14), sx(24), sy(66), 0xca4636, 0.92));
-      cathedral.add(this.add.rectangle(sx(62), sy(14), sx(24), sy(66), 0xca4636, 0.92));
-      cathedral.add(this.add.rectangle(-sx(62), -sy(28), sx(32), sy(14), 0xffd95c, 0.92));
-      cathedral.add(this.add.rectangle(sx(62), -sy(28), sx(32), sy(14), 0xffd95c, 0.92));
-      this.skyline.add(cathedral);
-
-      const basilica = this.add.container(sx(1142), sy(250));
-      basilica.add(this.add.rectangle(0, sy(30), sx(154), sy(68), 0x9fca47, 0.92));
-      basilica.add(this.add.rectangle(0, -sy(20), sx(76), sy(12), 0x8bc13b));
-      basilica.add(this.add.circle(0, -sy(6), sx(34), 0x2f8f4b, 0.96));
-      basilica.add(this.add.rectangle(0, -sy(44), sx(12), sy(28), 0xffd95c, 0.92));
-      basilica.add(this.add.triangle(0, -sy(60), -sx(12), -sy(36), 0, -sy(78), sx(12), -sy(36), 0xffd95c));
-      basilica.add(this.add.rectangle(-sx(42), sy(18), sx(24), sy(42), 0xe7f0b7, 0.26));
-      basilica.add(this.add.rectangle(sx(42), sy(18), sx(24), sy(42), 0xe7f0b7, 0.26));
-      this.skyline.add(basilica);
-
-      const serranos = this.add.container(sx(1322), sy(252));
-      serranos.add(this.add.rectangle(0, sy(22), sx(176), sy(80), 0x59a5df, 0.92).setOrigin(0.5, 1));
-      serranos.add(this.add.rectangle(-sx(56), -sy(18), sx(44), sy(80), 0x3fb3f4, 0.96));
-      serranos.add(this.add.rectangle(sx(56), -sy(18), sx(44), sy(80), 0x3fb3f4, 0.96));
-      serranos.add(this.add.rectangle(0, sy(30), sx(40), sy(40), 0x285e7b));
-      serranos.add(this.add.rectangle(-sx(56), -sy(46), sx(54), sy(8), 0xe8f7ff, 0.26));
-      serranos.add(this.add.rectangle(sx(56), -sy(46), sx(54), sy(8), 0xe8f7ff, 0.26));
-      this.skyline.add(serranos);
-
-      for (const x of [sx(308), sx(756), sx(1224)]) {
-        const palm = this.add.container(x, sy(258));
-        palm.add(this.add.rectangle(0, sy(28), sx(6), sy(60), 0x714723));
-        palm.add(this.add.triangle(0, -sy(16), -sx(30), sy(10), 0, -sy(38), sx(30), sy(10), 0x2fbf71));
-        palm.add(this.add.triangle(-sx(14), -sy(2), -sx(34), sy(12), -sx(12), -sy(26), sx(4), sy(12), 0x48d886));
-        palm.add(this.add.triangle(sx(12), sy(0), -sx(4), sy(12), sx(12), -sy(24), sx(32), sy(10), 0x33c879));
-        this.skyline.add(palm);
+      const assut = this.add.container(sx(598), -sy(22));
+      assut.add(this.add.rectangle(0, sy(28), sx(18), sy(174), 0xf6fbff));
+      assut.add(this.add.triangle(sx(48), -sy(12), sx(4), sy(114), sx(48), -sy(82), sx(92), sy(114), 0xf7fbff, 0.96));
+      for (let i = 0; i < 5; i += 1) {
+        assut.add(this.add.rectangle(sx(10) + i * sx(12), sy(0) + i * sy(22), sx(42 - i * 4), sy(2), 0xd4f4f0, 0.34).setAngle(-28));
       }
+      skyline.add(assut);
+
+      const oldTown = this.add.container(sx(842), -sy(18));
+      const miguelete = this.add.container(-sx(46), 0);
+      miguelete.add(this.add.rectangle(0, sy(4), sx(34), sy(150), 0xd39d34, 0.98).setOrigin(0.5, 1));
+      miguelete.add(this.add.rectangle(0, -sy(114), sx(52), sy(14), 0x355463));
+      miguelete.add(this.add.circle(0, -sy(94), sx(9), 0x355463));
+      miguelete.add(this.add.rectangle(0, -sy(142), sx(6), sy(18), 0x355463));
+      oldTown.add(miguelete);
+
+      const cathedral = this.add.container(sx(126), sy(14));
+      cathedral.add(this.add.rectangle(0, sy(38), sx(182), sy(82), 0x713566, 0.94).setOrigin(0.5, 1));
+      cathedral.add(this.add.rectangle(0, -sy(10), sx(92), sy(14), 0x713566));
+      cathedral.add(this.add.circle(0, sy(2), sx(26), 0xffd65d, 0.94).setStrokeStyle(4, 0x713566));
+      cathedral.add(this.add.triangle(0, sy(18), -sx(30), sy(46), 0, -sy(14), sx(30), sy(46), 0xffd65d, 0.92));
+      cathedral.add(this.add.rectangle(0, sy(46), sx(28), sy(32), 0x5d2521));
+      cathedral.add(this.add.rectangle(-sx(58), sy(22), sx(20), sy(58), 0xc94636, 0.9));
+      cathedral.add(this.add.rectangle(sx(58), sy(22), sx(20), sy(58), 0xc94636, 0.9));
+      oldTown.add(cathedral);
+
+      const basilica = this.add.container(sx(274), sy(24));
+      basilica.add(this.add.rectangle(0, sy(42), sx(150), sy(70), 0xa3c947, 0.92));
+      basilica.add(this.add.circle(0, sy(2), sx(34), 0x2e8f49, 0.96));
+      basilica.add(this.add.rectangle(0, -sy(34), sx(12), sy(28), 0xffd95d, 0.9));
+      basilica.add(this.add.triangle(0, -sy(52), -sx(12), -sy(26), 0, -sy(72), sx(12), -sy(26), 0xffd95d, 0.9));
+      oldTown.add(basilica);
+      skyline.add(oldTown);
+
+      const serranos = this.add.container(sx(1168), sy(6));
+      serranos.add(this.add.rectangle(0, sy(40), sx(190), sy(72), 0x5ea7e0, 0.94).setOrigin(0.5, 1));
+      serranos.add(this.add.rectangle(-sx(58), -sy(8), sx(44), sy(90), 0x41b6f2, 0.98));
+      serranos.add(this.add.rectangle(sx(58), -sy(8), sx(44), sy(90), 0x41b6f2, 0.98));
+      serranos.add(this.add.rectangle(0, sy(46), sx(34), sy(34), 0x285f7b));
+      serranos.add(this.add.rectangle(-sx(58), -sy(40), sx(56), sy(8), 0xeaf9ff, 0.24));
+      serranos.add(this.add.rectangle(sx(58), -sy(40), sx(56), sy(8), 0xeaf9ff, 0.24));
+      skyline.add(serranos);
+
+      for (const x of [sx(182), sx(506), sx(1082), sx(1298)]) {
+        const palm = this.add.container(x, sy(300));
+        palm.add(this.add.rectangle(0, sy(20), sx(7), sy(62), 0x6e4620));
+        palm.add(this.add.triangle(0, -sy(16), -sx(30), sy(10), 0, -sy(42), sx(30), sy(10), 0x2ec777));
+        palm.add(this.add.triangle(-sx(16), sy(0), -sx(34), sy(14), -sx(12), -sy(28), sx(4), sy(14), 0x50dd93));
+        palm.add(this.add.triangle(sx(18), sy(0), -sx(4), sy(14), sx(14), -sy(30), sx(36), sy(12), 0x44d28a));
+        skyline.add(palm);
+      }
+
+      for (let i = 0; i < 9; i += 1) {
+        skyline.add(this.add.rectangle(sx(134) + i * sx(144), sy(70) + (i % 2) * sy(8), sx(84), sy(3), 0xf8fff8, i % 2 ? 0.1 : 0.16));
+      }
+      this.skyline.add(skyline);
       return;
     }
 
@@ -3308,60 +3678,55 @@ class PlayScene extends Phaser.Scene {
     }
 
     if (this.city.key === "valencia") {
-      const promenade = this.add.rectangle(WIDTH / 2, sy(312), WIDTH + sx(100), sy(184), 0xe7e8de);
-      promenade.setStrokeStyle(5, 0x314452);
-      this.backdrop.add(promenade);
-      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(222), WIDTH + sx(100), sy(34), 0xfff4d8, 0.1));
-      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(398), WIDTH + sx(100), sy(30), 0x64d7d4, 0.22));
-      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(412), WIDTH + sx(100), sy(8), 0xf7fffb, 0.18));
+      const terrace = this.add.rectangle(WIDTH / 2, sy(304), WIDTH + sx(100), sy(154), 0xf5f0de);
+      terrace.setStrokeStyle(5, 0x31505d);
+      this.backdrop.add(terrace);
+      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(228), WIDTH + sx(100), sy(24), 0xfff7de, 0.16));
+      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(260), WIDTH + sx(100), sy(14), 0xffffff, 0.12));
+      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(330), WIDTH + sx(100), sy(8), 0x3d5f6f, 0.16));
 
+      const waterMirror = this.add.container(WIDTH / 2, sy(360));
+      waterMirror.add(this.add.rectangle(0, 0, WIDTH + sx(120), sy(48), 0x71ddd8, 0.3));
+      waterMirror.add(this.add.rectangle(0, sy(8), WIDTH + sx(120), sy(10), 0xf8fffb, 0.08));
+      waterMirror.add(this.add.rectangle(0, -sy(12), WIDTH + sx(120), sy(6), 0x9be9e0, 0.2));
+      for (let i = 0; i < 11; i += 1) {
+        waterMirror.add(
+          this.add.rectangle(sx(-700) + i * sx(142), sy(2) + (i % 2) * sy(5), sx(92), sy(3), 0xeafff6, i % 2 ? 0.1 : 0.18)
+        );
+      }
+      this.backdrop.add(waterMirror);
+
+      const balustrade = this.add.container(WIDTH / 2, sy(388));
+      balustrade.add(this.add.rectangle(0, 0, WIDTH + sx(120), sy(32), 0xf5ead5).setStrokeStyle(3, 0x30444f));
       for (let i = 0; i < 14; i += 1) {
-        const x = sx(44) + i * sx(102);
-        const tile = this.add.rectangle(x, sy(392), sx(92), sy(26), 0xf5ebdc).setStrokeStyle(3, 0x30414c);
-        this.backdrop.add(tile);
-        this.backdrop.add(this.add.rectangle(x, sy(392), sx(26), sy(10), 0x40d8ff));
-        this.backdrop.add(this.add.rectangle(x - sx(22), sy(392), sx(14), sy(10), 0xff8b22));
-        this.backdrop.add(this.add.rectangle(x + sx(22), sy(392), sx(14), sy(10), 0xff8b22));
-        this.backdrop.add(this.add.rectangle(x, sy(384), sx(70), sy(3), 0xffffff, 0.14));
+        const x = sx(-684) + i * sx(106);
+        balustrade.add(this.add.rectangle(x, 0, sx(88), sy(20), 0xf5ead5).setStrokeStyle(2, 0x314452));
+        balustrade.add(this.add.rectangle(x, 0, sx(26), sy(7), 0x42d7dc));
+        balustrade.add(this.add.rectangle(x - sx(24), 0, sx(14), sy(7), 0xff9641));
+        balustrade.add(this.add.rectangle(x + sx(24), 0, sx(14), sy(7), 0xff9641));
+        balustrade.add(this.add.rectangle(x, -sy(7), sx(68), sy(2), 0xffffff, 0.14));
       }
+      this.backdrop.add(balustrade);
 
-      const science = this.add.container(sx(974), sy(338));
-      science.add(this.add.rectangle(0, sy(12), sx(236), sy(18), 0x204758, 0.9));
-      science.add(this.add.arc(-sx(72), -sy(10), sx(74), 180, 360, false, 0xf6fafb, 0.96));
-      science.add(this.add.arc(sx(12), -sy(2), sx(54), 180, 360, false, 0xf6fafb, 0.92));
-      science.add(this.add.triangle(sx(84), -sy(34), sx(10), sy(26), sx(70), -sy(62), sx(126), sy(26), 0xf6fafb, 0.98));
-      science.add(this.add.rectangle(-sx(72), sy(14), sx(84), sy(4), 0x81dfdf, 0.28));
-      science.add(this.add.rectangle(sx(10), sy(18), sx(60), sy(4), 0x81dfdf, 0.22));
-      this.backdrop.add(science);
-
-      const miguelete = this.add.container(sx(1200), sy(294));
-      miguelete.add(this.add.rectangle(0, sy(4), sx(28), sy(130), 0xd39b31, 0.96).setStrokeStyle(3, 0x2d4651));
-      miguelete.add(this.add.rectangle(0, -sy(98), sx(40), sy(12), 0x35545f));
-      miguelete.add(this.add.circle(0, -sy(80), sx(8), 0x35545f));
-      miguelete.add(this.add.rectangle(0, -sy(122), sx(5), sy(18), 0x35545f));
-      this.backdrop.add(miguelete);
-
-      const serranos = this.add.container(sx(170), sy(326));
-      serranos.add(this.add.rectangle(0, sy(18), sx(148), sy(68), 0x67ace0, 0.88).setStrokeStyle(4, 0x2c4652));
-      serranos.add(this.add.rectangle(-sx(48), -sy(12), sx(38), sy(72), 0x47b6f2, 0.94));
-      serranos.add(this.add.rectangle(sx(48), -sy(12), sx(38), sy(72), 0x47b6f2, 0.94));
-      serranos.add(this.add.rectangle(0, sy(24), sx(28), sy(34), 0x2b5f78));
-      this.backdrop.add(serranos);
-
-      const cathedral = this.add.container(sx(540), sy(330));
-      cathedral.add(this.add.rectangle(0, sy(14), sx(130), sy(62), 0x6a3465, 0.84).setStrokeStyle(4, 0x2d1d2a));
-      cathedral.add(this.add.circle(0, -sy(10), sx(22), 0xffd95c, 0.88).setStrokeStyle(4, 0x6a3465));
-      cathedral.add(this.add.triangle(0, sy(0), -sx(22), sy(28), 0, -sy(20), sx(22), sy(28), 0xffd95c, 0.88));
-      cathedral.add(this.add.rectangle(0, sy(18), sx(24), sy(28), 0x5c2420));
-      this.backdrop.add(cathedral);
-
-      for (const x of [sx(318), sx(742), sx(1320)]) {
-        const palm = this.add.container(x, sy(342));
-        palm.add(this.add.rectangle(0, sy(14), sx(6), sy(60), 0x6d4726));
-        palm.add(this.add.triangle(0, -sy(16), -sx(28), sy(10), 0, -sy(36), sx(28), sy(10), 0x2fbf71));
-        palm.add(this.add.triangle(-sx(14), -sy(2), -sx(30), sy(12), -sx(12), -sy(24), sx(4), sy(12), 0x48d886));
+      const palmStrip = [
+        [sx(174), sy(336), 1],
+        [sx(506), sy(332), 0.86],
+        [sx(1160), sy(336), 0.92],
+        [sx(1386), sy(340), 0.78],
+      ];
+      palmStrip.forEach(([x, y, scale]) => {
+        const palm = this.add.container(x, y);
+        palm.setScale(scale);
+        palm.add(this.add.rectangle(0, sy(14), sx(7), sy(62), 0x6f4721));
+        palm.add(this.add.triangle(0, -sy(16), -sx(30), sy(10), 0, -sy(40), sx(30), sy(10), 0x2fc675));
+        palm.add(this.add.triangle(-sx(16), sy(0), -sx(34), sy(14), -sx(12), -sy(26), sx(4), sy(14), 0x4ddd8c));
+        palm.add(this.add.triangle(sx(18), sy(0), -sx(2), sy(14), sx(16), -sy(28), sx(38), sy(12), 0x4ddd8c));
         this.backdrop.add(palm);
-      }
+      });
+
+      const waterLine = this.add.rectangle(WIDTH / 2, sy(408), WIDTH + sx(120), sy(5), 0xf8fffd, 0.22);
+      this.backdrop.add(waterLine);
+      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(418), WIDTH + sx(120), sy(6), 0x2e5564, 0.28));
 
       this.sign = this.add
         .text(sx(612), sy(72), "KAMUABU VLC", {
@@ -3619,62 +3984,77 @@ class PlayScene extends Phaser.Scene {
       }
       this.landmark.add(crosswalk);
     } else if (this.city.key === "valencia") {
-      this.landmark.x = sx(766);
-      const water = this.add.container(0, sy(108));
-      water.add(this.add.rectangle(0, 0, sx(690), sy(18), 0x67ddd8, 0.24));
-      water.add(this.add.rectangle(0, sy(8), sx(640), sy(4), 0xf7fffb, 0.16));
-      water.add(this.add.rectangle(-sx(168), -sy(2), sx(108), sy(5), 0xffd95c, 0.14));
-      water.add(this.add.rectangle(sx(26), sy(2), sx(96), sy(4), 0x8ed8e1, 0.14));
-      water.add(this.add.rectangle(sx(192), -sy(1), sx(124), sy(5), 0x5aa7df, 0.12));
-      this.landmark.add(water);
+      this.landmark.x = sx(780);
 
-      const arts = this.add.container(-sx(92), sy(28));
-      arts.add(this.add.rectangle(0, sy(72), sx(360), sy(14), 0x22495d));
-      arts.add(this.add.arc(-sx(116), sy(28), sx(106), 180, 360, false, 0xf6fafb, 0.98));
-      arts.add(this.add.arc(-sx(116), sy(28), sx(82), 180, 360, false, 0xffb35f, 0.2));
-      arts.add(this.add.arc(0, sy(36), sx(74), 180, 360, false, 0xf6fafb, 0.92));
-      arts.add(this.add.arc(0, sy(36), sx(54), 180, 360, false, 0x76dfe0, 0.18));
-      arts.add(this.add.triangle(sx(124), -sy(4), sx(24), sy(62), sx(108), -sy(58), sx(176), sy(62), 0xf6fafb, 0.98));
-      arts.add(this.add.triangle(sx(132), sy(8), sx(42), sy(52), sx(114), -sy(38), sx(164), sy(52), 0x86dfe0, 0.3));
-      arts.add(this.add.rectangle(sx(124), sy(60), sx(132), sy(8), 0x223846));
-      arts.add(this.add.rectangle(-sx(8), sy(56), sx(94), sy(8), 0x223846));
-      this.landmark.add(arts);
+      const reflection = this.add.container(0, sy(122));
+      reflection.add(this.add.rectangle(0, 0, sx(814), sy(28), 0x76ddd8, 0.32));
+      reflection.add(this.add.rectangle(0, -sy(8), sx(772), sy(8), 0xf8fffb, 0.12));
+      reflection.add(this.add.rectangle(-sx(180), -sy(2), sx(140), sy(4), 0xffd46d, 0.14));
+      reflection.add(this.add.rectangle(sx(58), sy(2), sx(168), sy(4), 0x8ae5df, 0.12));
+      reflection.add(this.add.rectangle(sx(248), -sy(1), sx(122), sy(4), 0x5caee4, 0.1));
+      this.landmark.add(reflection);
 
-      const miguelete = this.add.container(sx(158), sy(-4));
-      miguelete.add(this.add.rectangle(0, sy(24), sx(34), sy(154), 0xd39b31, 0.96));
-      miguelete.add(this.add.rectangle(0, -sy(96), sx(48), sy(14), 0x35545f));
-      miguelete.add(this.add.circle(0, -sy(78), sx(9), 0x35545f));
-      miguelete.add(this.add.rectangle(0, -sy(122), sx(6), sy(18), 0x35545f));
-      miguelete.add(this.add.rectangle(-sx(8), -sy(30), sx(4), sy(98), 0xf2ead8, 0.18));
-      this.landmark.add(miguelete);
+      const ciutat = this.add.container(-sx(130), sy(16));
+      ciutat.add(this.add.rectangle(0, sy(86), sx(462), sy(12), 0x1f4255));
+      ciutat.add(this.add.arc(-sx(138), sy(28), sx(130), 180, 360, false, 0xf8fbfd, 0.99));
+      ciutat.add(this.add.arc(-sx(138), sy(28), sx(102), 180, 360, false, 0xffcf7f, 0.22));
+      ciutat.add(this.add.arc(-sx(8), sy(34), sx(92), 180, 360, false, 0xf8fbfd, 0.94));
+      ciutat.add(this.add.arc(-sx(8), sy(34), sx(68), 180, 360, false, 0x84e7e0, 0.22));
+      ciutat.add(this.add.triangle(sx(160), -sy(4), sx(24), sy(84), sx(152), -sy(76), sx(224), sy(84), 0xf7fbfd, 0.99));
+      ciutat.add(this.add.triangle(sx(166), sy(10), sx(46), sy(70), sx(154), -sy(44), sx(214), sy(70), 0x96ece5, 0.34));
+      ciutat.add(this.add.rectangle(sx(158), sy(78), sx(164), sy(8), 0x1f3744));
+      ciutat.add(this.add.rectangle(-sx(12), sy(72), sx(126), sy(8), 0x1f3744));
+      ciutat.add(this.add.rectangle(-sx(160), sy(60), sx(34), sy(10), 0xeef7fb, 0.72));
+      ciutat.add(this.add.rectangle(sx(16), sy(66), sx(24), sy(8), 0xeef7fb, 0.56));
+      this.landmark.add(ciutat);
 
-      const cathedral = this.add.container(sx(286), sy(30));
-      cathedral.add(this.add.rectangle(0, sy(44), sx(146), sy(76), 0x6a3465, 0.9).setStrokeStyle(4, 0x2c2430));
-      cathedral.add(this.add.rectangle(0, -sy(6), sx(76), sy(12), 0x6a3465));
-      cathedral.add(this.add.circle(0, sy(4), sx(24), 0xffd95c, 0.92).setStrokeStyle(4, 0x6a3465));
-      cathedral.add(this.add.triangle(0, sy(18), -sx(26), sy(42), 0, -sy(10), sx(26), sy(42), 0xffd95c, 0.92));
-      cathedral.add(this.add.rectangle(0, sy(48), sx(28), sy(34), 0x5c2420));
-      cathedral.add(this.add.rectangle(-sx(52), sy(30), sx(20), sy(56), 0xca4636, 0.88));
-      cathedral.add(this.add.rectangle(sx(52), sy(30), sx(20), sy(56), 0xca4636, 0.88));
-      this.landmark.add(cathedral);
+      const assut = this.add.container(sx(226), -sy(8));
+      assut.add(this.add.rectangle(0, sy(86), sx(18), sy(212), 0xf7fbff));
+      assut.add(this.add.triangle(sx(70), sy(24), sx(10), sy(148), sx(72), -sy(86), sx(124), sy(148), 0xf7fbff, 0.98));
+      for (let i = 0; i < 7; i += 1) {
+        assut.add(
+          this.add.rectangle(sx(12) + i * sx(14), -sy(2) + i * sy(26), sx(56 - i * 4), sy(2), 0xe1fbf7, 0.4).setAngle(-30)
+        );
+      }
+      this.landmark.add(assut);
 
-      const basilica = this.add.container(sx(432), sy(44));
-      basilica.add(this.add.rectangle(0, sy(40), sx(128), sy(64), 0x9fca47, 0.88).setStrokeStyle(4, 0x355441));
-      basilica.add(this.add.circle(0, sy(0), sx(32), 0x2f8f4b, 0.96));
-      basilica.add(this.add.rectangle(0, -sy(38), sx(12), sy(28), 0xffd95c, 0.92));
-      basilica.add(this.add.triangle(0, -sy(54), -sx(12), -sy(28), 0, -sy(72), sx(12), -sy(28), 0xffd95c));
-      basilica.add(this.add.rectangle(-sx(34), sy(34), sx(18), sy(38), 0xe7f0b7, 0.24));
-      basilica.add(this.add.rectangle(sx(34), sy(34), sx(18), sy(38), 0xe7f0b7, 0.24));
-      this.landmark.add(basilica);
+      const oldTown = this.add.container(sx(382), sy(8));
+      const miguelete = this.add.container(-sx(60), 0);
+      miguelete.add(this.add.rectangle(0, sy(8), sx(34), sy(152), 0xd39d34, 0.98).setOrigin(0.5, 1));
+      miguelete.add(this.add.rectangle(0, -sy(114), sx(52), sy(14), 0x365466));
+      miguelete.add(this.add.circle(0, -sy(94), sx(9), 0x365466));
+      miguelete.add(this.add.rectangle(0, -sy(142), sx(6), sy(18), 0x365466));
+      oldTown.add(miguelete);
 
-      const serranos = this.add.container(sx(566), sy(50));
-      serranos.add(this.add.rectangle(0, sy(44), sx(170), sy(74), 0x59a5df, 0.92).setStrokeStyle(4, 0x24475a));
-      serranos.add(this.add.rectangle(-sx(54), sy(0), sx(42), sy(84), 0x3fb3f4, 0.96));
-      serranos.add(this.add.rectangle(sx(54), sy(0), sx(42), sy(84), 0x3fb3f4, 0.96));
-      serranos.add(this.add.rectangle(0, sy(46), sx(30), sy(34), 0x285e7b));
-      serranos.add(this.add.rectangle(-sx(54), -sy(28), sx(52), sy(8), 0xe8f7ff, 0.24));
-      serranos.add(this.add.rectangle(sx(54), -sy(28), sx(52), sy(8), 0xe8f7ff, 0.24));
-      this.landmark.add(serranos);
+      const cathedral = this.add.container(sx(94), sy(18));
+      cathedral.add(this.add.rectangle(0, sy(42), sx(172), sy(78), 0x733765, 0.94).setOrigin(0.5, 1));
+      cathedral.add(this.add.rectangle(0, -sy(8), sx(88), sy(14), 0x733765));
+      cathedral.add(this.add.circle(0, sy(0), sx(24), 0xffd65d, 0.96).setStrokeStyle(4, 0x733765));
+      cathedral.add(this.add.triangle(0, sy(18), -sx(28), sy(44), 0, -sy(16), sx(28), sy(44), 0xffd65d, 0.94));
+      cathedral.add(this.add.rectangle(0, sy(44), sx(28), sy(30), 0x5d2521));
+      cathedral.add(this.add.rectangle(-sx(54), sy(22), sx(20), sy(54), 0xc94838, 0.9));
+      cathedral.add(this.add.rectangle(sx(54), sy(22), sx(20), sy(54), 0xc94838, 0.9));
+      oldTown.add(cathedral);
+
+      const serranos = this.add.container(sx(258), sy(28));
+      serranos.add(this.add.rectangle(0, sy(28), sx(156), sy(72), 0x5faadf, 0.92).setOrigin(0.5, 1));
+      serranos.add(this.add.rectangle(-sx(48), -sy(18), sx(24), sy(92), 0x49b6f1, 0.98));
+      serranos.add(this.add.rectangle(sx(48), -sy(18), sx(24), sy(92), 0x49b6f1, 0.98));
+      serranos.add(this.add.rectangle(0, sy(22), sx(34), sy(40), 0x35617f));
+      serranos.add(this.add.rectangle(-sx(48), -sy(48), sx(28), sy(8), 0xeaf7ff, 0.18));
+      serranos.add(this.add.rectangle(sx(48), -sy(48), sx(28), sy(8), 0xeaf7ff, 0.18));
+      oldTown.add(serranos);
+      this.landmark.add(oldTown);
+
+      const promenade = this.add.container(sx(44), sy(108));
+      promenade.add(this.add.rectangle(0, 0, sx(364), sy(18), 0xf4ead6).setStrokeStyle(3, 0x2d4653));
+      promenade.add(this.add.rectangle(0, -sy(6), sx(276), sy(4), 0xff9641));
+      promenade.add(this.add.rectangle(0, sy(4), sx(124), sy(4), 0x42d7dc));
+      promenade.add(this.add.rectangle(-sx(126), -sy(22), sx(10), sy(38), 0x2f5968));
+      promenade.add(this.add.rectangle(sx(126), -sy(22), sx(10), sy(38), 0x2f5968));
+      promenade.add(this.add.rectangle(-sx(70), -sy(8), sx(34), sy(3), 0xffffff, 0.18));
+      promenade.add(this.add.rectangle(sx(76), -sy(8), sx(30), sy(3), 0xffffff, 0.14));
+      this.landmark.add(promenade);
     } else {
       this.landmark.x = sx(758);
       this.landmark.add(this.add.rectangle(-sx(62), sy(30), sx(14), sy(150), 0x5b3d22));
@@ -3814,35 +4194,49 @@ class PlayScene extends Phaser.Scene {
       this.propLayer.add(gondola);
       this.props.push(gondola);
     } else if (this.city.key === "valencia") {
-      for (const x of [sx(196), sx(634), sx(1128)]) {
-        const orangeTree = this.add.container(x, sy(354));
+      for (const x of [sx(216), sx(612), sx(1036), sx(1324)]) {
+        const orangeTree = this.add.container(x, sy(356));
         orangeTree.add(this.add.rectangle(0, sy(10), sx(8), sy(62), 0x75491f));
-        orangeTree.add(this.add.circle(0, -sy(22), sx(28), 0x45bc68, 0.94));
-        orangeTree.add(this.add.circle(-sx(18), -sy(8), sx(18), 0x56ca76, 0.96));
-        orangeTree.add(this.add.circle(sx(18), -sy(8), sx(18), 0x56ca76, 0.96));
+        orangeTree.add(this.add.circle(0, -sy(22), sx(30), 0x45bc68, 0.94));
+        orangeTree.add(this.add.circle(-sx(20), -sy(8), sx(19), 0x56ca76, 0.96));
+        orangeTree.add(this.add.circle(sx(20), -sy(8), sx(19), 0x56ca76, 0.96));
         orangeTree.add(this.add.circle(-sx(10), -sy(20), sx(4), 0xffb33f));
         orangeTree.add(this.add.circle(sx(6), -sy(28), sx(4), 0xffb33f));
         orangeTree.add(this.add.circle(sx(18), -sy(14), sx(4), 0xffb33f));
         this.propLayer.add(orangeTree);
         this.props.push(orangeTree);
       }
-      for (const x of [sx(364), sx(820), sx(1278)]) {
+      for (const x of [sx(372), sx(814), sx(1252)]) {
         const bench = this.add.container(x, sy(368));
-        bench.add(this.add.rectangle(0, 0, sx(86), sy(10), 0xf2ead8).setStrokeStyle(3, 0x29414e));
+        bench.add(this.add.rectangle(0, 0, sx(88), sy(10), 0xf2ead8).setStrokeStyle(3, 0x29414e));
         bench.add(this.add.rectangle(-sx(26), sy(18), sx(6), sy(26), 0x29414e));
         bench.add(this.add.rectangle(sx(26), sy(18), sx(6), sy(26), 0x29414e));
-        bench.add(this.add.rectangle(0, -sy(8), sx(70), sy(4), 0xff8b22));
-        bench.add(this.add.rectangle(0, sy(4), sx(24), sy(4), 0x40d8ff));
+        bench.add(this.add.rectangle(0, -sy(8), sx(72), sy(4), 0xff8f37));
+        bench.add(this.add.rectangle(0, sy(4), sx(28), sy(4), 0x42d7dc));
         this.propLayer.add(bench);
         this.props.push(bench);
       }
-      const science = this.add.container(sx(1038), sy(338));
-      science.add(this.add.rectangle(0, sy(24), sx(126), sy(12), 0x22485b));
-      science.add(this.add.arc(-sx(30), sy(0), sx(40), 180, 360, false, 0xf6fafb, 0.92));
-      science.add(this.add.triangle(sx(34), -sy(18), sx(0), sy(22), sx(24), -sy(36), sx(58), sy(22), 0xf6fafb, 0.96));
-      science.setData("type", "science");
-      this.propLayer.add(science);
-      this.props.push(science);
+      const canopy = this.add.container(sx(1002), sy(346));
+      canopy.add(this.add.rectangle(0, sy(18), sx(184), sy(12), 0x295061));
+      canopy.add(this.add.rectangle(-sx(68), sy(2), sx(8), sy(40), 0x345c6d));
+      canopy.add(this.add.rectangle(sx(68), sy(2), sx(8), sy(40), 0x345c6d));
+      canopy.add(this.add.rectangle(0, -sy(6), sx(148), sy(10), 0xf4ead6).setStrokeStyle(2, 0x2b4656));
+      canopy.add(this.add.rectangle(0, sy(2), sx(58), sy(4), 0x42d7dc));
+      canopy.add(this.add.rectangle(-sx(24), -sy(6), sx(14), sy(4), 0xff8f37));
+      canopy.add(this.add.rectangle(sx(24), -sy(6), sx(14), sy(4), 0xff8f37));
+      canopy.setData("type", "pergola");
+      this.propLayer.add(canopy);
+      this.props.push(canopy);
+
+      const trencadis = this.add.container(sx(1180), sy(350));
+      trencadis.add(this.add.rectangle(0, sy(20), sx(124), sy(10), 0x284857));
+      trencadis.add(this.add.arc(0, 0, sx(52), 180, 360, false, 0xf7fbfc, 0.96));
+      trencadis.add(this.add.arc(0, 0, sx(40), 180, 360, false, 0xffc66e, 0.16));
+      trencadis.add(this.add.rectangle(-sx(26), sy(0), sx(10), sy(20), 0xffffff, 0.24));
+      trencadis.add(this.add.rectangle(sx(18), sy(4), sx(14), sy(16), 0x8de7df, 0.24));
+      trencadis.setData("type", "trencadis");
+      this.propLayer.add(trencadis);
+      this.props.push(trencadis);
     } else {
       for (const x of [sx(200), sx(600), sx(1030)]) {
         const palm = this.add.container(x, sy(352));
@@ -3886,6 +4280,81 @@ class PlayScene extends Phaser.Scene {
     }
   }
 
+  createForegroundDepth() {
+    this.frontDepthProps = [];
+    const shadowBand = this.add.rectangle(WIDTH / 2, GROUND_Y + sy(2), WIDTH, sy(86), 0x0b0c10, 0.12);
+    this.frontDepth.add(shadowBand);
+
+    const pushDepth = (container, speedFactor = 0.24) => {
+      container.setData("speedFactor", speedFactor);
+      this.frontDepth.add(container);
+      this.frontDepthProps.push(container);
+    };
+
+    if (this.city.key === "valencia") {
+      for (const x of [sx(116), sx(1028)]) {
+        const palm = this.add.container(x, sy(360));
+        palm.add(this.add.rectangle(0, sy(18), sx(10), sy(102), 0x13252c, 0.78));
+        palm.add(this.add.triangle(0, -sy(50), -sx(54), sy(8), 0, -sy(96), sx(54), sy(8), 0x163842, 0.66));
+        palm.add(this.add.triangle(-sx(26), -sy(26), -sx(62), sy(14), -sx(20), -sy(72), sx(12), sy(12), 0x1b4d57, 0.58));
+        palm.add(this.add.triangle(sx(28), -sy(24), -sx(12), sy(14), sx(22), -sy(74), sx(62), sy(12), 0x1b4d57, 0.58));
+        pushDepth(palm, 0.2);
+      }
+      for (const x of [sx(320), sx(720), sx(1180)]) {
+        const rail = this.add.container(x, sy(396));
+        rail.add(this.add.rectangle(0, 0, sx(124), sy(10), 0x12252e, 0.72));
+        rail.add(this.add.rectangle(-sx(36), -sy(8), sx(4), sy(28), 0x183844, 0.7));
+        rail.add(this.add.rectangle(sx(36), -sy(8), sx(4), sy(28), 0x183844, 0.7));
+        pushDepth(rail, 0.26);
+      }
+      for (const x of [sx(486), sx(904)]) {
+        const lamp = this.add.container(x, sy(374));
+        lamp.add(this.add.rectangle(0, sy(8), sx(8), sy(84), 0x102932, 0.76));
+        lamp.add(this.add.rectangle(0, -sy(28), sx(28), sy(8), 0x1b4450, 0.72));
+        lamp.add(this.add.circle(0, -sy(28), sx(18), 0xffd98a, 0.08));
+        pushDepth(lamp, 0.22);
+      }
+      for (const x of [sx(178), sx(648), sx(1178)]) {
+        const mist = this.add.container(x, sy(412));
+        mist.add(this.add.ellipse(0, 0, sx(138), sy(18), 0xf4fff9, 0.12));
+        mist.add(this.add.ellipse(sx(22), -sy(4), sx(96), sy(12), 0xa7eee6, 0.08));
+        pushDepth(mist, 0.16);
+      }
+    } else if (this.city.key === "roma") {
+      for (const x of [sx(178), sx(1080)]) {
+        const ruin = this.add.container(x, sy(374));
+        ruin.add(this.add.rectangle(0, sy(10), sx(112), sy(84), 0x2b211b, 0.72));
+        ruin.add(this.add.arc(0, -sy(18), sx(38), 180, 360, false, 0x3f3128, 0.64));
+        ruin.add(this.add.rectangle(-sx(26), sy(0), sx(16), sy(48), 0x1f1814, 0.74));
+        ruin.add(this.add.rectangle(sx(26), sy(4), sx(16), sy(44), 0x1f1814, 0.74));
+        pushDepth(ruin, 0.22);
+      }
+    } else if (this.city.key === "paris") {
+      for (const x of [sx(156), sx(1120)]) {
+        const lamp = this.add.container(x, sy(364));
+        lamp.add(this.add.rectangle(0, sy(10), sx(8), sy(102), 0x121625, 0.76));
+        lamp.add(this.add.circle(0, -sy(46), sx(12), 0x1e2742, 0.64));
+        lamp.add(this.add.circle(0, -sy(46), sx(24), 0x3fdcff, 0.06));
+        pushDepth(lamp, 0.2);
+      }
+    } else if (this.city.key === "venecia") {
+      for (const x of [sx(210), sx(1022)]) {
+        const post = this.add.container(x, sy(384));
+        post.add(this.add.rectangle(0, sy(8), sx(12), sy(76), 0x1a2c35, 0.76));
+        post.add(this.add.rectangle(0, -sy(26), sx(16), sy(10), 0x254651, 0.68));
+        pushDepth(post, 0.22);
+      }
+    } else if (this.city.key === "londres") {
+      for (const x of [sx(172), sx(1092)]) {
+        const rail = this.add.container(x, sy(394));
+        rail.add(this.add.rectangle(0, 0, sx(144), sy(12), 0x161a22, 0.78));
+        rail.add(this.add.rectangle(-sx(42), -sy(10), sx(4), sy(28), 0x2d3744, 0.74));
+        rail.add(this.add.rectangle(sx(42), -sy(10), sx(4), sy(28), 0x2d3744, 0.74));
+        pushDepth(rail, 0.24);
+      }
+    }
+  }
+
   createStreet() {
     const roadTop = this.add.rectangle(WIDTH / 2, GROUND_Y + sy(42), WIDTH, sy(88), this.city.road, 1);
     const curb = this.add.rectangle(WIDTH / 2, GROUND_Y + sy(2), WIDTH, sy(10), 0x15151c);
@@ -3907,19 +4376,26 @@ class PlayScene extends Phaser.Scene {
         this.foreground.add(this.add.ellipse(sx(90) + i * sx(164), GROUND_Y + sy(32), sx(74), sy(14), 0x9ee9de, i % 2 ? 0.08 : 0.14));
       }
     } else if (this.city.key === "valencia") {
-      this.foreground.add(this.add.rectangle(WIDTH / 2, GROUND_Y - sy(8), WIDTH, sy(16), 0xf2ead8, 0.85));
-      for (let i = 0; i < 18; i += 1) {
-        const tile = this.add.rectangle(i * sx(82), GROUND_Y - sy(8), sx(34), sy(6), i % 2 === 0 ? 0xff8b22 : 0x40d8ff);
-        this.foreground.add(tile);
+      this.foreground.add(this.add.rectangle(WIDTH / 2, GROUND_Y - sy(10), WIDTH, sy(22), 0xf7efdd, 0.98));
+      this.foreground.add(this.add.rectangle(WIDTH / 2, GROUND_Y - sy(1), WIDTH, sy(6), 0xe8dcc2, 0.86));
+      for (let i = 0; i < 16; i += 1) {
+        const x = i * sx(92);
+        this.foreground.add(this.add.rectangle(x, GROUND_Y - sy(10), sx(72), sy(6), i % 2 === 0 ? 0xff9543 : 0x43d7dc));
+        this.foreground.add(this.add.rectangle(x, GROUND_Y - sy(4), sx(26), sy(2), 0xffffff, 0.16));
       }
-      this.foreground.add(this.add.rectangle(WIDTH / 2, GROUND_Y + sy(10), WIDTH, sy(14), 0xfaf3de, 0.24));
-      this.foreground.add(this.add.rectangle(WIDTH / 2, GROUND_Y + sy(20), WIDTH, sy(18), 0xf5c468, 0.1));
-      this.foreground.add(this.add.rectangle(WIDTH / 2, GROUND_Y + sy(30), WIDTH, sy(18), 0xff8b22, 0.06));
-      for (let i = 0; i < 9; i += 1) {
-        this.foreground.add(this.add.rectangle(sx(60) + i * sx(150), GROUND_Y + sy(30), sx(78), sy(4), 0xfff4dd, i % 2 ? 0.08 : 0.14));
+      this.foreground.add(this.add.rectangle(WIDTH / 2, GROUND_Y + sy(10), WIDTH, sy(18), 0xf0e2c8, 0.32));
+      this.foreground.add(this.add.rectangle(WIDTH / 2, GROUND_Y + sy(24), WIDTH, sy(12), 0xffd9a8, 0.12));
+      this.foreground.add(this.add.rectangle(WIDTH / 2, GROUND_Y + sy(38), WIDTH, sy(14), 0x7fdeda, 0.09));
+      for (let i = 0; i < 12; i += 1) {
+        const tileX = sx(34) + i * sx(128);
+        this.foreground.add(this.add.rectangle(tileX, GROUND_Y + sy(20), sx(88), sy(18), 0xf7efdd).setStrokeStyle(2, 0x29414e));
+        this.foreground.add(this.add.rectangle(tileX, GROUND_Y + sy(20), sx(20), sy(6), 0x42d7dc));
+        this.foreground.add(this.add.rectangle(tileX - sx(24), GROUND_Y + sy(20), sx(10), sy(6), 0xff9240));
+        this.foreground.add(this.add.rectangle(tileX + sx(24), GROUND_Y + sy(20), sx(10), sy(6), 0xff9240));
       }
-      for (let i = 0; i < 7; i += 1) {
-        this.foreground.add(this.add.ellipse(sx(100) + i * sx(188), GROUND_Y + sy(20), sx(92), sy(14), 0x89e0de, i % 2 ? 0.06 : 0.1));
+      for (let i = 0; i < 8; i += 1) {
+        this.foreground.add(this.add.ellipse(sx(96) + i * sx(184), GROUND_Y + sy(28), sx(108), sy(14), 0x88e1de, i % 2 ? 0.08 : 0.12));
+        this.foreground.add(this.add.rectangle(sx(92) + i * sx(184), GROUND_Y + sy(24), sx(34), sy(3), 0xf9fffc, i % 2 ? 0.08 : 0.14));
       }
     } else if (this.city.key === "londres") {
       this.foreground.add(this.add.rectangle(WIDTH / 2, GROUND_Y + sy(26), WIDTH, sy(34), 0x7fa6c5, 0.06));
@@ -4065,6 +4541,12 @@ class PlayScene extends Phaser.Scene {
   createColorGrade() {
     const overlay = (x, y, w, h, color, alpha = 0.1) => this.gradeLayer.add(this.add.ellipse(x, y, w, h, color, alpha));
     const frame = (x, y, w, h, color, alpha = 0.16) => this.gradeLayer.add(this.add.rectangle(x, y, w, h, color, alpha));
+    const vignette = (x, y, w, h, color, alpha = 0.14) => this.gradeLayer.add(this.add.ellipse(x, y, w, h, color, alpha));
+
+    vignette(sx(40), HEIGHT / 2, sx(240), HEIGHT, 0x090a0f, 0.16);
+    vignette(WIDTH - sx(40), HEIGHT / 2, sx(240), HEIGHT, 0x090a0f, 0.16);
+    this.gradeLayer.add(this.add.rectangle(WIDTH / 2, sy(36), WIDTH, sy(72), 0x0a0c11, 0.08));
+    this.gradeLayer.add(this.add.rectangle(WIDTH / 2, HEIGHT - sy(26), WIDTH, sy(54), 0x07090d, 0.14));
 
     if (this.city.key === "londres") {
       overlay(sx(1180), sy(114), sx(360), sy(220), 0xc79b63, 0.1);
@@ -4072,9 +4554,12 @@ class PlayScene extends Phaser.Scene {
       overlay(sx(1260), sy(258), sx(260), sy(380), 0x182231, 0.12);
       frame(WIDTH / 2, sy(420), WIDTH, sy(120), 0x0f131a, 0.12);
     } else if (this.city.key === "valencia") {
-      overlay(sx(1100), sy(122), sx(420), sy(250), 0xffc57f, 0.12);
-      overlay(sx(170), sy(250), sx(230), sy(420), 0x2f886d, 0.12);
-      frame(WIDTH / 2, sy(410), WIDTH, sy(120), 0xffa657, 0.06);
+      overlay(sx(1122), sy(112), sx(520), sy(292), 0xffc06e, 0.18);
+      overlay(sx(180), sy(250), sx(300), sy(440), 0x2a7f6f, 0.12);
+      overlay(sx(1188), sy(318), sx(320), sy(194), 0xffedd0, 0.1);
+      frame(WIDTH / 2, sy(410), WIDTH, sy(130), 0xffa24f, 0.08);
+      this.gradeLayer.add(this.add.rectangle(WIDTH / 2, sy(314), WIDTH, sy(30), 0x9ff1ef, 0.06));
+      this.gradeLayer.add(this.add.rectangle(WIDTH / 2, sy(176), WIDTH, sy(20), 0xfff4d9, 0.05));
     } else if (this.city.key === "roma") {
       overlay(sx(1080), sy(146), sx(420), sy(240), 0xf0b06c, 0.12);
       overlay(sx(176), sy(250), sx(240), sy(420), 0x5f4032, 0.12);
@@ -4151,29 +4636,36 @@ class PlayScene extends Phaser.Scene {
   }
 
   createTextPanels() {
+    this.stageStampPlate = this.add
+      .rectangle(sx(182), sy(102), sx(280), sy(62), 0x12151d, 0.84)
+      .setStrokeStyle(sx(3), this.city.highlight, 0.44);
     this.titleText = this.add
-      .text(WIDTH / 2, sy(122), `${this.city.name.toUpperCase()} STAGE`, {
+      .text(sx(64), sy(92), `${this.city.name.toUpperCase()} STAGE`, {
         fontFamily: '"Press Start 2P"',
-        fontSize: `${Math.round(sx(30))}px`,
+        fontSize: `${Math.round(sx(14))}px`,
         color: "#ff8b22",
-        align: "center",
+        align: "left",
         stroke: "#14151c",
-        strokeThickness: 8,
+        strokeThickness: 6,
       })
-      .setOrigin(0.5);
+      .setOrigin(0, 0.5);
 
     this.tipText = this.add
-      .text(WIDTH / 2, sy(176), "A/D mover  |  J disparar  |  Espacio saltar  |  S agacharse", {
+      .text(sx(64), sy(116), "MOVE  SHOOT  JUMP  DUCK", {
         fontFamily: "VT323",
-        fontSize: `${Math.round(sx(31))}px`,
+        fontSize: `${Math.round(sx(22))}px`,
         color: "#f2ead8",
       })
-      .setOrigin(0.5);
+      .setOrigin(0, 0.5);
+
+    this.feedbackPlate = this.add
+      .rectangle(WIDTH / 2, sy(162), sx(628), sy(40), 0x12151d, 0.68)
+      .setStrokeStyle(sx(3), this.city.accent, 0.24);
 
     this.feedbackText = this.add
-      .text(WIDTH / 2, sy(222), "Avanza, dispara a los enemigos y no corras a ciegas", {
+      .text(WIDTH / 2, sy(162), "Arranca con ritmo, domina la calle y busca la ruta alta", {
         fontFamily: "VT323",
-        fontSize: `${Math.round(sx(27))}px`,
+        fontSize: `${Math.round(sx(22))}px`,
         color: "#ffd95c",
       })
       .setOrigin(0.5);
@@ -4200,6 +4692,22 @@ class PlayScene extends Phaser.Scene {
       })
       .setOrigin(0.5)
       .setAlpha(0);
+
+    this.tweens.add({
+      targets: [this.stageStampPlate, this.titleText, this.tipText],
+      alpha: 0,
+      delay: 2200,
+      duration: 720,
+      ease: "Sine.InOut",
+    });
+
+    this.tweens.add({
+      targets: [this.feedbackPlate, this.feedbackText],
+      alpha: 0,
+      delay: 3000,
+      duration: 900,
+      ease: "Sine.InOut",
+    });
 
     this.damageOverlay = this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, 0xff365f, 0).setDepth(2000);
 
@@ -5087,9 +5595,11 @@ class PlayScene extends Phaser.Scene {
 
   showFeedback(message) {
     this.feedbackText.setText(message).setAlpha(1);
+    this.feedbackPlate.setAlpha(1);
     this.tweens.killTweensOf(this.feedbackText);
+    this.tweens.killTweensOf(this.feedbackPlate);
     this.tweens.add({
-      targets: this.feedbackText,
+      targets: [this.feedbackText, this.feedbackPlate],
       alpha: 0,
       delay: 1800,
       duration: 700,
@@ -5942,7 +6452,14 @@ class PlayScene extends Phaser.Scene {
   }
 
   spawnSolidBoxAt(x, y) {
-    const box = this.solidBoxes.create(x, y, "solid-box");
+    const textureByCity = {
+      valencia: "solid-box-valencia",
+      roma: "solid-box-roma",
+      paris: "solid-box-paris",
+      venecia: "solid-box-venecia",
+      londres: "solid-box-londres",
+    };
+    const box = this.solidBoxes.create(x, y, textureByCity[this.city.key] || "solid-box");
     box.setOrigin(0.5, 1);
     box.body.setSize(72, 54);
     box.body.setOffset(3, 4);
@@ -6962,6 +7479,15 @@ class PlayScene extends Phaser.Scene {
       }
     }
 
+    if (this.frontDepthProps) {
+      for (const prop of this.frontDepthProps) {
+        prop.x -= speed * (prop.getData("speedFactor") ?? 0.22) * deltaSeconds;
+        if (prop.x < -sx(180)) {
+          prop.x = WIDTH + Phaser.Math.Between(sx(90), sx(220));
+        }
+      }
+    }
+
     for (const tile of this.trackLines) {
       tile.x -= speed * deltaSeconds;
       if (tile.x < -sx(45)) {
@@ -7127,15 +7653,22 @@ class PlayScene extends Phaser.Scene {
       this.runner.setScale(this.isPowered ? 0.94 : 0.84, this.isPowered ? 0.94 : 0.84);
     }
 
-    if (this.score > 0 && this.titleText.visible && this.score > 55) {
-      this.titleText.setVisible(false);
-      this.tipText.setVisible(false);
-    }
   }
 
   syncHud() {
     const missionPct = Math.floor((this.stageDistance / this.stageLength) * 100);
     const remainingPct = Math.max(0, 100 - missionPct);
+    const miniPct = Phaser.Math.Clamp((Math.floor(this.stageLength * 0.5) / this.stageLength) * 100, 0, 100);
+    const bossPct = Phaser.Math.Clamp(((this.stageLength - 2600) / this.stageLength) * 100, 0, 100);
+    const phaseMap = {
+      intro: "STREET RUN",
+      warmup: "WARMUP",
+      patrol: "CITY FLOW",
+      chase: "PRESSURE",
+      assault: "DANGER",
+      chaos: "MAYHEM",
+      final: "FINAL PUSH",
+    };
     scoreEl.textContent = padScore(this.score);
     comboEl.textContent = `x${this.combo}`;
     bestEl.textContent = padScore(this.best || 0);
@@ -7180,6 +7713,17 @@ class PlayScene extends Phaser.Scene {
     }
     if (progressLabelEl) {
       progressLabelEl.textContent = `${this.city.name.toUpperCase()} STAGE`;
+    }
+    if (progressPhaseEl) {
+      progressPhaseEl.textContent = phaseMap[this.missionPhase] || "ARCADE RUN";
+    }
+    if (progressMiniEl) {
+      progressMiniEl.style.left = `${miniPct}%`;
+      progressMiniEl.style.opacity = missionPct >= miniPct ? "0.42" : "1";
+    }
+    if (progressBossEl) {
+      progressBossEl.style.left = `${bossPct}%`;
+      progressBossEl.style.opacity = missionPct >= bossPct ? "0.42" : "1";
     }
   }
 
