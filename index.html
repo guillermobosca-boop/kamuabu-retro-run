@@ -33,6 +33,31 @@
           <span>PIXEL TOUR</span>
           <span>KAMUABU CLUB</span>
         </div>
+        <section class="league-panel" aria-label="Clasificacion online">
+          <div class="league-panel-head">
+            <div>
+              <p class="league-kicker">WORLD CIRCUIT</p>
+              <h2 class="league-title">Ranking KAMUABU</h2>
+            </div>
+            <button id="change-player" class="league-action" type="button">Apodo</button>
+          </div>
+          <div class="league-player-bar">
+            <span class="league-player-label">Jugador</span>
+            <strong id="player-badge">Invitado</strong>
+            <span id="player-best-badge" class="league-player-best">Sin marca</span>
+          </div>
+          <div class="league-tabs" role="tablist" aria-label="Tipos de ranking">
+            <button class="league-tab is-active" type="button" data-board="global">Global</button>
+            <button class="league-tab" type="button" data-board="weekly">Semanal</button>
+            <button class="league-tab" type="button" data-board="city">Ciudad</button>
+          </div>
+          <ol id="leaderboard-list" class="leaderboard-list" aria-live="polite"></ol>
+          <p id="leaderboard-empty" class="leaderboard-empty">Cargando clasificacion...</p>
+          <div class="league-footer">
+            <span id="leaderboard-status">Sincronizando ranking</span>
+            <button id="leaderboard-refresh" class="league-link" type="button">Actualizar</button>
+          </div>
+        </section>
         <p class="brand-footer">PRESS START TO TOUR THE WORLD</p>
       </section>
 
@@ -110,6 +135,81 @@
         </div>
       </section>
     </main>
+
+    <div id="player-modal" class="overlay-shell is-hidden" aria-hidden="true">
+      <div class="overlay-card overlay-card-player" role="dialog" aria-modal="true" aria-labelledby="player-modal-title">
+        <p class="overlay-kicker">KAMUABU WORLD CIRCUIT</p>
+        <h2 id="player-modal-title">Elige tu apodo</h2>
+        <p class="overlay-copy">
+          Tu nombre aparecerá en el ranking global, semanal y por ciudad. Si quieres competir, este es tu dorsal.
+        </p>
+        <form id="player-form" class="overlay-form">
+          <label class="overlay-field">
+            <span>Apodo</span>
+            <input
+              id="player-nickname"
+              name="nickname"
+              type="text"
+              minlength="3"
+              maxlength="18"
+              autocomplete="nickname"
+              placeholder="Ej. RayoVLC"
+              required
+            />
+          </label>
+          <p id="player-form-status" class="overlay-status">Tu apodo se guardará para futuras partidas.</p>
+          <div class="overlay-actions">
+            <button id="player-save" class="overlay-btn overlay-btn-primary" type="submit">Entrar a competir</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="result-modal" class="overlay-shell is-hidden" aria-hidden="true">
+      <div class="overlay-card overlay-card-result" role="dialog" aria-modal="true" aria-labelledby="result-modal-title">
+        <p class="overlay-kicker">KAMUABU RESULTS</p>
+        <h2 id="result-modal-title">Resultado de la carrera</h2>
+        <div class="result-grid">
+          <div class="result-stat">
+            <span>Puntos</span>
+            <strong id="result-score">000000</strong>
+          </div>
+          <div class="result-stat">
+            <span>Ciudad</span>
+            <strong id="result-city">-</strong>
+          </div>
+          <div class="result-stat">
+            <span>Rango</span>
+            <strong id="result-rank">-</strong>
+          </div>
+          <div class="result-stat">
+            <span>Combo máx.</span>
+            <strong id="result-combo">x1</strong>
+          </div>
+        </div>
+        <div class="result-board">
+          <div class="result-board-card">
+            <span>Posición global</span>
+            <strong id="result-global-position">--</strong>
+          </div>
+          <div class="result-board-card">
+            <span>Posición semanal</span>
+            <strong id="result-weekly-position">--</strong>
+          </div>
+          <div class="result-board-card">
+            <span>Posición ciudad</span>
+            <strong id="result-city-position">--</strong>
+          </div>
+        </div>
+        <div class="result-summary">
+          <p id="result-summary-copy">Tu carrera se está evaluando.</p>
+          <ol id="result-top-list" class="result-top-list"></ol>
+        </div>
+        <div class="overlay-actions">
+          <button id="result-close" class="overlay-btn overlay-btn-secondary" type="button">Cerrar</button>
+        </div>
+      </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
     <script type="module" src="./src/game.js"></script>
