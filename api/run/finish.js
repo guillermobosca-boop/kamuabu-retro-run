@@ -1,4 +1,4 @@
-const { readJson, sendJson, sendMethodNotAllowed } = require("../_lib/http");
+const { handleOptions, readJson, sendJson, sendMethodNotAllowed } = require("../_lib/http");
 const { computeRanks } = require("../_lib/leaderboard");
 const { validateRun } = require("../_lib/score");
 const { insert, patch, selectFirst, upsert } = require("../_lib/supabase");
@@ -82,6 +82,9 @@ async function loadPlayerSummary(playerId) {
 }
 
 module.exports = async function handler(req, res) {
+  if (handleOptions(req, res)) {
+    return;
+  }
   if (req.method !== "POST") {
     return sendMethodNotAllowed(res, ["POST"]);
   }
