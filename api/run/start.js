@@ -1,8 +1,11 @@
-const { readJson, sendJson, sendMethodNotAllowed } = require("../_lib/http");
+const { handleOptions, readJson, sendJson, sendMethodNotAllowed } = require("../_lib/http");
 const { validateCity } = require("../_lib/score");
 const { insert, selectFirst } = require("../_lib/supabase");
 
 module.exports = async function handler(req, res) {
+  if (handleOptions(req, res)) {
+    return;
+  }
   if (req.method !== "POST") {
     return sendMethodNotAllowed(res, ["POST"]);
   }
