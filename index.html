@@ -75,11 +75,22 @@
         <div class="stage-progress" aria-label="Progreso del nivel">
           <div class="stage-progress-top">
             <span id="progress-label">Progreso de mision</span>
+            <span id="progress-phase" class="stage-progress-phase">STREET RUN</span>
             <strong id="progress-distance">META 100%</strong>
           </div>
           <div class="stage-progress-track">
             <div id="progress-fill" class="stage-progress-fill"></div>
+            <div class="stage-progress-zone stage-progress-zone-mini" aria-hidden="true"></div>
+            <div class="stage-progress-zone stage-progress-zone-boss" aria-hidden="true"></div>
+            <div id="progress-mini" class="stage-progress-pin stage-progress-pin-mini" aria-hidden="true"></div>
+            <div id="progress-boss" class="stage-progress-pin stage-progress-pin-boss" aria-hidden="true"></div>
             <div id="progress-marker" class="stage-progress-marker" aria-hidden="true"></div>
+          </div>
+          <div class="stage-progress-legend" aria-hidden="true">
+            <span>START</span>
+            <span>MINI-BOSS</span>
+            <span>FINAL BOSS</span>
+            <span>META</span>
           </div>
         </div>
         <div class="controls">
