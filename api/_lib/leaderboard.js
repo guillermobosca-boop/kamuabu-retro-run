@@ -5,7 +5,7 @@ async function fetchLeaderboard(scope, { cityKey, limit = 10 } = {}) {
   if (scope === "city") {
     return select(
       "leaderboard_city",
-      `select=player_id,nickname,city_key,score,combo_max,enemies_killed,created_at&city_key=eq.${encodeURIComponent(
+      `select=player_id,nickname,city_key,score,combo_max,enemies_killed,run_duration_ms,created_at&city_key=eq.${encodeURIComponent(
         cityKey
       )}&order=score.desc,run_duration_ms.asc&limit=${safeLimit}`
     );
@@ -14,13 +14,13 @@ async function fetchLeaderboard(scope, { cityKey, limit = 10 } = {}) {
   if (scope === "weekly") {
     return select(
       "leaderboard_weekly",
-      `select=player_id,nickname,city_key,score,combo_max,enemies_killed,created_at&order=score.desc,run_duration_ms.asc&limit=${safeLimit}`
+      `select=player_id,nickname,city_key,score,combo_max,enemies_killed,run_duration_ms,created_at&order=score.desc,run_duration_ms.asc&limit=${safeLimit}`
     );
   }
 
   return select(
     "leaderboard_global",
-    `select=player_id,nickname,city_key,score,combo_max,enemies_killed,created_at&order=score.desc,run_duration_ms.asc&limit=${safeLimit}`
+    `select=player_id,nickname,city_key,score,combo_max,enemies_killed,run_duration_ms,created_at&order=score.desc,run_duration_ms.asc&limit=${safeLimit}`
   );
 }
 
@@ -33,8 +33,19 @@ function normalizeEntries(rows = []) {
     score: row.score,
     comboMax: row.combo_max,
     enemiesKilled: row.enemies_killed,
+    runDurationMs: row.run_duration_ms,
     createdAt: row.created_at,
   }));
+}
+
+async function computeSelfEntry(scope, { playerId, cityKey } = {}) {
+  if (!playerId) {
+    return null;
+  }
+
+  const rows = await fetchLeaderboard(scope, { cityKey, limit: 500 });
+  const entries = normalizeEntries(rows);
+  return entries.find((entry) => entry.playerId === playerId) || null;
 }
 
 async function computeRanks(playerId, cityKey) {
@@ -58,6 +69,7 @@ async function computeRanks(playerId, cityKey) {
 
 module.exports = {
   computeRanks,
+  computeSelfEntry,
   fetchLeaderboard,
   normalizeEntries,
 };
