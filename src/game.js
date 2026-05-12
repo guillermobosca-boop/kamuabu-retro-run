@@ -1,3 +1,5 @@
+import { competitionUi } from "./competition.js";
+
 const BASE_WIDTH = 960;
 const BASE_HEIGHT = 540;
 const GAME_SCALE = 4 / 3;
@@ -2309,6 +2311,7 @@ class MenuScene extends Phaser.Scene {
     document.body.classList.add("menu-active");
     this.events.once("shutdown", () => document.body.classList.remove("menu-active"));
     this.events.once("shutdown", () => arcadeAudio.stopMusic());
+    competitionUi.hideResult();
     this.selected = 0;
     this.attractStartedAt = this.time.now;
     this.demoLaunched = false;
@@ -2321,6 +2324,7 @@ class MenuScene extends Phaser.Scene {
     this.createFeaturePanel();
     this.selectorTabs = CITIES.map((city, index) => this.createSelectorTab(city, index));
     this.createFooter();
+    competitionUi.setCity(CITIES[this.selected].key);
 
     this.input.keyboard.on("keydown-LEFT", () => { this.resetAttract(); this.pick(this.selected - 1); });
     this.input.keyboard.on("keydown-RIGHT", () => { this.resetAttract(); this.pick(this.selected + 1); });
@@ -2622,6 +2626,7 @@ class MenuScene extends Phaser.Scene {
 
   updateCards() {
     const selectedCity = CITIES[this.selected];
+    competitionUi.setCity(selectedCity.key);
     this.featureCityTitle.setText(selectedCity.name.toUpperCase());
     this.featureLandmark.setText(selectedCity.landmark.toUpperCase());
     this.featureBlurb.setText(this.getMenuBlurb(selectedCity));
@@ -2707,6 +2712,9 @@ class MenuScene extends Phaser.Scene {
 
   requestStartSelected() {
     if (this.menuStarting) return;
+    if (!competitionUi.ensurePlayerForStart(() => this.requestStartSelected())) {
+      return;
+    }
     this.menuStarting = true;
     this.input.enabled = false;
     this.time.delayedCall(80, () => this.startSelected());
@@ -2778,6 +2786,14 @@ class PlayScene extends Phaser.Scene {
     this.lastDamageAt = -9999;
     this.enemiesDefeated = 0;
     this.prisonersSaved = 0;
+    this.totalSocksCollected = 0;
+    this.totalShirtsCollected = 0;
+    this.totalScootersCollected = 0;
+    this.hitsTaken = 0;
+    this.maxComboObserved = 1;
+    this.midBossDefeated = false;
+    this.runStartedAt = this.time.now;
+    this.weaponPeak = "Pistol";
     this.invulnerableUntil = 0;
     this.isGameOver = false;
     this.best = Number(localStorage.getItem(BEST_KEY) || 0);
@@ -2818,6 +2834,9 @@ class PlayScene extends Phaser.Scene {
     this.registerInput();
     this.stageScript = this.buildStageScript();
     this.syncHud();
+    if (!this.demoMode) {
+      competitionUi.startRun(this.city.key);
+    }
   }
 
   applyCityTheme() {
@@ -3369,88 +3388,79 @@ class PlayScene extends Phaser.Scene {
     }
 
     if (this.city.key === "valencia") {
-      this.skyline.add(this.add.rectangle(WIDTH / 2, sy(162), WIDTH + sx(120), sy(34), 0xfff2c8, 0.12));
-      this.skyline.add(this.add.rectangle(WIDTH / 2, sy(316), WIDTH + sx(120), sy(14), 0xc7f6ef, 0.14));
+      this.skyline.add(this.add.rectangle(WIDTH / 2, sy(170), WIDTH + sx(120), sy(40), 0xfff5d9, 0.12));
+      this.skyline.add(this.add.rectangle(WIDTH / 2, sy(308), WIDTH + sx(120), sy(18), 0xcaf7ef, 0.16));
 
-      const skyline = this.add.container(sx(120), sy(286));
-      skyline.add(this.add.rectangle(sx(620), sy(44), sx(1320), sy(8), 0x285363, 0.92));
-      skyline.add(this.add.rectangle(sx(620), sy(52), sx(1320), sy(4), 0xf9fff8, 0.12));
+      const skyline = this.add.container(sx(80), sy(286));
+      skyline.add(this.add.rectangle(sx(664), sy(52), sx(1360), sy(8), 0x244d62, 0.92));
+      skyline.add(this.add.rectangle(sx(664), sy(60), sx(1360), sy(4), 0xf9fff9, 0.12));
 
-      const agora = this.add.container(sx(16), -sy(4));
-      agora.add(this.add.triangle(0, 0, -sx(108), sy(4), 0, -sy(134), sx(108), sy(4), 0x6e3a86, 0.96));
-      for (let i = 0; i < 9; i += 1) {
-        agora.add(this.add.rectangle(-sx(76) + i * sx(18), -sy(62) + i * sy(12), sx(164 - i * 14), sy(5), 0xffc548, 0.88));
-      }
-      agora.add(this.add.rectangle(0, sy(6), sx(228), sy(10), 0x30263b));
-      skyline.add(agora);
+      const waterfrontGlow = this.add.rectangle(sx(664), sy(26), sx(1320), sy(12), 0x9be9e0, 0.12);
+      skyline.add(waterfrontGlow);
 
-      const arts = this.add.container(sx(286), -sy(2));
-      arts.add(this.add.rectangle(0, sy(50), sx(424), sy(10), 0x21495d));
-      arts.add(this.add.arc(-sx(134), sy(26), sx(112), 180, 360, false, 0xf8fbfc, 0.98));
-      arts.add(this.add.arc(-sx(134), sy(26), sx(92), 180, 360, false, 0xffbe70, 0.18));
-      arts.add(this.add.arc(-sx(14), sy(34), sx(70), 180, 360, false, 0xf8fbfc, 0.92));
-      arts.add(this.add.arc(-sx(14), sy(34), sx(52), 180, 360, false, 0x78e3dd, 0.2));
-      arts.add(this.add.triangle(sx(136), -sy(8), sx(30), sy(62), sx(124), -sy(62), sx(196), sy(62), 0xf7fbfc, 0.98));
-      arts.add(this.add.triangle(sx(140), sy(4), sx(48), sy(54), sx(126), -sy(40), sx(188), sy(54), 0x8de7df, 0.32));
-      arts.add(this.add.rectangle(sx(140), sy(58), sx(136), sy(8), 0x203846));
-      arts.add(this.add.rectangle(-sx(12), sy(54), sx(106), sy(8), 0x203846));
+      const oldTown = this.add.container(sx(156), -sy(18));
+      const serranos = this.add.container(0, sy(20));
+      serranos.add(this.add.rectangle(0, sy(46), sx(196), sy(72), 0x5ea7df, 0.96).setOrigin(0.5, 1));
+      serranos.add(this.add.rectangle(-sx(58), -sy(6), sx(42), sy(96), 0x43b4ef, 0.98));
+      serranos.add(this.add.rectangle(sx(58), -sy(6), sx(42), sy(96), 0x43b4ef, 0.98));
+      serranos.add(this.add.rectangle(0, sy(50), sx(34), sy(30), 0x2a607d));
+      serranos.add(this.add.rectangle(-sx(58), -sy(42), sx(56), sy(8), 0xeef9ff, 0.24));
+      serranos.add(this.add.rectangle(sx(58), -sy(42), sx(56), sy(8), 0xeef9ff, 0.24));
+      oldTown.add(serranos);
+
+      const miguelete = this.add.container(sx(172), 0);
+      miguelete.add(this.add.rectangle(0, sy(10), sx(34), sy(158), 0xd7a23a, 0.98).setOrigin(0.5, 1));
+      miguelete.add(this.add.rectangle(0, -sy(118), sx(52), sy(14), 0x365567));
+      miguelete.add(this.add.circle(0, -sy(98), sx(9), 0x365567));
+      miguelete.add(this.add.rectangle(0, -sy(146), sx(6), sy(18), 0x365567));
+      oldTown.add(miguelete);
+
+      const cathedral = this.add.container(sx(316), sy(18));
+      cathedral.add(this.add.rectangle(0, sy(40), sx(172), sy(82), 0x743967, 0.96).setOrigin(0.5, 1));
+      cathedral.add(this.add.rectangle(0, -sy(8), sx(88), sy(14), 0x743967));
+      cathedral.add(this.add.circle(0, sy(0), sx(24), 0xffd75d, 0.96).setStrokeStyle(4, 0x743967));
+      cathedral.add(this.add.triangle(0, sy(18), -sx(28), sy(44), 0, -sy(16), sx(28), sy(44), 0xffd75d, 0.94));
+      cathedral.add(this.add.rectangle(0, sy(46), sx(28), sy(30), 0x5c2622));
+      cathedral.add(this.add.rectangle(-sx(54), sy(22), sx(20), sy(54), 0xcb4738, 0.9));
+      cathedral.add(this.add.rectangle(sx(54), sy(22), sx(20), sy(54), 0xcb4738, 0.9));
+      oldTown.add(cathedral);
+      skyline.add(oldTown);
+
+      const arts = this.add.container(sx(760), -sy(6));
+      arts.add(this.add.rectangle(0, sy(92), sx(680), sy(10), 0x1d4256));
+      arts.add(this.add.arc(-sx(162), sy(26), sx(138), 180, 360, false, 0xf8fbfd, 0.99));
+      arts.add(this.add.arc(-sx(162), sy(26), sx(110), 180, 360, false, 0xffc978, 0.2));
+      arts.add(this.add.arc(-sx(12), sy(34), sx(100), 180, 360, false, 0xf8fbfd, 0.94));
+      arts.add(this.add.arc(-sx(12), sy(34), sx(72), 180, 360, false, 0x85e7e0, 0.22));
+      arts.add(this.add.triangle(sx(206), -sy(2), sx(36), sy(92), sx(196), -sy(88), sx(286), sy(92), 0xf8fbfd, 0.99));
+      arts.add(this.add.triangle(sx(212), sy(12), sx(62), sy(78), sx(198), -sy(44), sx(274), sy(78), 0x9ceee6, 0.34));
+      arts.add(this.add.rectangle(sx(206), sy(84), sx(176), sy(8), 0x1d3744));
+      arts.add(this.add.rectangle(-sx(18), sy(78), sx(132), sy(8), 0x1d3744));
+      arts.add(this.add.rectangle(-sx(188), sy(62), sx(34), sy(10), 0xeef8fb, 0.72));
+      arts.add(this.add.rectangle(sx(22), sy(70), sx(24), sy(8), 0xeef8fb, 0.56));
       skyline.add(arts);
 
-      const assut = this.add.container(sx(598), -sy(22));
-      assut.add(this.add.rectangle(0, sy(28), sx(18), sy(174), 0xf6fbff));
-      assut.add(this.add.triangle(sx(48), -sy(12), sx(4), sy(114), sx(48), -sy(82), sx(92), sy(114), 0xf7fbff, 0.96));
-      for (let i = 0; i < 5; i += 1) {
-        assut.add(this.add.rectangle(sx(10) + i * sx(12), sy(0) + i * sy(22), sx(42 - i * 4), sy(2), 0xd4f4f0, 0.34).setAngle(-28));
+      const assut = this.add.container(sx(1062), -sy(18));
+      assut.add(this.add.rectangle(0, sy(92), sx(18), sy(222), 0xf8fbff));
+      assut.add(this.add.triangle(sx(84), sy(18), sx(12), sy(154), sx(84), -sy(88), sx(140), sy(154), 0xf8fbff, 0.98));
+      for (let i = 0; i < 8; i += 1) {
+        assut.add(this.add.rectangle(sx(14) + i * sx(16), -sy(4) + i * sy(26), sx(64 - i * 4), sy(2), 0xe1fbf7, 0.44).setAngle(-30));
       }
       skyline.add(assut);
 
-      const oldTown = this.add.container(sx(842), -sy(18));
-      const miguelete = this.add.container(-sx(46), 0);
-      miguelete.add(this.add.rectangle(0, sy(4), sx(34), sy(150), 0xd39d34, 0.98).setOrigin(0.5, 1));
-      miguelete.add(this.add.rectangle(0, -sy(114), sx(52), sy(14), 0x355463));
-      miguelete.add(this.add.circle(0, -sy(94), sx(9), 0x355463));
-      miguelete.add(this.add.rectangle(0, -sy(142), sx(6), sy(18), 0x355463));
-      oldTown.add(miguelete);
-
-      const cathedral = this.add.container(sx(126), sy(14));
-      cathedral.add(this.add.rectangle(0, sy(38), sx(182), sy(82), 0x713566, 0.94).setOrigin(0.5, 1));
-      cathedral.add(this.add.rectangle(0, -sy(10), sx(92), sy(14), 0x713566));
-      cathedral.add(this.add.circle(0, sy(2), sx(26), 0xffd65d, 0.94).setStrokeStyle(4, 0x713566));
-      cathedral.add(this.add.triangle(0, sy(18), -sx(30), sy(46), 0, -sy(14), sx(30), sy(46), 0xffd65d, 0.92));
-      cathedral.add(this.add.rectangle(0, sy(46), sx(28), sy(32), 0x5d2521));
-      cathedral.add(this.add.rectangle(-sx(58), sy(22), sx(20), sy(58), 0xc94636, 0.9));
-      cathedral.add(this.add.rectangle(sx(58), sy(22), sx(20), sy(58), 0xc94636, 0.9));
-      oldTown.add(cathedral);
-
-      const basilica = this.add.container(sx(274), sy(24));
-      basilica.add(this.add.rectangle(0, sy(42), sx(150), sy(70), 0xa3c947, 0.92));
-      basilica.add(this.add.circle(0, sy(2), sx(34), 0x2e8f49, 0.96));
-      basilica.add(this.add.rectangle(0, -sy(34), sx(12), sy(28), 0xffd95d, 0.9));
-      basilica.add(this.add.triangle(0, -sy(52), -sx(12), -sy(26), 0, -sy(72), sx(12), -sy(26), 0xffd95d, 0.9));
-      oldTown.add(basilica);
-      skyline.add(oldTown);
-
-      const serranos = this.add.container(sx(1168), sy(6));
-      serranos.add(this.add.rectangle(0, sy(40), sx(190), sy(72), 0x5ea7e0, 0.94).setOrigin(0.5, 1));
-      serranos.add(this.add.rectangle(-sx(58), -sy(8), sx(44), sy(90), 0x41b6f2, 0.98));
-      serranos.add(this.add.rectangle(sx(58), -sy(8), sx(44), sy(90), 0x41b6f2, 0.98));
-      serranos.add(this.add.rectangle(0, sy(46), sx(34), sy(34), 0x285f7b));
-      serranos.add(this.add.rectangle(-sx(58), -sy(40), sx(56), sy(8), 0xeaf9ff, 0.24));
-      serranos.add(this.add.rectangle(sx(58), -sy(40), sx(56), sy(8), 0xeaf9ff, 0.24));
-      skyline.add(serranos);
-
-      for (const x of [sx(182), sx(506), sx(1082), sx(1298)]) {
-        const palm = this.add.container(x, sy(300));
-        palm.add(this.add.rectangle(0, sy(20), sx(7), sy(62), 0x6e4620));
-        palm.add(this.add.triangle(0, -sy(16), -sx(30), sy(10), 0, -sy(42), sx(30), sy(10), 0x2ec777));
-        palm.add(this.add.triangle(-sx(16), sy(0), -sx(34), sy(14), -sx(12), -sy(28), sx(4), sy(14), 0x50dd93));
-        palm.add(this.add.triangle(sx(18), sy(0), -sx(4), sy(14), sx(14), -sy(30), sx(36), sy(12), 0x44d28a));
+      for (const x of [sx(84), sx(478), sx(1198), sx(1412)]) {
+        const palm = this.add.container(x, sy(302));
+        palm.add(this.add.rectangle(0, sy(20), sx(8), sy(64), 0x6e4722));
+        palm.add(this.add.triangle(0, -sy(14), -sx(32), sy(10), 0, -sy(44), sx(32), sy(10), 0x2ec777));
+        palm.add(this.add.triangle(-sx(16), sy(0), -sx(36), sy(14), -sx(12), -sy(30), sx(4), sy(14), 0x4fdd92));
+        palm.add(this.add.triangle(sx(18), sy(2), -sx(2), sy(14), sx(16), -sy(32), sx(38), sy(12), 0x43d189));
         skyline.add(palm);
       }
 
-      for (let i = 0; i < 9; i += 1) {
-        skyline.add(this.add.rectangle(sx(134) + i * sx(144), sy(70) + (i % 2) * sy(8), sx(84), sy(3), 0xf8fff8, i % 2 ? 0.1 : 0.16));
+      for (let i = 0; i < 10; i += 1) {
+        skyline.add(this.add.rectangle(sx(122) + i * sx(138), sy(74) + (i % 2) * sy(8), sx(92), sy(3), 0xf8fff8, i % 2 ? 0.1 : 0.16));
       }
+
       this.skyline.add(skyline);
       return;
     }
@@ -3678,55 +3688,43 @@ class PlayScene extends Phaser.Scene {
     }
 
     if (this.city.key === "valencia") {
-      const terrace = this.add.rectangle(WIDTH / 2, sy(304), WIDTH + sx(100), sy(154), 0xf5f0de);
-      terrace.setStrokeStyle(5, 0x31505d);
-      this.backdrop.add(terrace);
-      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(228), WIDTH + sx(100), sy(24), 0xfff7de, 0.16));
-      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(260), WIDTH + sx(100), sy(14), 0xffffff, 0.12));
-      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(330), WIDTH + sx(100), sy(8), 0x3d5f6f, 0.16));
-
-      const waterMirror = this.add.container(WIDTH / 2, sy(360));
-      waterMirror.add(this.add.rectangle(0, 0, WIDTH + sx(120), sy(48), 0x71ddd8, 0.3));
-      waterMirror.add(this.add.rectangle(0, sy(8), WIDTH + sx(120), sy(10), 0xf8fffb, 0.08));
-      waterMirror.add(this.add.rectangle(0, -sy(12), WIDTH + sx(120), sy(6), 0x9be9e0, 0.2));
-      for (let i = 0; i < 11; i += 1) {
-        waterMirror.add(
-          this.add.rectangle(sx(-700) + i * sx(142), sy(2) + (i % 2) * sy(5), sx(92), sy(3), 0xeafff6, i % 2 ? 0.1 : 0.18)
-        );
+      const promenadeShadow = this.add.rectangle(WIDTH / 2, sy(292), WIDTH + sx(120), sy(118), 0x163847, 0.12);
+      this.backdrop.add(promenadeShadow);
+      const water = this.add.container(WIDTH / 2, sy(352));
+      water.add(this.add.rectangle(0, 0, WIDTH + sx(120), sy(62), 0x72ddd9, 0.44));
+      water.add(this.add.rectangle(0, -sy(18), WIDTH + sx(120), sy(14), 0xf7fffb, 0.08));
+      water.add(this.add.rectangle(0, sy(18), WIDTH + sx(120), sy(10), 0x2d5e73, 0.22));
+      for (let i = 0; i < 13; i += 1) {
+        water.add(this.add.rectangle(sx(-706) + i * sx(120), -sy(4) + (i % 2) * sy(6), sx(82 + (i % 3) * 10), sy(3), 0xf7fffb, i % 2 ? 0.08 : 0.16));
       }
-      this.backdrop.add(waterMirror);
+      this.backdrop.add(water);
 
-      const balustrade = this.add.container(WIDTH / 2, sy(388));
-      balustrade.add(this.add.rectangle(0, 0, WIDTH + sx(120), sy(32), 0xf5ead5).setStrokeStyle(3, 0x30444f));
+      const promenade = this.add.container(WIDTH / 2, sy(394));
+      promenade.add(this.add.rectangle(0, 0, WIDTH + sx(120), sy(34), 0xf6ead4).setStrokeStyle(3, 0x304956));
+      promenade.add(this.add.rectangle(0, -sy(8), WIDTH + sx(120), sy(5), 0xffffff, 0.14));
+      promenade.add(this.add.rectangle(0, sy(10), WIDTH + sx(120), sy(6), 0x315263, 0.18));
       for (let i = 0; i < 14; i += 1) {
-        const x = sx(-684) + i * sx(106);
-        balustrade.add(this.add.rectangle(x, 0, sx(88), sy(20), 0xf5ead5).setStrokeStyle(2, 0x314452));
-        balustrade.add(this.add.rectangle(x, 0, sx(26), sy(7), 0x42d7dc));
-        balustrade.add(this.add.rectangle(x - sx(24), 0, sx(14), sy(7), 0xff9641));
-        balustrade.add(this.add.rectangle(x + sx(24), 0, sx(14), sy(7), 0xff9641));
-        balustrade.add(this.add.rectangle(x, -sy(7), sx(68), sy(2), 0xffffff, 0.14));
+        const x = sx(-688) + i * sx(106);
+        promenade.add(this.add.rectangle(x, 0, sx(88), sy(18), 0xf4ead7).setStrokeStyle(2, 0x314452));
+        promenade.add(this.add.rectangle(x, 0, sx(28), sy(7), 0x42d7dc));
+        promenade.add(this.add.rectangle(x - sx(24), 0, sx(12), sy(7), 0xff9641));
+        promenade.add(this.add.rectangle(x + sx(24), 0, sx(12), sy(7), 0xff9641));
       }
-      this.backdrop.add(balustrade);
+      this.backdrop.add(promenade);
 
-      const palmStrip = [
-        [sx(174), sy(336), 1],
-        [sx(506), sy(332), 0.86],
-        [sx(1160), sy(336), 0.92],
-        [sx(1386), sy(340), 0.78],
-      ];
-      palmStrip.forEach(([x, y, scale]) => {
+      for (const [x, y, scale] of [
+        [sx(168), sy(336), 0.96],
+        [sx(484), sy(332), 0.82],
+        [sx(1194), sy(338), 0.92],
+      ]) {
         const palm = this.add.container(x, y);
         palm.setScale(scale);
         palm.add(this.add.rectangle(0, sy(14), sx(7), sy(62), 0x6f4721));
-        palm.add(this.add.triangle(0, -sy(16), -sx(30), sy(10), 0, -sy(40), sx(30), sy(10), 0x2fc675));
-        palm.add(this.add.triangle(-sx(16), sy(0), -sx(34), sy(14), -sx(12), -sy(26), sx(4), sy(14), 0x4ddd8c));
-        palm.add(this.add.triangle(sx(18), sy(0), -sx(2), sy(14), sx(16), -sy(28), sx(38), sy(12), 0x4ddd8c));
+        palm.add(this.add.triangle(0, -sy(18), -sx(30), sy(10), 0, -sy(44), sx(30), sy(10), 0x2fc675));
+        palm.add(this.add.triangle(-sx(16), sy(0), -sx(34), sy(14), -sx(12), -sy(28), sx(4), sy(14), 0x4ddd8c));
+        palm.add(this.add.triangle(sx(18), sy(0), -sx(2), sy(14), sx(16), -sy(30), sx(38), sy(12), 0x4ddd8c));
         this.backdrop.add(palm);
-      });
-
-      const waterLine = this.add.rectangle(WIDTH / 2, sy(408), WIDTH + sx(120), sy(5), 0xf8fffd, 0.22);
-      this.backdrop.add(waterLine);
-      this.backdrop.add(this.add.rectangle(WIDTH / 2, sy(418), WIDTH + sx(120), sy(6), 0x2e5564, 0.28));
+      }
 
       this.sign = this.add
         .text(sx(612), sy(72), "KAMUABU VLC", {
@@ -3984,76 +3982,46 @@ class PlayScene extends Phaser.Scene {
       }
       this.landmark.add(crosswalk);
     } else if (this.city.key === "valencia") {
-      this.landmark.x = sx(780);
+      this.landmark.x = sx(798);
 
-      const reflection = this.add.container(0, sy(122));
-      reflection.add(this.add.rectangle(0, 0, sx(814), sy(28), 0x76ddd8, 0.32));
-      reflection.add(this.add.rectangle(0, -sy(8), sx(772), sy(8), 0xf8fffb, 0.12));
-      reflection.add(this.add.rectangle(-sx(180), -sy(2), sx(140), sy(4), 0xffd46d, 0.14));
-      reflection.add(this.add.rectangle(sx(58), sy(2), sx(168), sy(4), 0x8ae5df, 0.12));
-      reflection.add(this.add.rectangle(sx(248), -sy(1), sx(122), sy(4), 0x5caee4, 0.1));
+      const reflection = this.add.container(0, sy(124));
+      reflection.add(this.add.rectangle(0, 0, sx(864), sy(30), 0x76ddd8, 0.34));
+      reflection.add(this.add.rectangle(0, -sy(10), sx(820), sy(8), 0xf8fffb, 0.14));
+      reflection.add(this.add.rectangle(-sx(194), -sy(2), sx(156), sy(4), 0xffd56f, 0.16));
+      reflection.add(this.add.rectangle(sx(72), sy(2), sx(180), sy(4), 0x8be5df, 0.14));
+      reflection.add(this.add.rectangle(sx(272), -sy(1), sx(132), sy(4), 0x5caee4, 0.12));
       this.landmark.add(reflection);
 
-      const ciutat = this.add.container(-sx(130), sy(16));
-      ciutat.add(this.add.rectangle(0, sy(86), sx(462), sy(12), 0x1f4255));
-      ciutat.add(this.add.arc(-sx(138), sy(28), sx(130), 180, 360, false, 0xf8fbfd, 0.99));
-      ciutat.add(this.add.arc(-sx(138), sy(28), sx(102), 180, 360, false, 0xffcf7f, 0.22));
-      ciutat.add(this.add.arc(-sx(8), sy(34), sx(92), 180, 360, false, 0xf8fbfd, 0.94));
-      ciutat.add(this.add.arc(-sx(8), sy(34), sx(68), 180, 360, false, 0x84e7e0, 0.22));
-      ciutat.add(this.add.triangle(sx(160), -sy(4), sx(24), sy(84), sx(152), -sy(76), sx(224), sy(84), 0xf7fbfd, 0.99));
-      ciutat.add(this.add.triangle(sx(166), sy(10), sx(46), sy(70), sx(154), -sy(44), sx(214), sy(70), 0x96ece5, 0.34));
-      ciutat.add(this.add.rectangle(sx(158), sy(78), sx(164), sy(8), 0x1f3744));
-      ciutat.add(this.add.rectangle(-sx(12), sy(72), sx(126), sy(8), 0x1f3744));
-      ciutat.add(this.add.rectangle(-sx(160), sy(60), sx(34), sy(10), 0xeef7fb, 0.72));
-      ciutat.add(this.add.rectangle(sx(16), sy(66), sx(24), sy(8), 0xeef7fb, 0.56));
-      this.landmark.add(ciutat);
+      const arts = this.add.container(-sx(40), sy(12));
+      arts.add(this.add.rectangle(-sx(26), sy(92), sx(514), sy(12), 0x1f4255));
+      arts.add(this.add.arc(-sx(176), sy(26), sx(152), 180, 360, false, 0xf8fbfd, 0.99));
+      arts.add(this.add.arc(-sx(176), sy(26), sx(120), 180, 360, false, 0xffcf7f, 0.22));
+      arts.add(this.add.arc(-sx(18), sy(36), sx(112), 180, 360, false, 0xf8fbfd, 0.94));
+      arts.add(this.add.arc(-sx(18), sy(36), sx(82), 180, 360, false, 0x84e7e0, 0.22));
+      arts.add(this.add.triangle(sx(188), 0, sx(42), sy(92), sx(184), -sy(84), sx(260), sy(92), 0xf7fbfd, 0.99));
+      arts.add(this.add.triangle(sx(194), sy(16), sx(72), sy(76), sx(186), -sy(42), sx(250), sy(76), 0x9beee6, 0.36));
+      arts.add(this.add.rectangle(sx(188), sy(84), sx(170), sy(8), 0x1f3744));
+      arts.add(this.add.rectangle(-sx(34), sy(78), sx(148), sy(8), 0x1f3744));
+      arts.add(this.add.rectangle(-sx(208), sy(62), sx(36), sy(10), 0xeef7fb, 0.74));
+      arts.add(this.add.rectangle(sx(28), sy(70), sx(28), sy(8), 0xeef7fb, 0.58));
+      this.landmark.add(arts);
 
-      const assut = this.add.container(sx(226), -sy(8));
-      assut.add(this.add.rectangle(0, sy(86), sx(18), sy(212), 0xf7fbff));
-      assut.add(this.add.triangle(sx(70), sy(24), sx(10), sy(148), sx(72), -sy(86), sx(124), sy(148), 0xf7fbff, 0.98));
-      for (let i = 0; i < 7; i += 1) {
-        assut.add(
-          this.add.rectangle(sx(12) + i * sx(14), -sy(2) + i * sy(26), sx(56 - i * 4), sy(2), 0xe1fbf7, 0.4).setAngle(-30)
-        );
+      const assut = this.add.container(sx(300), -sy(8));
+      assut.add(this.add.rectangle(0, sy(92), sx(18), sy(228), 0xf8fbff));
+      assut.add(this.add.triangle(sx(92), sy(24), sx(12), sy(158), sx(92), -sy(88), sx(150), sy(158), 0xf8fbff, 0.98));
+      for (let i = 0; i < 8; i += 1) {
+        assut.add(this.add.rectangle(sx(18) + i * sx(16), -sy(2) + i * sy(27), sx(68 - i * 4), sy(2), 0xe1fbf7, 0.44).setAngle(-30));
       }
       this.landmark.add(assut);
 
-      const oldTown = this.add.container(sx(382), sy(8));
-      const miguelete = this.add.container(-sx(60), 0);
-      miguelete.add(this.add.rectangle(0, sy(8), sx(34), sy(152), 0xd39d34, 0.98).setOrigin(0.5, 1));
-      miguelete.add(this.add.rectangle(0, -sy(114), sx(52), sy(14), 0x365466));
-      miguelete.add(this.add.circle(0, -sy(94), sx(9), 0x365466));
-      miguelete.add(this.add.rectangle(0, -sy(142), sx(6), sy(18), 0x365466));
-      oldTown.add(miguelete);
-
-      const cathedral = this.add.container(sx(94), sy(18));
-      cathedral.add(this.add.rectangle(0, sy(42), sx(172), sy(78), 0x733765, 0.94).setOrigin(0.5, 1));
-      cathedral.add(this.add.rectangle(0, -sy(8), sx(88), sy(14), 0x733765));
-      cathedral.add(this.add.circle(0, sy(0), sx(24), 0xffd65d, 0.96).setStrokeStyle(4, 0x733765));
-      cathedral.add(this.add.triangle(0, sy(18), -sx(28), sy(44), 0, -sy(16), sx(28), sy(44), 0xffd65d, 0.94));
-      cathedral.add(this.add.rectangle(0, sy(44), sx(28), sy(30), 0x5d2521));
-      cathedral.add(this.add.rectangle(-sx(54), sy(22), sx(20), sy(54), 0xc94838, 0.9));
-      cathedral.add(this.add.rectangle(sx(54), sy(22), sx(20), sy(54), 0xc94838, 0.9));
-      oldTown.add(cathedral);
-
-      const serranos = this.add.container(sx(258), sy(28));
-      serranos.add(this.add.rectangle(0, sy(28), sx(156), sy(72), 0x5faadf, 0.92).setOrigin(0.5, 1));
-      serranos.add(this.add.rectangle(-sx(48), -sy(18), sx(24), sy(92), 0x49b6f1, 0.98));
-      serranos.add(this.add.rectangle(sx(48), -sy(18), sx(24), sy(92), 0x49b6f1, 0.98));
-      serranos.add(this.add.rectangle(0, sy(22), sx(34), sy(40), 0x35617f));
-      serranos.add(this.add.rectangle(-sx(48), -sy(48), sx(28), sy(8), 0xeaf7ff, 0.18));
-      serranos.add(this.add.rectangle(sx(48), -sy(48), sx(28), sy(8), 0xeaf7ff, 0.18));
-      oldTown.add(serranos);
-      this.landmark.add(oldTown);
-
-      const promenade = this.add.container(sx(44), sy(108));
-      promenade.add(this.add.rectangle(0, 0, sx(364), sy(18), 0xf4ead6).setStrokeStyle(3, 0x2d4653));
-      promenade.add(this.add.rectangle(0, -sy(6), sx(276), sy(4), 0xff9641));
-      promenade.add(this.add.rectangle(0, sy(4), sx(124), sy(4), 0x42d7dc));
-      promenade.add(this.add.rectangle(-sx(126), -sy(22), sx(10), sy(38), 0x2f5968));
-      promenade.add(this.add.rectangle(sx(126), -sy(22), sx(10), sy(38), 0x2f5968));
-      promenade.add(this.add.rectangle(-sx(70), -sy(8), sx(34), sy(3), 0xffffff, 0.18));
-      promenade.add(this.add.rectangle(sx(76), -sy(8), sx(30), sy(3), 0xffffff, 0.14));
+      const promenade = this.add.container(sx(104), sy(110));
+      promenade.add(this.add.rectangle(0, 0, sx(454), sy(20), 0xf4ead6).setStrokeStyle(3, 0x2d4653));
+      promenade.add(this.add.rectangle(0, -sy(6), sx(328), sy(4), 0xff9641));
+      promenade.add(this.add.rectangle(0, sy(4), sx(164), sy(4), 0x42d7dc));
+      promenade.add(this.add.rectangle(-sx(156), -sy(24), sx(10), sy(42), 0x2f5968));
+      promenade.add(this.add.rectangle(sx(156), -sy(24), sx(10), sy(42), 0x2f5968));
+      promenade.add(this.add.rectangle(-sx(92), -sy(8), sx(40), sy(3), 0xffffff, 0.18));
+      promenade.add(this.add.rectangle(sx(96), -sy(8), sx(34), sy(3), 0xffffff, 0.14));
       this.landmark.add(promenade);
     } else {
       this.landmark.x = sx(758);
@@ -4194,7 +4162,7 @@ class PlayScene extends Phaser.Scene {
       this.propLayer.add(gondola);
       this.props.push(gondola);
     } else if (this.city.key === "valencia") {
-      for (const x of [sx(216), sx(612), sx(1036), sx(1324)]) {
+      for (const x of [sx(202), sx(612), sx(1118), sx(1340)]) {
         const orangeTree = this.add.container(x, sy(356));
         orangeTree.add(this.add.rectangle(0, sy(10), sx(8), sy(62), 0x75491f));
         orangeTree.add(this.add.circle(0, -sy(22), sx(30), 0x45bc68, 0.94));
@@ -4206,7 +4174,7 @@ class PlayScene extends Phaser.Scene {
         this.propLayer.add(orangeTree);
         this.props.push(orangeTree);
       }
-      for (const x of [sx(372), sx(814), sx(1252)]) {
+      for (const x of [sx(356), sx(834), sx(1238)]) {
         const bench = this.add.container(x, sy(368));
         bench.add(this.add.rectangle(0, 0, sx(88), sy(10), 0xf2ead8).setStrokeStyle(3, 0x29414e));
         bench.add(this.add.rectangle(-sx(26), sy(18), sx(6), sy(26), 0x29414e));
@@ -4216,24 +4184,25 @@ class PlayScene extends Phaser.Scene {
         this.propLayer.add(bench);
         this.props.push(bench);
       }
-      const canopy = this.add.container(sx(1002), sy(346));
-      canopy.add(this.add.rectangle(0, sy(18), sx(184), sy(12), 0x295061));
-      canopy.add(this.add.rectangle(-sx(68), sy(2), sx(8), sy(40), 0x345c6d));
-      canopy.add(this.add.rectangle(sx(68), sy(2), sx(8), sy(40), 0x345c6d));
-      canopy.add(this.add.rectangle(0, -sy(6), sx(148), sy(10), 0xf4ead6).setStrokeStyle(2, 0x2b4656));
-      canopy.add(this.add.rectangle(0, sy(2), sx(58), sy(4), 0x42d7dc));
-      canopy.add(this.add.rectangle(-sx(24), -sy(6), sx(14), sy(4), 0xff8f37));
-      canopy.add(this.add.rectangle(sx(24), -sy(6), sx(14), sy(4), 0xff8f37));
-      canopy.setData("type", "pergola");
-      this.propLayer.add(canopy);
-      this.props.push(canopy);
+      const bridgeBench = this.add.container(sx(972), sy(346));
+      bridgeBench.add(this.add.rectangle(0, sy(20), sx(196), sy(12), 0x295061));
+      bridgeBench.add(this.add.rectangle(-sx(74), sy(4), sx(8), sy(42), 0x345c6d));
+      bridgeBench.add(this.add.rectangle(sx(74), sy(4), sx(8), sy(42), 0x345c6d));
+      bridgeBench.add(this.add.rectangle(0, -sy(4), sx(156), sy(10), 0xf4ead6).setStrokeStyle(2, 0x2b4656));
+      bridgeBench.add(this.add.rectangle(0, sy(4), sx(64), sy(4), 0x42d7dc));
+      bridgeBench.add(this.add.rectangle(-sx(28), -sy(4), sx(14), sy(4), 0xff8f37));
+      bridgeBench.add(this.add.rectangle(sx(28), -sy(4), sx(14), sy(4), 0xff8f37));
+      bridgeBench.setData("type", "bridgeBench");
+      this.propLayer.add(bridgeBench);
+      this.props.push(bridgeBench);
 
-      const trencadis = this.add.container(sx(1180), sy(350));
-      trencadis.add(this.add.rectangle(0, sy(20), sx(124), sy(10), 0x284857));
-      trencadis.add(this.add.arc(0, 0, sx(52), 180, 360, false, 0xf7fbfc, 0.96));
-      trencadis.add(this.add.arc(0, 0, sx(40), 180, 360, false, 0xffc66e, 0.16));
-      trencadis.add(this.add.rectangle(-sx(26), sy(0), sx(10), sy(20), 0xffffff, 0.24));
-      trencadis.add(this.add.rectangle(sx(18), sy(4), sx(14), sy(16), 0x8de7df, 0.24));
+      const trencadis = this.add.container(sx(1210), sy(348));
+      trencadis.add(this.add.rectangle(0, sy(22), sx(142), sy(10), 0x274a58));
+      trencadis.add(this.add.arc(0, 0, sx(62), 180, 360, false, 0xf7fbfc, 0.98));
+      trencadis.add(this.add.arc(0, 0, sx(48), 180, 360, false, 0xffcb73, 0.18));
+      trencadis.add(this.add.rectangle(-sx(34), sy(2), sx(10), sy(20), 0xffffff, 0.24));
+      trencadis.add(this.add.rectangle(sx(22), sy(6), sx(16), sy(16), 0x8de7df, 0.24));
+      trencadis.add(this.add.rectangle(sx(38), -sy(2), sx(10), sy(10), 0xff8f37, 0.24));
       trencadis.setData("type", "trencadis");
       this.propLayer.add(trencadis);
       this.props.push(trencadis);
@@ -4292,7 +4261,7 @@ class PlayScene extends Phaser.Scene {
     };
 
     if (this.city.key === "valencia") {
-      for (const x of [sx(116), sx(1028)]) {
+      for (const x of [sx(112), sx(1092)]) {
         const palm = this.add.container(x, sy(360));
         palm.add(this.add.rectangle(0, sy(18), sx(10), sy(102), 0x13252c, 0.78));
         palm.add(this.add.triangle(0, -sy(50), -sx(54), sy(8), 0, -sy(96), sx(54), sy(8), 0x163842, 0.66));
@@ -4300,21 +4269,21 @@ class PlayScene extends Phaser.Scene {
         palm.add(this.add.triangle(sx(28), -sy(24), -sx(12), sy(14), sx(22), -sy(74), sx(62), sy(12), 0x1b4d57, 0.58));
         pushDepth(palm, 0.2);
       }
-      for (const x of [sx(320), sx(720), sx(1180)]) {
+      for (const x of [sx(300), sx(724), sx(1188)]) {
         const rail = this.add.container(x, sy(396));
         rail.add(this.add.rectangle(0, 0, sx(124), sy(10), 0x12252e, 0.72));
         rail.add(this.add.rectangle(-sx(36), -sy(8), sx(4), sy(28), 0x183844, 0.7));
         rail.add(this.add.rectangle(sx(36), -sy(8), sx(4), sy(28), 0x183844, 0.7));
         pushDepth(rail, 0.26);
       }
-      for (const x of [sx(486), sx(904)]) {
+      for (const x of [sx(468), sx(948)]) {
         const lamp = this.add.container(x, sy(374));
         lamp.add(this.add.rectangle(0, sy(8), sx(8), sy(84), 0x102932, 0.76));
         lamp.add(this.add.rectangle(0, -sy(28), sx(28), sy(8), 0x1b4450, 0.72));
         lamp.add(this.add.circle(0, -sy(28), sx(18), 0xffd98a, 0.08));
         pushDepth(lamp, 0.22);
       }
-      for (const x of [sx(178), sx(648), sx(1178)]) {
+      for (const x of [sx(210), sx(716), sx(1228)]) {
         const mist = this.add.container(x, sy(412));
         mist.add(this.add.ellipse(0, 0, sx(138), sy(18), 0xf4fff9, 0.12));
         mist.add(this.add.ellipse(sx(22), -sy(4), sx(96), sy(12), 0xa7eee6, 0.08));
@@ -4376,26 +4345,26 @@ class PlayScene extends Phaser.Scene {
         this.foreground.add(this.add.ellipse(sx(90) + i * sx(164), GROUND_Y + sy(32), sx(74), sy(14), 0x9ee9de, i % 2 ? 0.08 : 0.14));
       }
     } else if (this.city.key === "valencia") {
-      this.foreground.add(this.add.rectangle(WIDTH / 2, GROUND_Y - sy(10), WIDTH, sy(22), 0xf7efdd, 0.98));
-      this.foreground.add(this.add.rectangle(WIDTH / 2, GROUND_Y - sy(1), WIDTH, sy(6), 0xe8dcc2, 0.86));
+      this.foreground.add(this.add.rectangle(WIDTH / 2, GROUND_Y - sy(10), WIDTH, sy(24), 0xf7efdd, 0.98));
+      this.foreground.add(this.add.rectangle(WIDTH / 2, GROUND_Y - sy(1), WIDTH, sy(6), 0xe6d7bd, 0.88));
       for (let i = 0; i < 16; i += 1) {
         const x = i * sx(92);
-        this.foreground.add(this.add.rectangle(x, GROUND_Y - sy(10), sx(72), sy(6), i % 2 === 0 ? 0xff9543 : 0x43d7dc));
-        this.foreground.add(this.add.rectangle(x, GROUND_Y - sy(4), sx(26), sy(2), 0xffffff, 0.16));
+        this.foreground.add(this.add.rectangle(x, GROUND_Y - sy(10), sx(74), sy(6), i % 2 === 0 ? 0xff9543 : 0x43d7dc));
+        this.foreground.add(this.add.rectangle(x, GROUND_Y - sy(4), sx(28), sy(2), 0xffffff, 0.16));
       }
-      this.foreground.add(this.add.rectangle(WIDTH / 2, GROUND_Y + sy(10), WIDTH, sy(18), 0xf0e2c8, 0.32));
-      this.foreground.add(this.add.rectangle(WIDTH / 2, GROUND_Y + sy(24), WIDTH, sy(12), 0xffd9a8, 0.12));
-      this.foreground.add(this.add.rectangle(WIDTH / 2, GROUND_Y + sy(38), WIDTH, sy(14), 0x7fdeda, 0.09));
+      this.foreground.add(this.add.rectangle(WIDTH / 2, GROUND_Y + sy(10), WIDTH, sy(20), 0xf0e2c8, 0.34));
+      this.foreground.add(this.add.rectangle(WIDTH / 2, GROUND_Y + sy(24), WIDTH, sy(12), 0xffd9a8, 0.14));
+      this.foreground.add(this.add.rectangle(WIDTH / 2, GROUND_Y + sy(38), WIDTH, sy(16), 0x74ddd8, 0.11));
       for (let i = 0; i < 12; i += 1) {
         const tileX = sx(34) + i * sx(128);
-        this.foreground.add(this.add.rectangle(tileX, GROUND_Y + sy(20), sx(88), sy(18), 0xf7efdd).setStrokeStyle(2, 0x29414e));
-        this.foreground.add(this.add.rectangle(tileX, GROUND_Y + sy(20), sx(20), sy(6), 0x42d7dc));
+        this.foreground.add(this.add.rectangle(tileX, GROUND_Y + sy(20), sx(90), sy(18), 0xf7efdd).setStrokeStyle(2, 0x29414e));
+        this.foreground.add(this.add.rectangle(tileX, GROUND_Y + sy(20), sx(22), sy(6), 0x42d7dc));
         this.foreground.add(this.add.rectangle(tileX - sx(24), GROUND_Y + sy(20), sx(10), sy(6), 0xff9240));
         this.foreground.add(this.add.rectangle(tileX + sx(24), GROUND_Y + sy(20), sx(10), sy(6), 0xff9240));
       }
       for (let i = 0; i < 8; i += 1) {
-        this.foreground.add(this.add.ellipse(sx(96) + i * sx(184), GROUND_Y + sy(28), sx(108), sy(14), 0x88e1de, i % 2 ? 0.08 : 0.12));
-        this.foreground.add(this.add.rectangle(sx(92) + i * sx(184), GROUND_Y + sy(24), sx(34), sy(3), 0xf9fffc, i % 2 ? 0.08 : 0.14));
+        this.foreground.add(this.add.ellipse(sx(96) + i * sx(184), GROUND_Y + sy(28), sx(112), sy(14), 0x88e1de, i % 2 ? 0.08 : 0.13));
+        this.foreground.add(this.add.rectangle(sx(92) + i * sx(184), GROUND_Y + sy(24), sx(38), sy(3), 0xf9fffc, i % 2 ? 0.08 : 0.14));
       }
     } else if (this.city.key === "londres") {
       this.foreground.add(this.add.rectangle(WIDTH / 2, GROUND_Y + sy(26), WIDTH, sy(34), 0x7fa6c5, 0.06));
@@ -6595,6 +6564,7 @@ class PlayScene extends Phaser.Scene {
     this.score += value * this.combo;
 
     if (key === "socks") {
+      this.totalSocksCollected += 1;
       this.socks = Math.min(9, this.socks + 1);
       this.upgradeFirePower();
     }
@@ -6615,6 +6585,7 @@ class PlayScene extends Phaser.Scene {
       this.cameras.main.flash(110, 255, 139, 34, false);
       this.showFeedback("ROCKET BLAST: cohetes pesados");
     } else if (key === "scooter") {
+      this.totalScootersCollected += 1;
       this.scooters = Math.min(5, this.scooters + 1);
       if (this.scooters >= 5) {
         this.scooters = 0;
@@ -6626,6 +6597,7 @@ class PlayScene extends Phaser.Scene {
         this.showFeedback(`Patinete ${this.scooters}/5: sigue recogiendo para montarlo`);
       }
     } else if (key === "shirt") {
+      this.totalShirtsCollected += 1;
       this.shieldUntil = Math.max(this.shieldUntil, this.time.now + 3200);
       this.cameras.main.flash(90, 199, 255, 58, false);
       this.showFeedback("Camiseta KAMUABU: escudo temporal");
@@ -6697,6 +6669,7 @@ class PlayScene extends Phaser.Scene {
           this.stageDistance = this.stageLength;
           this.spawnRewardItem(enemy.x + sx(26), enemy.y - sy(92), "outfit");
         } else {
+          this.midBossDefeated = true;
           this.spawnRewardItem(enemy.x + sx(26), enemy.y - sy(92), Phaser.Utils.Array.GetRandom(["laser", "rocket", "outfit"]));
           this.showFeedback(`MID-BOSS KO: ${enemy.getData("bossLabel")} abatido`);
         }
@@ -7034,6 +7007,7 @@ class PlayScene extends Phaser.Scene {
   }
 
   updateComboFeel() {
+    this.maxComboObserved = Math.max(this.maxComboObserved, this.combo);
     if (this.combo >= 3 && this.combo > this.comboTierShown) {
       this.comboTierShown = this.combo;
       const labels = {
@@ -7088,6 +7062,7 @@ class PlayScene extends Phaser.Scene {
     this.health = 2;
     this.weapon = "Outfit";
     this.ammo = Infinity;
+    this.weaponPeak = "Outfit";
     this.applyRunnerBody();
     this.floatText("SUPER OUTFIT!", this.runner.x + sx(48), this.runner.y - sy(118), "#ffd95c");
     this.cameras.main.shake(220, 0.006);
@@ -7104,7 +7079,28 @@ class PlayScene extends Phaser.Scene {
   activateSpecialWeapon(type, ammo) {
     this.specialWeapon = type;
     this.specialAmmo = ammo;
+    this.weaponPeak = type;
     this.floatText(`${type.toUpperCase()} READY`, this.runner.x + sx(42), this.runner.y - sy(114), type === "Laser" ? "#40d8ff" : "#ff8b22");
+  }
+
+  buildCompetitionPayload(victory) {
+    return {
+      cityKey: this.city.key,
+      score: Math.floor(this.score),
+      distance: Math.floor(this.stageDistance),
+      enemiesKilled: this.enemiesDefeated,
+      miniBossKilled: this.midBossDefeated,
+      bossKilled: victory ? true : this.bossDefeated,
+      comboMax: this.maxComboObserved,
+      hitsTaken: this.hitsTaken,
+      weaponPeak: this.weaponPeak || (this.specialWeapon || (this.fireLevel >= 4 ? "WIDE" : "Pistol")),
+      runDurationMs: Math.max(0, this.time.now - this.runStartedAt),
+      socksCollected: this.totalSocksCollected,
+      shirtsCollected: this.totalShirtsCollected,
+      scootersCollected: this.totalScootersCollected,
+      victory,
+      rankLabel: this.getMissionRank(victory),
+    };
   }
 
   spawnStormMiniBoss() {
@@ -7189,6 +7185,7 @@ class PlayScene extends Phaser.Scene {
       return;
     }
 
+    this.hitsTaken += 1;
     if (obstacle?.destroy) {
       obstacle.destroy();
     }
@@ -7367,6 +7364,9 @@ class PlayScene extends Phaser.Scene {
       .setOrigin(0.5);
     this.cameras.main.flash(320, 199, 255, 58, false);
     this.syncHud();
+    if (!this.demoMode) {
+      competitionUi.finishRun(this.buildCompetitionPayload(true));
+    }
   }
 
   endRun() {
@@ -7406,6 +7406,9 @@ class PlayScene extends Phaser.Scene {
     this.titleText.setVisible(false);
     this.tipText.setVisible(false);
     this.syncHud();
+    if (!this.demoMode) {
+      competitionUi.finishRun(this.buildCompetitionPayload(false));
+    }
   }
 
   moveWorld(deltaSeconds) {
