@@ -15,6 +15,8 @@
   --hud-metal-b: #bab5aa;
   --hud-title: #5c355e;
   --hud-value: #16171d;
+  --desk-rail: rgba(255, 255, 255, 0.08);
+  --desk-panel: rgba(20, 22, 30, 0.9);
 }
 
 * {
@@ -47,19 +49,19 @@ body::before {
 }
 
 .shell {
-  width: min(1720px, calc(100vw - 18px));
+  width: min(1780px, calc(100vw - 22px));
   min-height: 100vh;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(260px, 0.48fr) minmax(960px, 2.24fr);
+  grid-template-columns: minmax(250px, 0.38fr) minmax(1040px, 2.62fr);
   align-items: center;
-  gap: 18px;
-  padding: 12px 0;
+  gap: 16px;
+  padding: 12px 0 14px;
 }
 
 .brand-panel {
   position: relative;
-  padding: 18px 18px 16px;
+  padding: 16px 16px 15px;
   border: 4px solid var(--cream);
   border-radius: 10px;
   overflow: hidden;
@@ -167,8 +169,8 @@ body::before {
 
 .pitch {
   margin: 0;
-  font-size: 19px;
-  line-height: 1.02;
+  font-size: 18px;
+  line-height: 0.98;
 }
 
 .brand-meta {
@@ -205,6 +207,7 @@ body::before {
   border-radius: 12px;
   background:
     radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.12), transparent 34%),
+    linear-gradient(180deg, rgba(255,255,255,0.06), transparent 16%),
     linear-gradient(90deg, #09090d, #262935 8%, #111218 92%, #09090d),
     #0f0f14;
   box-shadow:
@@ -405,8 +408,10 @@ body::before {
 #game {
   overflow: hidden;
   border: 4px solid #000;
-  border-radius: 6px;
-  background: #2f3138;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.04), transparent 18%),
+    #2f3138;
   box-shadow:
     0 0 0 4px #4a4f5c,
     0 0 0 7px rgba(242, 234, 216, 0.18),
@@ -424,12 +429,12 @@ body::before {
 
 .stage-progress {
   margin-top: 10px;
-  padding: 8px 10px 10px;
+  padding: 10px 12px 12px;
   border: 3px solid #000;
   border-radius: 6px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 38%),
-    linear-gradient(180deg, #1e2129, #12141b);
+    linear-gradient(180deg, #1d2027, #101219);
   box-shadow:
     inset 0 0 0 3px rgba(255, 255, 255, 0.06),
     0 2px 0 rgba(0, 0, 0, 0.35);
@@ -450,6 +455,16 @@ body::before {
   line-height: 1.2;
 }
 
+.stage-progress-phase {
+  padding: 3px 8px 2px;
+  border: 2px solid rgba(255,255,255,0.08);
+  border-radius: 999px;
+  background: rgba(0,0,0,0.24);
+  color: var(--cream) !important;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
 .stage-progress-top strong {
   color: var(--cream);
   font-size: 10px;
@@ -459,7 +474,7 @@ body::before {
 
 .stage-progress-track {
   position: relative;
-  height: 18px;
+  height: 22px;
   overflow: hidden;
   border: 3px solid #000;
   border-radius: 999px;
@@ -481,6 +496,26 @@ body::before {
   transition: width 140ms linear;
 }
 
+.stage-progress-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 999px;
+  opacity: 0.32;
+}
+
+.stage-progress-zone-mini {
+  left: 46%;
+  width: 12%;
+  background: linear-gradient(90deg, rgba(255, 217, 92, 0), rgba(255, 217, 92, 0.34), rgba(255, 217, 92, 0));
+}
+
+.stage-progress-zone-boss {
+  left: 84%;
+  width: 10%;
+  background: linear-gradient(90deg, rgba(255, 54, 95, 0), rgba(255, 54, 95, 0.34), rgba(255, 54, 95, 0));
+}
+
 .stage-progress-marker {
   position: absolute;
   top: 50%;
@@ -496,13 +531,54 @@ body::before {
     0 0 12px rgba(255, 217, 92, 0.4);
 }
 
+.stage-progress-pin {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #000;
+  transform: translate(-50%, -50%) rotate(45deg);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.08);
+}
+
+.stage-progress-pin-mini {
+  left: 52%;
+  background: #ffd95c;
+}
+
+.stage-progress-pin-boss {
+  left: 89%;
+  background: #ff365f;
+}
+
+.stage-progress-legend {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+  color: rgba(242, 234, 216, 0.58);
+  font-family: "Press Start 2P", monospace;
+  font-size: 7px;
+  letter-spacing: 0.04em;
+}
+
+.stage-progress-legend span:nth-child(2),
+.stage-progress-legend span:nth-child(3) {
+  text-align: center;
+}
+
+.stage-progress-legend span:last-child {
+  text-align: right;
+}
+
 .controls {
   display: flex;
   justify-content: space-between;
   gap: 12px;
   padding-top: 9px;
   color: var(--blue);
-  font-size: 20px;
+  font-size: 19px;
+  opacity: 0.92;
 }
 
 .touch-controls {
