@@ -53,7 +53,7 @@ body::before {
   min-height: 100vh;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(250px, 0.38fr) minmax(1040px, 2.62fr);
+  grid-template-columns: minmax(286px, 0.46fr) minmax(1020px, 2.54fr);
   align-items: center;
   gap: 16px;
   padding: 12px 0 14px;
@@ -106,21 +106,27 @@ body::before {
 .brand-logo-main,
 .brand-logo-sub {
   display: block;
-  white-space: nowrap;
   max-width: 100%;
 }
 
 .brand-logo-main {
-  font-size: clamp(22px, 1.84vw, 34px);
-  line-height: 0.96;
-  letter-spacing: -0.04em;
+  font-size: clamp(19px, 1.52vw, 29px);
+  line-height: 0.94;
+  letter-spacing: -0.055em;
 }
 
 .brand-logo-sub {
-  margin-top: 10px;
-  font-size: clamp(17px, 1.34vw, 26px);
-  line-height: 0.96;
-  letter-spacing: -0.035em;
+  font-size: clamp(15px, 1.08vw, 22px);
+  line-height: 0.92;
+  letter-spacing: -0.05em;
+}
+
+.brand-logo-sub-top {
+  margin-top: 9px;
+}
+
+.brand-logo-sub-bottom {
+  margin-top: 6px;
 }
 
 .coin-callout {
@@ -552,8 +558,8 @@ body::before {
 
 .menu-active .shell {
   width: min(1840px, calc(100vw - 18px));
-  grid-template-columns: minmax(240px, 0.34fr) minmax(1100px, 2.9fr);
-  gap: 24px;
+  grid-template-columns: minmax(292px, 0.48fr) minmax(1060px, 2.52fr);
+  gap: 22px;
 }
 
 .menu-active .brand-panel {
@@ -561,23 +567,30 @@ body::before {
   flex-direction: column;
   justify-content: space-between;
   min-height: 356px;
-  padding: 16px 16px 18px;
-  max-width: 322px;
+  padding: 16px 18px 18px;
+  max-width: 352px;
 }
 
 .menu-active .brand-logo {
-  text-shadow: 3px 3px 0 #000, 5px 5px 0 var(--red);
+  text-shadow: 3px 3px 0 #000, 4px 4px 0 var(--red);
 }
 
 .menu-active .brand-logo-main {
-  font-size: clamp(16px, 1.12vw, 21px);
-  letter-spacing: -0.045em;
+  font-size: clamp(14px, 0.96vw, 18px);
+  letter-spacing: -0.06em;
 }
 
 .menu-active .brand-logo-sub {
+  font-size: clamp(11px, 0.82vw, 15px);
+  letter-spacing: -0.05em;
+}
+
+.menu-active .brand-logo-sub-top {
   margin-top: 7px;
-  font-size: clamp(12px, 0.92vw, 17px);
-  letter-spacing: -0.04em;
+}
+
+.menu-active .brand-logo-sub-bottom {
+  margin-top: 4px;
 }
 
 .menu-active .pitch {
