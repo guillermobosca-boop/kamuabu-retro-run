@@ -1,7 +1,10 @@
-const { sendJson, sendMethodNotAllowed } = require("../_lib/http");
+const { handleOptions, sendJson, sendMethodNotAllowed } = require("../_lib/http");
 const { fetchLeaderboard, normalizeEntries } = require("../_lib/leaderboard");
 
 module.exports = async function handler(req, res) {
+  if (handleOptions(req, res)) {
+    return;
+  }
   if (req.method !== "GET") {
     return sendMethodNotAllowed(res, ["GET"]);
   }
