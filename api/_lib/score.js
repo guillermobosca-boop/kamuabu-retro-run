@@ -44,9 +44,9 @@ function validateRun(body) {
   if (distance > 250000) issues.push("distance_too_high");
   if (enemiesKilled > 12000) issues.push("enemy_count_too_high");
   if (comboMax > 99) issues.push("combo_too_high");
-  if (runDurationMs < 3000) issues.push("duration_too_short");
+  if (runDurationMs < 1500) issues.push("duration_too_short");
   if (runDurationMs > 1000 * 60 * 90) issues.push("duration_too_long");
-  if (score > runDurationMs * 1.8) issues.push("score_rate_suspicious");
+  if (score > runDurationMs * 5.5) issues.push("score_rate_suspicious");
 
   return {
     cityKey,
