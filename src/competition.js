@@ -2,6 +2,7 @@ const PLAYER_STORAGE_KEY = "kamuabu-retro-run-player";
 const LOCAL_RUNS_KEY = "kamuabu-retro-run-offline-runs";
 const ACTIVE_SCOPE_KEY = "kamuabu-retro-run-board-scope";
 const REMOTE_API_ORIGIN = "https://kamuabu-retro-run.vercel.app";
+const BEST_KEY = "kamuabu-retro-run-best";
 
 const CITY_LABELS = {
   valencia: "Valencia",
@@ -367,11 +368,20 @@ class CompetitionUI {
 
   renderPlayer() {
     const player = this.client.player;
+    const persistedBest = Number(localStorage.getItem(BEST_KEY) || 0);
+    const resolvedBest = Math.max(player?.bestScore || 0, persistedBest);
+    if (resolvedBest > persistedBest) {
+      localStorage.setItem(BEST_KEY, String(resolvedBest));
+    }
+    if (player && resolvedBest !== (player.bestScore || 0)) {
+      player.bestScore = resolvedBest;
+      this.client.savePlayer(player);
+    }
     if (this.refs.playerBadge) {
       this.refs.playerBadge.textContent = player?.nickname || "Invitado";
     }
     if (this.refs.playerBestBadge) {
-      this.refs.playerBestBadge.textContent = player?.bestScore ? `PB ${padScore(player.bestScore)}` : "Sin marca";
+      this.refs.playerBestBadge.textContent = resolvedBest ? `PB ${padScore(resolvedBest)}` : "Sin marca";
     }
   }
 
