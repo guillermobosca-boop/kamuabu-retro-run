@@ -5182,7 +5182,7 @@ class PlayScene extends Phaser.Scene {
       this.shoot(time);
     }
 
-    if (this.runner.body.bottom > HEIGHT + sy(40) || this.runner.y > HEIGHT + sy(24)) {
+    if (this.isRunnerBelowPlayableLane() || this.runner.body.bottom > HEIGHT + sy(40) || this.runner.y > HEIGHT + sy(24)) {
       this.rescueRunnerFromVoid();
     }
 
@@ -5232,6 +5232,7 @@ class PlayScene extends Phaser.Scene {
 
   updatePlayerInput(time) {
     const onGround = this.runner.body.onFloor?.() || this.runner.body.blocked.down || this.runner.body.touching.down;
+    const groundedForDuck = onGround || Math.abs(this.runner.body.bottom - GROUND_Y) <= sy(16);
     const nearestObstacle = this.getNearestObstacleAhead();
     const nearestEnemy = this.getNearestEnemyAhead();
     const demoJump = this.demoMode && onGround && nearestObstacle && nearestObstacle.distance < sx(180);
@@ -5267,7 +5268,7 @@ class PlayScene extends Phaser.Scene {
       this.airJumpsUsed = 0;
     }
 
-    this.setDucking(down && onGround);
+    this.setDucking(down && groundedForDuck);
     this.tryBufferedJump(time);
 
     const movingForward = right;
@@ -5389,7 +5390,7 @@ class PlayScene extends Phaser.Scene {
     const onGround = this.runner.body.onFloor?.() || this.runner.body.blocked.down || this.runner.body.touching.down;
     if (onGround && this.runner.y <= GROUND_Y + sy(10)) {
       this.lastSafeRunnerX = this.runner.x;
-      this.lastSafeRunnerY = this.runner.y;
+      this.lastSafeRunnerY = GROUND_Y;
     }
     if (onGround && !this.prevRunnerOnGround && this.runner.body.velocity.y > sy(120)) {
       const hardLanding = this.runner.body.velocity.y > sy(420);
@@ -5405,14 +5406,23 @@ class PlayScene extends Phaser.Scene {
     }
     this.resetTransientInput();
     this.isDucking = false;
-    this.applyRunnerBody();
     const safeX = Phaser.Math.Clamp(this.lastSafeRunnerX || sx(150), sx(110), sx(420));
-    const safeY = this.lastSafeRunnerY || GROUND_Y;
+    const safeY = GROUND_Y;
     this.runner.setPosition(safeX, safeY);
+    this.applyRunnerBodyConfig(this.getRunnerBodyConfig(this.isPowered, false), { preserveFeet: false });
     this.runner.setVelocity(0, 0);
     this.runner.body.updateFromGameObject();
     this.invulnerableUntil = Math.max(this.invulnerableUntil, this.time.now + 700);
     this.floatText("RECOVERY", this.runner.x + sx(42), this.runner.y - sy(90), "#40d8ff");
+  }
+
+  isRunnerBelowPlayableLane() {
+    if (!this.runner?.body) {
+      return false;
+    }
+
+    const onGround = this.runner.body.onFloor?.() || this.runner.body.blocked.down || this.runner.body.touching.down;
+    return onGround && this.runner.y > GROUND_Y + sy(26);
   }
 
   setDucking(value) {
