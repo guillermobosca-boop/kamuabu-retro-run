@@ -2920,9 +2920,20 @@ class PlayScene extends Phaser.Scene {
     super("PlayScene");
     this.touchState = { left: false, right: false, down: false, jump: false, shoot: false };
     this.touchJumpQueued = false;
+    this.keyboardState = {
+      left: false,
+      right: false,
+      down: false,
+      shoot: false,
+      jumpQueued: false,
+      restartQueued: false,
+      menuQueued: false,
+    };
     this.boundTouchButtons = [];
     this.handleWindowBlur = null;
     this.handleVisibilityChange = null;
+    this.handleKeyDown = null;
+    this.handleKeyUp = null;
   }
 
   create(data) {
@@ -3014,6 +3025,12 @@ class PlayScene extends Phaser.Scene {
       if (this.handleVisibilityChange) {
         document.removeEventListener("visibilitychange", this.handleVisibilityChange);
       }
+      if (this.handleKeyDown) {
+        window.removeEventListener("keydown", this.handleKeyDown, true);
+      }
+      if (this.handleKeyUp) {
+        window.removeEventListener("keyup", this.handleKeyUp, true);
+      }
       this.boundTouchButtons.forEach(({ button, activate, deactivate, handleLeave }) => {
         button.removeEventListener("pointerdown", activate);
         button.removeEventListener("pointerup", deactivate);
@@ -3041,6 +3058,13 @@ class PlayScene extends Phaser.Scene {
   resetTransientInput() {
     this.touchState = { left: false, right: false, down: false, jump: false, shoot: false };
     this.touchJumpQueued = false;
+    this.keyboardState.left = false;
+    this.keyboardState.right = false;
+    this.keyboardState.down = false;
+    this.keyboardState.shoot = false;
+    this.keyboardState.jumpQueued = false;
+    this.keyboardState.restartQueued = false;
+    this.keyboardState.menuQueued = false;
     this.lastRightTapAt = -9999;
     this.sprintUntil = 0;
     if (this.runner?.body) {
@@ -4980,9 +5004,66 @@ class PlayScene extends Phaser.Scene {
         this.resetTransientInput();
       }
     };
+    this.handleKeyDown = (event) => {
+      if (event.repeat) {
+        return;
+      }
+      switch (event.code) {
+        case "ArrowLeft":
+        case "KeyA":
+          this.keyboardState.left = true;
+          break;
+        case "ArrowRight":
+        case "KeyD":
+          this.keyboardState.right = true;
+          break;
+        case "ArrowDown":
+        case "KeyS":
+          this.keyboardState.down = true;
+          break;
+        case "ArrowUp":
+        case "Space":
+          this.keyboardState.jumpQueued = true;
+          break;
+        case "KeyJ":
+          this.keyboardState.shoot = true;
+          break;
+        case "KeyR":
+          this.keyboardState.restartQueued = true;
+          break;
+        case "Escape":
+          this.keyboardState.menuQueued = true;
+          break;
+        default:
+          break;
+      }
+    };
+    this.handleKeyUp = (event) => {
+      switch (event.code) {
+        case "ArrowLeft":
+        case "KeyA":
+          this.keyboardState.left = false;
+          break;
+        case "ArrowRight":
+        case "KeyD":
+          this.keyboardState.right = false;
+          break;
+        case "ArrowDown":
+        case "KeyS":
+          this.keyboardState.down = false;
+          break;
+        case "KeyJ":
+          this.keyboardState.shoot = false;
+          break;
+        default:
+          break;
+      }
+    };
     this.handleWindowPointerUp = () => this.resetTouchInputOnly();
     this.handleWindowPointerCancel = () => this.resetTouchInputOnly();
     window.addEventListener("blur", this.handleWindowBlur);
+    window.addEventListener("keydown", this.handleKeyDown, true);
+    window.addEventListener("keyup", this.handleKeyUp, true);
     window.addEventListener("pointerup", this.handleWindowPointerUp, true);
     window.addEventListener("pointercancel", this.handleWindowPointerCancel, true);
     document.addEventListener("visibilitychange", this.handleVisibilityChange);
@@ -5063,12 +5144,14 @@ class PlayScene extends Phaser.Scene {
       return;
     }
 
-    if (Phaser.Input.Keyboard.JustDown(this.keys.restart)) {
+    if (this.keyboardState.restartQueued || Phaser.Input.Keyboard.JustDown(this.keys.restart)) {
+      this.keyboardState.restartQueued = false;
       this.scene.restart({ cityKey: this.city.key });
       return;
     }
 
-    if (Phaser.Input.Keyboard.JustDown(this.keys.menu)) {
+    if (this.keyboardState.menuQueued || Phaser.Input.Keyboard.JustDown(this.keys.menu)) {
+      this.keyboardState.menuQueued = false;
       this.scene.start("MenuScene");
       return;
     }
@@ -5142,33 +5225,35 @@ class PlayScene extends Phaser.Scene {
   }
 
   updatePlayerInput(time) {
-    const onGround = this.runner.body.blocked.down || this.runner.body.touching.down;
+    const onGround = this.runner.body.onFloor?.() || this.runner.body.blocked.down || this.runner.body.touching.down;
     const nearestObstacle = this.getNearestObstacleAhead();
     const nearestEnemy = this.getNearestEnemyAhead();
     const demoJump = this.demoMode && onGround && nearestObstacle && nearestObstacle.distance < sx(180);
-    const left = !this.demoMode && (this.cursors.left.isDown || this.keys.left.isDown || this.touchState.left);
-    const rightPressed = this.cursors.right.isDown || this.keys.right.isDown;
+    const left = !this.demoMode && (this.keyboardState.left || this.touchState.left);
+    const rightPressed = this.keyboardState.right;
     const right = this.demoMode || rightPressed || this.touchState.right;
-    const down = !this.demoMode && (this.cursors.down.isDown || this.keys.down.isDown || this.touchState.down);
-    const rightTapped = Phaser.Input.Keyboard.JustDown(this.keys.right) || Phaser.Input.Keyboard.JustDown(this.cursors.right);
+    const down = !this.demoMode && (this.keyboardState.down || this.touchState.down);
+    const rightTapped = rightPressed && time - this.lastRightTapAt > 0 && time - this.lastRightTapAt < 280;
     const paceBoost = this.getDifficultyRamp() * 70;
-    const touchJump = this.touchJumpQueued;
+    const touchJump = this.touchJumpQueued || this.keyboardState.jumpQueued;
 
-    if (demoJump || touchJump || Phaser.Input.Keyboard.JustDown(this.keys.space) || Phaser.Input.Keyboard.JustDown(this.cursors.up)) {
+    if (demoJump || touchJump) {
       this.jumpBufferUntil = time + 180;
       if (!onGround && time >= this.coyoteUntil) {
         this.tryAirJump(time);
       }
     }
     this.touchJumpQueued = false;
+    this.keyboardState.jumpQueued = false;
 
-    if (rightTapped) {
+    if (rightPressed && !this.prevRightPressedAtInput) {
       if (time - this.lastRightTapAt < 280) {
         this.sprintUntil = time + 950;
         this.showFeedback("SPRINT KAMUABU!");
       }
       this.lastRightTapAt = time;
     }
+    this.prevRightPressedAtInput = rightPressed;
 
     if (onGround) {
       this.coyoteUntil = time + 145;
@@ -5295,7 +5380,7 @@ class PlayScene extends Phaser.Scene {
   }
 
   updateLandingFeedback() {
-    const onGround = this.runner.body.blocked.down || this.runner.body.touching.down;
+    const onGround = this.runner.body.onFloor?.() || this.runner.body.blocked.down || this.runner.body.touching.down;
     if (onGround && !this.prevRunnerOnGround && this.runner.body.velocity.y > sy(120)) {
       const hardLanding = this.runner.body.velocity.y > sy(420);
       this.dust.emitParticleAt(this.runner.x - sx(12), GROUND_Y - sy(6), hardLanding ? 10 : 5);
@@ -5324,9 +5409,9 @@ class PlayScene extends Phaser.Scene {
         return {
           texture: "runner-big-duck",
           bodyWidth: 60,
-          bodyHeight: 54,
+          bodyHeight: 46,
           offsetX: 28,
-          offsetY: 70,
+          offsetY: 78,
           scaleX: 0.94,
           scaleY: 0.94,
         };
@@ -5365,12 +5450,21 @@ class PlayScene extends Phaser.Scene {
     };
   }
 
-  applyRunnerBodyConfig(config) {
+  applyRunnerBodyConfig(config, options = {}) {
+    const preserveFeet = options.preserveFeet !== false;
+    const previousBottom = preserveFeet && this.runner?.body ? this.runner.body.bottom : null;
     this.runner.setTexture(config.texture);
     this.runner.body.setSize(config.bodyWidth, config.bodyHeight);
     this.runner.body.setOffset(config.offsetX, config.offsetY);
     this.runner.setScale(config.scaleX, config.scaleY);
     this.runner.body.updateFromGameObject();
+    if (previousBottom !== null && Number.isFinite(previousBottom)) {
+      const deltaY = previousBottom - this.runner.body.bottom;
+      if (deltaY !== 0) {
+        this.runner.y += deltaY;
+        this.runner.body.updateFromGameObject();
+      }
+    }
   }
 
   canStandUp() {
@@ -5380,12 +5474,19 @@ class PlayScene extends Phaser.Scene {
 
     const duckConfig = this.getRunnerBodyConfig(this.isPowered, true);
     const standConfig = this.getRunnerBodyConfig(this.isPowered, false);
+    const originalX = this.runner.x;
+    const originalY = this.runner.y;
+    const originalVelocityX = this.runner.body.velocity.x;
+    const originalVelocityY = this.runner.body.velocity.y;
 
     this.applyRunnerBodyConfig(standConfig);
     const blocked =
       this.physics.world.overlap(this.runner, this.solidBoxes) ||
       this.physics.world.overlap(this.runner, this.crates);
     this.applyRunnerBodyConfig(duckConfig);
+    this.runner.setPosition(originalX, originalY);
+    this.runner.body.setVelocity(originalVelocityX, originalVelocityY);
+    this.runner.body.updateFromGameObject();
     return !blocked;
   }
 
@@ -7925,7 +8026,7 @@ class PlayScene extends Phaser.Scene {
   }
 
   animateRunner(time) {
-    const onGround = this.runner.body.blocked.down || this.runner.body.touching.down;
+    const onGround = this.runner.body.onFloor?.() || this.runner.body.blocked.down || this.runner.body.touching.down;
 
     if (this.time.now < this.invulnerableUntil) {
       this.runner.setAlpha(time % 150 < 75 ? 0.38 : 1);
@@ -7947,6 +8048,12 @@ class PlayScene extends Phaser.Scene {
     }
 
     if (this.isDucking) {
+      const duckTexture = this.isPowered ? "runner-big-duck" : "runner-duck";
+      if (this.runner.texture.key !== duckTexture) {
+        this.runner.setTexture(duckTexture);
+      }
+      const duckScale = this.isPowered ? 0.94 : 0.84;
+      this.runner.setScale(duckScale, duckScale);
       this.runner.setAngle(0);
       return;
     }
