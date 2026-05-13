@@ -3008,6 +3008,8 @@ class PlayScene extends Phaser.Scene {
     this.bossDefeated = false;
     this.prevRunnerOnGround = false;
     this.comboTierShown = 1;
+    this.lastSafeRunnerX = sx(150);
+    this.lastSafeRunnerY = GROUND_Y;
 
     this.cameras.main.setBackgroundColor(this.city.sky);
     this.physics.world.setBounds(0, 0, WIDTH, HEIGHT);
@@ -5180,6 +5182,10 @@ class PlayScene extends Phaser.Scene {
       this.shoot(time);
     }
 
+    if (this.runner.body.bottom > HEIGHT + sy(40) || this.runner.y > HEIGHT + sy(24)) {
+      this.rescueRunnerFromVoid();
+    }
+
     this.updateMissionPhase();
     this.processStageScript();
 
@@ -5381,12 +5387,32 @@ class PlayScene extends Phaser.Scene {
 
   updateLandingFeedback() {
     const onGround = this.runner.body.onFloor?.() || this.runner.body.blocked.down || this.runner.body.touching.down;
+    if (onGround && this.runner.y <= GROUND_Y + sy(10)) {
+      this.lastSafeRunnerX = this.runner.x;
+      this.lastSafeRunnerY = this.runner.y;
+    }
     if (onGround && !this.prevRunnerOnGround && this.runner.body.velocity.y > sy(120)) {
       const hardLanding = this.runner.body.velocity.y > sy(420);
       this.dust.emitParticleAt(this.runner.x - sx(12), GROUND_Y - sy(6), hardLanding ? 10 : 5);
       this.cameras.main.shake(hardLanding ? 90 : 45, hardLanding ? 0.0024 : 0.0012);
     }
     this.prevRunnerOnGround = onGround;
+  }
+
+  rescueRunnerFromVoid() {
+    if (!this.runner || this.isGameOver) {
+      return;
+    }
+    this.resetTransientInput();
+    this.isDucking = false;
+    this.applyRunnerBody();
+    const safeX = Phaser.Math.Clamp(this.lastSafeRunnerX || sx(150), sx(110), sx(420));
+    const safeY = this.lastSafeRunnerY || GROUND_Y;
+    this.runner.setPosition(safeX, safeY);
+    this.runner.setVelocity(0, 0);
+    this.runner.body.updateFromGameObject();
+    this.invulnerableUntil = Math.max(this.invulnerableUntil, this.time.now + 700);
+    this.floatText("RECOVERY", this.runner.x + sx(42), this.runner.y - sy(90), "#40d8ff");
   }
 
   setDucking(value) {
@@ -5408,10 +5434,10 @@ class PlayScene extends Phaser.Scene {
       if (powered) {
         return {
           texture: "runner-big-duck",
-          bodyWidth: 60,
-          bodyHeight: 46,
-          offsetX: 28,
-          offsetY: 78,
+          bodyWidth: 44,
+          bodyHeight: 34,
+          offsetX: 36,
+          offsetY: 90,
           scaleX: 0.94,
           scaleY: 0.94,
         };
