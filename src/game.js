@@ -5388,6 +5388,13 @@ class PlayScene extends Phaser.Scene {
 
   updateLandingFeedback() {
     const onGround = this.runner.body.onFloor?.() || this.runner.body.blocked.down || this.runner.body.touching.down;
+    if (onGround && this.runner.y > GROUND_Y - sy(18) && this.runner.y !== GROUND_Y) {
+      this.runner.setY(GROUND_Y);
+      if (this.runner.body.velocity.y > 0) {
+        this.runner.body.setVelocityY(0);
+      }
+      this.runner.body.updateFromGameObject();
+    }
     if (onGround && this.runner.y <= GROUND_Y + sy(10)) {
       this.lastSafeRunnerX = this.runner.x;
       this.lastSafeRunnerY = GROUND_Y;
