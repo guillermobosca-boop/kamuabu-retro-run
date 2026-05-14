@@ -4828,7 +4828,7 @@ class PlayScene extends Phaser.Scene {
     this.runner.body.setGravityY(1300);
     this.applyRunnerBody();
 
-    this.floor = this.add.rectangle(WIDTH / 2, GROUND_Y, WIDTH, sy(24), 0x000000, 0);
+    this.floor = this.add.rectangle(WIDTH / 2, GROUND_Y + sy(8), WIDTH, sy(24), 0x000000, 0);
     this.physics.add.existing(this.floor, true);
     this.physics.add.collider(this.runner, this.floor);
 
@@ -5232,7 +5232,6 @@ class PlayScene extends Phaser.Scene {
 
   updatePlayerInput(time) {
     const onGround = this.runner.body.onFloor?.() || this.runner.body.blocked.down || this.runner.body.touching.down;
-    const groundedForDuck = onGround || Math.abs(this.runner.body.bottom - GROUND_Y) <= sy(16);
     const nearestObstacle = this.getNearestObstacleAhead();
     const nearestEnemy = this.getNearestEnemyAhead();
     const demoJump = this.demoMode && onGround && nearestObstacle && nearestObstacle.distance < sx(180);
@@ -5268,7 +5267,7 @@ class PlayScene extends Phaser.Scene {
       this.airJumpsUsed = 0;
     }
 
-    this.setDucking(down && groundedForDuck);
+    this.setDucking(down && onGround);
     this.tryBufferedJump(time);
 
     const movingForward = right;
@@ -5414,9 +5413,6 @@ class PlayScene extends Phaser.Scene {
     if (this.isGameOver || !this.runner) {
       return;
     }
-    if (!value && this.isDucking && !this.canStandUp()) {
-      return;
-    }
     if (this.isDucking === value) {
       return;
     }
@@ -5503,7 +5499,25 @@ class PlayScene extends Phaser.Scene {
     if (!this.runner) {
       return;
     }
-    this.applyRunnerBodyConfig(this.getRunnerBodyConfig());
+    if (this.isDucking) {
+      this.runner.setTexture("runner-duck");
+      this.runner.body.setSize(66, 38);
+      this.runner.body.setOffset(20, 42);
+      this.runner.setScale(this.isPowered ? 1.02 : 0.88);
+      return;
+    }
+
+    if (this.isPowered) {
+      this.runner.setTexture("runner-big");
+      this.runner.body.setSize(54, 102);
+      this.runner.body.setOffset(33, 22);
+      this.runner.setScale(0.94);
+    } else {
+      this.runner.setTexture("runner-small");
+      this.runner.body.setSize(42, 72);
+      this.runner.body.setOffset(26, 16);
+      this.runner.setScale(0.84);
+    }
   }
 
   updateMissionPhase() {
@@ -8057,11 +8071,10 @@ class PlayScene extends Phaser.Scene {
     }
 
     if (this.isDucking) {
-      const duckTexture = this.isPowered ? "runner-big-duck" : "runner-duck";
-      if (this.runner.texture.key !== duckTexture) {
-        this.runner.setTexture(duckTexture);
+      if (this.runner.texture.key !== "runner-duck") {
+        this.runner.setTexture("runner-duck");
       }
-      const duckScale = this.isPowered ? 0.94 : 0.84;
+      const duckScale = this.isPowered ? 1.02 : 0.88;
       this.runner.setScale(duckScale, duckScale);
       this.runner.setAngle(0);
       return;
