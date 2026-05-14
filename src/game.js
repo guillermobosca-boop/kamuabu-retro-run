@@ -4828,7 +4828,7 @@ class PlayScene extends Phaser.Scene {
     this.runner.body.setGravityY(1300);
     this.applyRunnerBody();
 
-    this.floor = this.add.rectangle(WIDTH / 2, GROUND_Y + sy(8), WIDTH, sy(24), 0x000000, 0);
+    this.floor = this.add.rectangle(WIDTH / 2, GROUND_Y, WIDTH, sy(24), 0x000000, 0);
     this.physics.add.existing(this.floor, true);
     this.physics.add.collider(this.runner, this.floor);
 
