@@ -5182,7 +5182,7 @@ class PlayScene extends Phaser.Scene {
       this.shoot(time);
     }
 
-    if (this.isRunnerBelowPlayableLane() || this.runner.body.bottom > HEIGHT + sy(40) || this.runner.y > HEIGHT + sy(24)) {
+    if (this.runner.body.bottom > HEIGHT + sy(40) || this.runner.y > HEIGHT + sy(24)) {
       this.rescueRunnerFromVoid();
     }
 
@@ -5388,17 +5388,6 @@ class PlayScene extends Phaser.Scene {
 
   updateLandingFeedback() {
     const onGround = this.runner.body.onFloor?.() || this.runner.body.blocked.down || this.runner.body.touching.down;
-    if (onGround && this.runner.y > GROUND_Y - sy(18) && this.runner.y !== GROUND_Y) {
-      this.runner.setY(GROUND_Y);
-      if (this.runner.body.velocity.y > 0) {
-        this.runner.body.setVelocityY(0);
-      }
-      this.runner.body.updateFromGameObject();
-    }
-    if (onGround && this.runner.y <= GROUND_Y + sy(10)) {
-      this.lastSafeRunnerX = this.runner.x;
-      this.lastSafeRunnerY = GROUND_Y;
-    }
     if (onGround && !this.prevRunnerOnGround && this.runner.body.velocity.y > sy(120)) {
       const hardLanding = this.runner.body.velocity.y > sy(420);
       this.dust.emitParticleAt(this.runner.x - sx(12), GROUND_Y - sy(6), hardLanding ? 10 : 5);
@@ -5413,23 +5402,12 @@ class PlayScene extends Phaser.Scene {
     }
     this.resetTransientInput();
     this.isDucking = false;
-    const safeX = Phaser.Math.Clamp(this.lastSafeRunnerX || sx(150), sx(110), sx(420));
-    const safeY = GROUND_Y;
-    this.runner.setPosition(safeX, safeY);
-    this.applyRunnerBodyConfig(this.getRunnerBodyConfig(this.isPowered, false), { preserveFeet: false });
+    this.applyRunnerBody();
+    this.runner.setPosition(sx(150), GROUND_Y);
     this.runner.setVelocity(0, 0);
     this.runner.body.updateFromGameObject();
     this.invulnerableUntil = Math.max(this.invulnerableUntil, this.time.now + 700);
     this.floatText("RECOVERY", this.runner.x + sx(42), this.runner.y - sy(90), "#40d8ff");
-  }
-
-  isRunnerBelowPlayableLane() {
-    if (!this.runner?.body) {
-      return false;
-    }
-
-    const onGround = this.runner.body.onFloor?.() || this.runner.body.blocked.down || this.runner.body.touching.down;
-    return onGround && this.runner.y > GROUND_Y + sy(26);
   }
 
   setDucking(value) {
@@ -5493,21 +5471,12 @@ class PlayScene extends Phaser.Scene {
     };
   }
 
-  applyRunnerBodyConfig(config, options = {}) {
-    const preserveFeet = options.preserveFeet !== false;
-    const previousBottom = preserveFeet && this.runner?.body ? this.runner.body.bottom : null;
+  applyRunnerBodyConfig(config) {
     this.runner.setTexture(config.texture);
     this.runner.body.setSize(config.bodyWidth, config.bodyHeight);
     this.runner.body.setOffset(config.offsetX, config.offsetY);
     this.runner.setScale(config.scaleX, config.scaleY);
     this.runner.body.updateFromGameObject();
-    if (previousBottom !== null && Number.isFinite(previousBottom)) {
-      const deltaY = previousBottom - this.runner.body.bottom;
-      if (deltaY !== 0) {
-        this.runner.y += deltaY;
-        this.runner.body.updateFromGameObject();
-      }
-    }
   }
 
   canStandUp() {
@@ -5517,8 +5486,6 @@ class PlayScene extends Phaser.Scene {
 
     const duckConfig = this.getRunnerBodyConfig(this.isPowered, true);
     const standConfig = this.getRunnerBodyConfig(this.isPowered, false);
-    const originalX = this.runner.x;
-    const originalY = this.runner.y;
     const originalVelocityX = this.runner.body.velocity.x;
     const originalVelocityY = this.runner.body.velocity.y;
 
@@ -5527,7 +5494,6 @@ class PlayScene extends Phaser.Scene {
       this.physics.world.overlap(this.runner, this.solidBoxes) ||
       this.physics.world.overlap(this.runner, this.crates);
     this.applyRunnerBodyConfig(duckConfig);
-    this.runner.setPosition(originalX, originalY);
     this.runner.body.setVelocity(originalVelocityX, originalVelocityY);
     this.runner.body.updateFromGameObject();
     return !blocked;
