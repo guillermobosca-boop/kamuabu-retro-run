@@ -3,19 +3,88 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>KAMUABU Retro Run</title>
+
+    <!-- ââ Primary Meta ââââââââââââââââââââââââââââââââââââ -->
+    <title>KAMUABU Retro Run â Runner Arcade de Calle</title>
+    <meta name="description" content="Runner arcade con selector de ciudades, saltos, agachadas, power-ups de calcetines y actitud de recreativa noventera. Â¡Compite en el ranking mundial!" />
+    <meta name="keywords" content="kamuabu, retro run, runner, arcade, videojuego, phaser, pixel art, ranking online" />
+    <meta name="author" content="KAMUABU" />
+    <meta name="theme-color" content="#10101a" />
+    <link rel="canonical" href="https://kamuabu-retro-run.vercel.app/" />
+
+    <!-- ââ Open Graph (Facebook, WhatsApp, LinkedInâ¦) âââââââ -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:url"         content="https://kamuabu-retro-run.vercel.app/" />
+    <meta property="og:title"       content="KAMUABU Retro Run" />
+    <meta property="og:description" content="Runner arcade de calle con calcetines, power-ups y ranking mundial. Â¿Puedes llegar al Top 1?" />
+    <meta property="og:image"       content="https://kamuabu-retro-run.vercel.app/og-image.png" />
+    <meta property="og:image:width"  content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale"      content="es_ES" />
+    <meta property="og:site_name"   content="KAMUABU" />
+
+    <!-- ââ Twitter / X Card ââââââââââââââââââââââââââââââââ -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:site"        content="@kamuabu" />
+    <meta name="twitter:title"       content="KAMUABU Retro Run" />
+    <meta name="twitter:description" content="Runner arcade de calle con ranking mundial. Â¡INSERT COIN!" />
+    <meta name="twitter:image"       content="https://kamuabu-retro-run.vercel.app/og-image.png" />
+
+    <!-- ââ Performance: preconnect & preload âââââââââââââââ -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="dns-prefetch" href="https://kamuabu-retro-run.vercel.app" />
+
+    <!-- Preload critical CSS -->
+    <link rel="preload" href="./src/styles.css" as="style" />
+
+    <!-- Preload Phaser (large script â give browser an early hint) -->
+    <link rel="preload"
+          href="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"
+          as="script"
+          crossorigin />
+
+    <!-- Google Fonts -->
     <link
       href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Main stylesheet -->
     <link rel="stylesheet" href="./src/styles.css" />
+
+    <!-- ââ Structured Data âââââââââââââââââââââââââââââââââ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": "KAMUABU Retro Run",
+      "description": "Runner arcade de calle con selector de ciudades, saltos, agachadas y power-ups de calcetines.",
+      "url": "https://kamuabu-retro-run.vercel.app/",
+      "author": { "@type": "Organization", "name": "KAMUABU" },
+      "genre": ["Arcade", "Runner", "Retro"],
+      "gameItem": [
+        { "@type": "Thing", "name": "Calcetines" },
+        { "@type": "Thing", "name": "Pistola" }
+      ],
+      "applicationCategory": "Game",
+      "operatingSystem": "Web Browser",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
+    }
+    </script>
   </head>
+
   <body>
+    <!-- ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+         SHELL
+    ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
     <main class="shell">
-      <section class="brand-panel" aria-label="Presentacion del juego">
+
+      <!-- ââ Brand / Sidebar Panel âââââââââââââââââââââââââ -->
+      <section class="brand-panel" aria-label="PresentaciÃ³n del juego">
         <p class="eyebrow">KAMUABU presenta</p>
+
         <div class="brand-header">
           <h1 class="brand-logo">
             <span class="brand-logo-main">KAMUABU</span>
@@ -23,46 +92,66 @@
             <span class="brand-logo-sub brand-logo-sub-bottom">Run</span>
           </h1>
         </div>
+
         <p class="coin-callout" aria-label="Insert Coin">INSERT COIN</p>
+
         <p class="pitch">
           Un runner arcade de calle con selector de ciudades, saltos,
           agachadas, power-ups de calcetines y actitud de recreativa noventera.
         </p>
-        <div class="brand-meta" aria-label="Informacion arcade">
+
+        <div class="brand-meta" aria-label="InformaciÃ³n arcade">
           <span>1P RUN+GUN</span>
           <span>PIXEL TOUR</span>
           <span>KAMUABU CLUB</span>
         </div>
-        <section class="league-panel" aria-label="Clasificacion online">
+
+        <!-- ââ Leaderboard âââââââââââââââââââââââââââââââââââ -->
+        <section class="league-panel" aria-label="ClasificaciÃ³n online">
           <div class="league-panel-head">
             <div>
               <p class="league-kicker">WORLD CIRCUIT</p>
               <h2 class="league-title">Ranking KAMUABU</h2>
             </div>
-            <button id="change-player" class="league-action" type="button">Apodo</button>
+            <button id="change-player" class="league-action" type="button" aria-label="Cambiar apodo">
+              Apodo
+            </button>
           </div>
+
           <div class="league-player-bar">
             <span class="league-player-label">Jugador</span>
             <strong id="player-badge">Invitado</strong>
             <span id="player-best-badge" class="league-player-best">Sin marca</span>
           </div>
+
           <div class="league-tabs" role="tablist" aria-label="Tipos de ranking">
-            <button class="league-tab is-active" type="button" data-board="global">Global</button>
-            <button class="league-tab" type="button" data-board="weekly">Semanal</button>
-            <button class="league-tab" type="button" data-board="city">Ciudad</button>
+            <button class="league-tab is-active" type="button"
+                    role="tab" aria-selected="true"  data-board="global">Global</button>
+            <button class="league-tab"           type="button"
+                    role="tab" aria-selected="false" data-board="weekly">Semanal</button>
+            <button class="league-tab"           type="button"
+                    role="tab" aria-selected="false" data-board="city">Ciudad</button>
           </div>
-          <ol id="leaderboard-list" class="leaderboard-list" aria-live="polite"></ol>
-          <p id="leaderboard-empty" class="leaderboard-empty">Cargando clasificacion...</p>
+
+          <ol id="leaderboard-list" class="leaderboard-list" aria-live="polite" aria-label="ClasificaciÃ³n"></ol>
+          <p id="leaderboard-empty" class="leaderboard-empty">Cargando clasificaciÃ³n...</p>
+
           <div class="league-footer">
-            <span id="leaderboard-status">Sincronizando ranking</span>
-            <button id="leaderboard-refresh" class="league-link" type="button">Actualizar</button>
+            <span id="leaderboard-status" aria-live="polite">Sincronizando ranking</span>
+            <button id="leaderboard-refresh" class="league-link" type="button" aria-label="Actualizar ranking">
+              Actualizar
+            </button>
           </div>
         </section>
+
         <p class="brand-footer">PRESS START TO TOUR THE WORLD</p>
       </section>
 
+      <!-- ââ Game Area ââââââââââââââââââââââââââââââââââââââââ -->
       <section class="game-card" aria-label="Juego">
-        <div class="hud">
+
+        <!-- HUD -->
+        <div class="hud" role="status" aria-label="Estado del juego">
           <div class="hud-card hud-score">
             <span>Puntos</span>
             <strong id="score">000000</strong>
@@ -92,24 +181,30 @@
             <strong id="weapon">Pistol</strong>
           </div>
           <div class="hud-card hud-mission">
-            <span>Mision</span>
+            <span>MisiÃ³n</span>
             <strong id="mission">0%</strong>
           </div>
         </div>
-        <div id="game"></div>
+
+        <!-- Canvas -->
+        <div id="game" role="application" aria-label="Ãrea de juego"></div>
+
+        <!-- Stage Progress -->
         <div class="stage-progress" aria-label="Progreso del nivel">
           <div class="stage-progress-top">
-            <span id="progress-label">Progreso de mision</span>
+            <span id="progress-label">Progreso de misiÃ³n</span>
             <span id="progress-phase" class="stage-progress-phase">STREET RUN</span>
             <strong id="progress-distance">META 100%</strong>
           </div>
-          <div class="stage-progress-track">
-            <div id="progress-fill" class="stage-progress-fill"></div>
-            <div class="stage-progress-zone stage-progress-zone-mini" aria-hidden="true"></div>
-            <div class="stage-progress-zone stage-progress-zone-boss" aria-hidden="true"></div>
-            <div id="progress-mini" class="stage-progress-pin stage-progress-pin-mini" aria-hidden="true"></div>
-            <div id="progress-boss" class="stage-progress-pin stage-progress-pin-boss" aria-hidden="true"></div>
-            <div id="progress-marker" class="stage-progress-marker" aria-hidden="true"></div>
+          <div class="stage-progress-track" role="progressbar"
+               aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+               aria-label="Progreso de nivel">
+            <div id="progress-fill"  class="stage-progress-fill"></div>
+            <div class="stage-progress-zone stage-progress-zone-mini"  aria-hidden="true"></div>
+            <div class="stage-progress-zone stage-progress-zone-boss"  aria-hidden="true"></div>
+            <div id="progress-mini"   class="stage-progress-pin stage-progress-pin-mini" aria-hidden="true"></div>
+            <div id="progress-boss"   class="stage-progress-pin stage-progress-pin-boss" aria-hidden="true"></div>
+            <div id="progress-marker" class="stage-progress-marker"                      aria-hidden="true"></div>
           </div>
           <div class="stage-progress-legend" aria-hidden="true">
             <span>START</span>
@@ -118,32 +213,44 @@
             <span>META</span>
           </div>
         </div>
-        <div class="controls">
-          <span>A/D: moverse | Espacio: saltar | S/abajo: agacharse | J: disparar</span>
-          <span>R: reiniciar | ESC: ciudades</span>
+
+        <!-- Keyboard hints -->
+        <div class="controls" aria-label="Controles de teclado">
+          <span>A/D: moverse &nbsp;|&nbsp; Espacio: saltar &nbsp;|&nbsp; S/â: agacharse &nbsp;|&nbsp; J: disparar</span>
+          <span>R: reiniciar &nbsp;|&nbsp; ESC: ciudades</span>
         </div>
-        <div class="touch-controls" aria-label="Controles tactiles">
+
+        <!-- Touch Controls -->
+        <div class="touch-controls" aria-label="Controles tÃ¡ctiles">
           <div class="touch-move">
-            <button class="touch-btn touch-btn-left" data-touch="left" type="button">◀</button>
-            <button class="touch-btn touch-btn-right" data-touch="right" type="button">▶</button>
+            <button class="touch-btn touch-btn-left"  data-touch="left"  type="button" aria-label="Moverse a la izquierda">â</button>
+            <button class="touch-btn touch-btn-right" data-touch="right" type="button" aria-label="Moverse a la derecha">â¶</button>
           </div>
           <div class="touch-actions">
-            <button class="touch-btn touch-btn-duck" data-touch="down" type="button">DUCK</button>
-            <button class="touch-btn touch-btn-jump" data-touch="jump" type="button">JUMP</button>
-            <button class="touch-btn touch-btn-shoot" data-touch="shoot" type="button">FIRE</button>
+            <button class="touch-btn touch-btn-duck"  data-touch="down"  type="button" aria-label="Agacharse">DUCK</button>
+            <button class="touch-btn touch-btn-jump"  data-touch="jump"  type="button" aria-label="Saltar">JUMP</button>
+            <button class="touch-btn touch-btn-shoot" data-touch="shoot" type="button" aria-label="Disparar">FIRE</button>
           </div>
         </div>
       </section>
     </main>
 
-    <div id="player-modal" class="overlay-shell is-hidden" aria-hidden="true">
-      <div class="overlay-card overlay-card-player" role="dialog" aria-modal="true" aria-labelledby="player-modal-title">
+    <!-- âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+         MODALS
+    ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
+
+    <!-- Player Nickname Modal -->
+    <div id="player-modal" class="overlay-shell is-hidden"
+         aria-hidden="true" role="dialog" aria-modal="true"
+         aria-labelledby="player-modal-title">
+      <div class="overlay-card overlay-card-player">
         <p class="overlay-kicker">KAMUABU WORLD CIRCUIT</p>
         <h2 id="player-modal-title">Elige tu apodo</h2>
         <p class="overlay-copy">
-          Tu nombre aparecerá en el ranking global, semanal y por ciudad. Si quieres competir, este es tu dorsal.
+          Tu nombre aparecerÃ¡ en el ranking global, semanal y por ciudad.
+          Si quieres competir, este es tu dorsal.
         </p>
-        <form id="player-form" class="overlay-form">
+        <form id="player-form" class="overlay-form" novalidate>
           <label class="overlay-field">
             <span>Apodo</span>
             <input
@@ -153,22 +260,33 @@
               minlength="3"
               maxlength="18"
               autocomplete="nickname"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
               placeholder="Ej. RayoVLC"
               required
             />
           </label>
-          <p id="player-form-status" class="overlay-status">Tu apodo se guardará para futuras partidas.</p>
+          <p id="player-form-status" class="overlay-status" aria-live="polite">
+            Tu apodo se guardarÃ¡ para futuras partidas.
+          </p>
           <div class="overlay-actions">
-            <button id="player-save" class="overlay-btn overlay-btn-primary" type="submit">Entrar a competir</button>
+            <button id="player-save" class="overlay-btn overlay-btn-primary" type="submit">
+              Entrar a competir
+            </button>
           </div>
         </form>
       </div>
     </div>
 
-    <div id="result-modal" class="overlay-shell is-hidden" aria-hidden="true">
-      <div class="overlay-card overlay-card-result" role="dialog" aria-modal="true" aria-labelledby="result-modal-title">
+    <!-- Result Modal -->
+    <div id="result-modal" class="overlay-shell is-hidden"
+         aria-hidden="true" role="dialog" aria-modal="true"
+         aria-labelledby="result-modal-title">
+      <div class="overlay-card overlay-card-result">
         <p class="overlay-kicker">KAMUABU RESULTS</p>
         <h2 id="result-modal-title">Resultado de la carrera</h2>
+
         <div class="result-grid">
           <div class="result-stat">
             <span>Puntos</span>
@@ -183,35 +301,45 @@
             <strong id="result-rank">-</strong>
           </div>
           <div class="result-stat">
-            <span>Combo máx.</span>
+            <span>Combo mÃ¡x.</span>
             <strong id="result-combo">x1</strong>
           </div>
         </div>
+
         <div class="result-board">
           <div class="result-board-card">
-            <span>Posición global</span>
+            <span>PosiciÃ³n global</span>
             <strong id="result-global-position">--</strong>
           </div>
           <div class="result-board-card">
-            <span>Posición semanal</span>
+            <span>PosiciÃ³n semanal</span>
             <strong id="result-weekly-position">--</strong>
           </div>
           <div class="result-board-card">
-            <span>Posición ciudad</span>
+            <span>PosiciÃ³n ciudad</span>
             <strong id="result-city-position">--</strong>
           </div>
         </div>
+
         <div class="result-summary">
-          <p id="result-summary-copy">Tu carrera se está evaluando.</p>
-          <ol id="result-top-list" class="result-top-list"></ol>
+          <p id="result-summary-copy" aria-live="polite">Tu carrera se estÃ¡ evaluando.</p>
+          <ol id="result-top-list" class="result-top-list" aria-label="Top del ranking"></ol>
         </div>
+
         <div class="overlay-actions">
-          <button id="result-close" class="overlay-btn overlay-btn-secondary" type="button">Cerrar</button>
+          <button id="result-close" class="overlay-btn overlay-btn-secondary" type="button">
+            Cerrar
+          </button>
         </div>
       </div>
     </div>
 
+    <!-- âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+         SCRIPTS
+    ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
+    <!-- Phaser 3 â loaded synchronously so game.js can reference it -->
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
+    <!-- Game module -->
     <script type="module" src="./src/game.js"></script>
   </body>
 </html>
