@@ -47,8 +47,8 @@
   --glow-gold:      0 0 6px #ffd700, 0 0 16px #ffd70088, 0 0 32px #ffd70044;
 
   /* CRT */
-  --crt-scanline-opacity: 0.22;
-  --crt-scanline-size:    4px;
+  --crt-scanline-opacity: 0.04;
+  --crt-scanline-size:    3px;
 }
 
 /* ── RESET & BASE ── */
