@@ -1,42 +1,67 @@
-const PLAYER_STORAGE_KEY = "kamuabu-retro-run-player";
-const LOCAL_RUNS_KEY = "kamuabu-retro-run-offline-runs";
-const ACTIVE_SCOPE_KEY = "kamuabu-retro-run-board-scope";
-const REMOTE_API_ORIGIN = "https://kamuabu-retro-run.vercel.app";
-const BEST_KEY = "kamuabu-retro-run-best";
+/* ============================================================
+   KAMUABU RETRO RUN — competition.js (pro edition)
+   ============================================================ */
+
+const PLAYER_STORAGE_KEY  = "kamuabu-retro-run-player";
+const LOCAL_RUNS_KEY      = "kamuabu-retro-run-offline-runs";
+const ACTIVE_SCOPE_KEY    = "kamuabu-retro-run-board-scope";
+const REMOTE_API_ORIGIN   = "https://kamuabu-retro-run.vercel.app";
+const BEST_KEY            = "kamuabu-retro-run-best";
 
 const CITY_LABELS = {
   valencia: "Valencia",
-  roma: "Roma",
-  paris: "Paris",
-  venecia: "Venecia",
-  londres: "Londres",
+  roma:     "Roma",
+  paris:    "Paris",
+  venecia:  "Venecia",
+  londres:  "Londres",
 };
 
-const padScore = (value) => String(Math.max(0, Math.floor(value || 0))).padStart(6, "0");
+/* ── Helpers ────────────────────────────────────────────────── */
+const padScore = (value) =>
+  String(Math.max(0, Math.floor(value || 0))).padStart(6, "0");
+
 const safeJsonParse = (value, fallback) => {
-  try {
-    return JSON.parse(value);
-  } catch {
-    return fallback;
-  }
+  try   { return JSON.parse(value); }
+  catch { return fallback; }
 };
 
 const slugifyNickname = (nickname) =>
   nickname
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[̀-ͯ]/g, "")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 32) || `runner-${Math.random().toString(36).slice(2, 8)}`;
 
-const randomId = () => {
-  if (globalThis.crypto?.randomUUID) {
-    return globalThis.crypto.randomUUID();
-  }
-  return `offline-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-};
+const randomId = () =>
+  globalThis.crypto?.randomUUID?.() ??
+  `offline-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 
+/**
+ * Exponential-backoff fetch with up to `maxRetries` retries.
+ * Only retries on network errors or 5xx responses (never on 4xx).
+ */
+async function fetchWithRetry(url, options = {}, maxRetries = 2) {
+  let lastError;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const res = await fetch(url, options);
+      // Don't retry client errors (4xx) — they won't change.
+      if (res.status >= 400 && res.status < 500) return res;
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res;
+    } catch (err) {
+      lastError = err;
+      if (attempt < maxRetries) {
+        await new Promise((r) => setTimeout(r, 300 * 2 ** attempt));
+      }
+    }
+  }
+  throw lastError;
+}
+
+/* ── CompetitionClient ──────────────────────────────────────── */
 class CompetitionClient {
   constructor() {
     this.player = safeJsonParse(localStorage.getItem(PLAYER_STORAGE_KEY), null);
@@ -46,97 +71,83 @@ class CompetitionClient {
         ? REMOTE_API_ORIGIN
         : window.location.origin;
     this.currentSession = null;
+    // In-flight request deduplication for leaderboard fetches.
+    this._boardInflight = new Map();
   }
 
+  /* ── Storage ─────────────────────────────────────────────── */
   savePlayer(player) {
     this.player = player;
     localStorage.setItem(PLAYER_STORAGE_KEY, JSON.stringify(player));
     return player;
   }
 
-  getOfflineRuns() {
-    return safeJsonParse(localStorage.getItem(LOCAL_RUNS_KEY), []);
-  }
+  getOfflineRuns()        { return safeJsonParse(localStorage.getItem(LOCAL_RUNS_KEY), []); }
+  setOfflineRuns(runs)    { localStorage.setItem(LOCAL_RUNS_KEY, JSON.stringify(runs)); }
 
-  setOfflineRuns(runs) {
-    localStorage.setItem(LOCAL_RUNS_KEY, JSON.stringify(runs));
-  }
-
+  /* ── HTTP ────────────────────────────────────────────────── */
   async request(path, options = {}) {
     const target = path.startsWith("/api/") ? `${this.apiBase}${path}` : path;
-    const response = await fetch(target, {
-      method: options.method || "GET",
-      headers: {
-        "Content-Type": "application/json",
-        ...(options.headers || {}),
-      },
-      body: options.body ? JSON.stringify(options.body) : undefined,
+    const res = await fetchWithRetry(target, {
+      method:  options.method || "GET",
+      headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+      body:    options.body ? JSON.stringify(options.body) : undefined,
     });
-
-    const payload = await response.json().catch(() => ({}));
-    if (!response.ok) {
-      throw new Error(payload?.error || `API ${response.status}`);
-    }
+    const payload = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(payload?.error || `API ${res.status}`);
     return payload;
   }
 
+  /* ── Player Registration ─────────────────────────────────── */
   async registerPlayer(nickname) {
     const cleanNickname = nickname.trim().slice(0, 18);
     if (cleanNickname.length < 3) {
       throw new Error("El apodo debe tener al menos 3 caracteres.");
     }
-    const currentSlug = slugifyNickname(this.player?.nickname || "");
-    const nextSlug = slugifyNickname(cleanNickname);
-    const isSameIdentity = !!this.player && currentSlug === nextSlug;
+
+    const currentSlug     = slugifyNickname(this.player?.nickname || "");
+    const nextSlug        = slugifyNickname(cleanNickname);
+    const isSameIdentity  = !!this.player && currentSlug === nextSlug;
+
+    const buildLocalPlayer = () => ({
+      id:         isSameIdentity ? (this.player?.id || randomId()) : randomId(),
+      nickname:   cleanNickname,
+      slug:       slugifyNickname(cleanNickname),
+      bestScore:  isSameIdentity ? (this.player?.bestScore || 0) : 0,
+      createdAt:  isSameIdentity
+                    ? (this.player?.createdAt || new Date().toISOString())
+                    : new Date().toISOString(),
+    });
 
     if (!this.remoteEnabled) {
-      const player = this.savePlayer({
-        id: isSameIdentity ? this.player?.id || randomId() : randomId(),
-        nickname: cleanNickname,
-        slug: slugifyNickname(cleanNickname),
-        bestScore: isSameIdentity ? this.player?.bestScore || 0 : 0,
-        createdAt: isSameIdentity ? this.player?.createdAt || new Date().toISOString() : new Date().toISOString(),
-      });
-      return { ok: true, player, source: "offline" };
+      return { ok: true, player: this.savePlayer(buildLocalPlayer()), source: "offline" };
     }
 
     try {
       const payload = await this.request("/api/player/register", {
         method: "POST",
-        body: {
-          nickname: cleanNickname,
-          playerId: isSameIdentity ? this.player?.id || null : null,
-        },
+        body:   { nickname: cleanNickname, playerId: isSameIdentity ? (this.player?.id || null) : null },
       });
-      const player = this.savePlayer(payload.player);
-      return { ...payload, player, source: "remote" };
+      return { ...payload, player: this.savePlayer(payload.player), source: "remote" };
     } catch (error) {
-      const player = this.savePlayer({
-        id: isSameIdentity ? this.player?.id || randomId() : randomId(),
-        nickname: cleanNickname,
-        slug: slugifyNickname(cleanNickname),
-        bestScore: isSameIdentity ? this.player?.bestScore || 0 : 0,
-        createdAt: isSameIdentity ? this.player?.createdAt || new Date().toISOString() : new Date().toISOString(),
-      });
       return {
-        ok: true,
-        player,
-        source: "offline-fallback",
+        ok:      true,
+        player:  this.savePlayer(buildLocalPlayer()),
+        source:  "offline-fallback",
         warning: error.message,
       };
     }
   }
 
+  /* ── Run Lifecycle ───────────────────────────────────────── */
   async startRun(cityKey) {
-    if (!this.player) {
-      return null;
-    }
+    if (!this.player) return null;
 
     const baseSession = {
-      id: randomId(),
+      id:        randomId(),
       cityKey,
       startedAt: new Date().toISOString(),
-      playerId: this.player.id,
+      playerId:  this.player.id,
     };
 
     if (!this.remoteEnabled) {
@@ -147,11 +158,11 @@ class CompetitionClient {
     try {
       const payload = await this.request("/api/run/start", {
         method: "POST",
-        body: {
-          playerId: this.player.id,
+        body:   {
+          playerId:      this.player.id,
           cityKey,
-          buildVersion: "desktop-competitive-v1",
-          deviceType: "desktop",
+          buildVersion:  "desktop-competitive-v2",
+          deviceType:    "desktop",
         },
       });
       this.currentSession = payload.session;
@@ -162,11 +173,12 @@ class CompetitionClient {
     }
   }
 
+  /* ── Offline Leaderboard Computation ────────────────────── */
   computeOfflineLeaderboard(scope, cityKey, limit = 8) {
-    const now = Date.now();
+    const now      = Date.now();
     const byPlayer = new Map();
-    const runs = this.getOfflineRuns().filter((run) => {
-      if (scope === "city" && run.cityKey !== cityKey) return false;
+    const runs     = this.getOfflineRuns().filter((run) => {
+      if (scope === "city"   && run.cityKey !== cityKey) return false;
       if (scope === "weekly") {
         const created = new Date(run.createdAt).getTime();
         return now - created <= 7 * 24 * 60 * 60 * 1000;
@@ -176,34 +188,35 @@ class CompetitionClient {
 
     for (const run of runs) {
       const existing = byPlayer.get(run.playerId);
-      if (!existing || run.score > existing.score) {
-        byPlayer.set(run.playerId, run);
-      }
+      if (!existing || run.score > existing.score) byPlayer.set(run.playerId, run);
     }
 
     return Array.from(byPlayer.values())
       .sort((a, b) => b.score - a.score || a.runDurationMs - b.runDurationMs)
       .slice(0, limit)
       .map((run, index) => ({
-        rank: index + 1,
-        nickname: run.nickname,
-        playerId: run.playerId,
-        score: run.score,
-        cityKey: run.cityKey,
+        rank:      index + 1,
+        nickname:  run.nickname,
+        playerId:  run.playerId,
+        score:     run.score,
+        cityKey:   run.cityKey,
         createdAt: run.createdAt,
       }));
   }
 
+  /* ── Leaderboard Fetch (with deduplication) ──────────────── */
   async fetchLeaderboard(scope = "global", cityKey = "valencia", limit = 8) {
     if (!this.remoteEnabled) {
       return {
-        ok: true,
+        ok:      true,
         entries: this.computeOfflineLeaderboard(scope, cityKey, limit),
-        source: "offline",
+        source:  "offline",
       };
     }
 
-    const playerQuery = this.player?.id ? `&playerId=${encodeURIComponent(this.player.id)}` : "";
+    const playerQuery = this.player?.id
+      ? `&playerId=${encodeURIComponent(this.player.id)}`
+      : "";
     const endpoint =
       scope === "weekly"
         ? `/api/leaderboard/weekly?limit=${limit}${playerQuery}`
@@ -211,47 +224,64 @@ class CompetitionClient {
           ? `/api/leaderboard/city?city=${encodeURIComponent(cityKey)}&limit=${limit}${playerQuery}`
           : `/api/leaderboard/global?limit=${limit}${playerQuery}`;
 
-    try {
-      return await this.request(endpoint);
-    } catch {
-      return {
-        ok: true,
-        entries: this.computeOfflineLeaderboard(scope, cityKey, limit),
-        source: "offline-fallback",
-      };
+    // Deduplicate concurrent requests for the same endpoint.
+    const cacheKey = endpoint;
+    if (this._boardInflight.has(cacheKey)) {
+      return this._boardInflight.get(cacheKey);
     }
+
+    const promise = this.request(endpoint)
+      .then((data) => {
+        this._boardInflight.delete(cacheKey);
+        return data;
+      })
+      .catch(() => {
+        this._boardInflight.delete(cacheKey);
+        return {
+          ok:      true,
+          entries: this.computeOfflineLeaderboard(scope, cityKey, limit),
+          source:  "offline-fallback",
+        };
+      });
+
+    this._boardInflight.set(cacheKey, promise);
+    return promise;
   }
 
+  /* ── Finish Run ──────────────────────────────────────────── */
   async finishRun(payload) {
-    if (!this.player) {
-      return { ok: false, error: "player_missing" };
-    }
+    if (!this.player) return { ok: false, error: "player_missing" };
 
     const localRun = {
-      id: randomId(),
-      sessionId: payload.sessionId || this.currentSession?.id || randomId(),
-      playerId: this.player.id,
-      nickname: this.player.nickname,
-      cityKey: payload.cityKey,
-      score: Math.floor(payload.score || 0),
-      distance: Math.floor(payload.distance || 0),
-      enemiesKilled: payload.enemiesKilled || 0,
-      miniBossKilled: Boolean(payload.miniBossKilled),
-      bossKilled: Boolean(payload.bossKilled),
-      comboMax: payload.comboMax || 1,
-      hitsTaken: payload.hitsTaken || 0,
-      weaponPeak: payload.weaponPeak || "Pistol",
-      runDurationMs: payload.runDurationMs || 0,
-      socksCollected: payload.socksCollected || 0,
-      shirtsCollected: payload.shirtsCollected || 0,
+      id:               randomId(),
+      sessionId:        payload.sessionId || this.currentSession?.id || randomId(),
+      playerId:         this.player.id,
+      nickname:         this.player.nickname,
+      cityKey:          payload.cityKey,
+      score:            Math.floor(payload.score || 0),
+      distance:         Math.floor(payload.distance || 0),
+      enemiesKilled:    payload.enemiesKilled    || 0,
+      miniBossKilled:   Boolean(payload.miniBossKilled),
+      bossKilled:       Boolean(payload.bossKilled),
+      comboMax:         payload.comboMax         || 1,
+      hitsTaken:        payload.hitsTaken        || 0,
+      weaponPeak:       payload.weaponPeak       || "Pistol",
+      runDurationMs:    payload.runDurationMs    || 0,
+      socksCollected:   payload.socksCollected   || 0,
+      shirtsCollected:  payload.shirtsCollected  || 0,
       scootersCollected: payload.scootersCollected || 0,
-      victory: Boolean(payload.victory),
-      createdAt: new Date().toISOString(),
+      victory:          Boolean(payload.victory),
+      createdAt:        new Date().toISOString(),
+    };
+
+    const updateBest = (score) => {
+      const best = Math.max(this.player?.bestScore || 0, score);
+      this.savePlayer({ ...this.player, bestScore: best });
+      return best;
     };
 
     if (!this.remoteEnabled) {
-      const bestScore = Math.max(this.player?.bestScore || 0, localRun.score);
-      this.savePlayer({ ...this.player, bestScore });
+      updateBest(localRun.score);
       const runs = this.getOfflineRuns();
       runs.push(localRun);
       this.setOfflineRuns(runs);
@@ -261,18 +291,12 @@ class CompetitionClient {
     try {
       const response = await this.request("/api/run/finish", {
         method: "POST",
-        body: {
-          ...localRun,
-          sessionId: this.currentSession?.id || localRun.sessionId,
-        },
+        body:   { ...localRun, sessionId: this.currentSession?.id || localRun.sessionId },
       });
-      if (response.player) {
-        this.savePlayer({ ...this.player, ...response.player });
-      }
+      if (response.player) this.savePlayer({ ...this.player, ...response.player });
       return response;
     } catch {
-      const bestScore = Math.max(this.player?.bestScore || 0, localRun.score);
-      this.savePlayer({ ...this.player, bestScore });
+      updateBest(localRun.score);
       const runs = this.getOfflineRuns();
       runs.push(localRun);
       this.setOfflineRuns(runs);
@@ -281,63 +305,70 @@ class CompetitionClient {
   }
 
   buildOfflineFinishResponse(run, fallback = false) {
-    const global = this.computeOfflineLeaderboard("global", run.cityKey, 100);
-    const weekly = this.computeOfflineLeaderboard("weekly", run.cityKey, 100);
-    const city = this.computeOfflineLeaderboard("city", run.cityKey, 100);
-    const globalRank = global.findIndex((entry) => entry.playerId === run.playerId) + 1 || null;
-    const weeklyRank = weekly.findIndex((entry) => entry.playerId === run.playerId) + 1 || null;
-    const cityRank = city.findIndex((entry) => entry.playerId === run.playerId) + 1 || null;
+    const global     = this.computeOfflineLeaderboard("global", run.cityKey, 100);
+    const weekly     = this.computeOfflineLeaderboard("weekly", run.cityKey, 100);
+    const city       = this.computeOfflineLeaderboard("city",   run.cityKey, 100);
+    const globalRank = global.findIndex((e) => e.playerId === run.playerId) + 1 || null;
+    const weeklyRank = weekly.findIndex((e) => e.playerId === run.playerId) + 1 || null;
+    const cityRank   = city.findIndex((e) => e.playerId === run.playerId)   + 1 || null;
     return {
-      ok: true,
+      ok:                  true,
       run,
-      rankings: { globalRank, weeklyRank, cityRank },
-      leaderboardPreview: global.slice(0, 5),
-      source: fallback ? "offline-fallback" : "offline",
-      player: this.player,
+      rankings:            { globalRank, weeklyRank, cityRank },
+      leaderboardPreview:  global.slice(0, 5),
+      source:              fallback ? "offline-fallback" : "offline",
+      player:              this.player,
     };
   }
 }
 
+/* ── CompetitionUI ──────────────────────────────────────────── */
 class CompetitionUI {
   constructor() {
-    this.client = new CompetitionClient();
-    this.cityKey = "valencia";
-    this.activeScope = localStorage.getItem(ACTIVE_SCOPE_KEY) || "global";
+    this.client       = new CompetitionClient();
+    this.cityKey      = "valencia";
+    this.activeScope  = localStorage.getItem(ACTIVE_SCOPE_KEY) || "global";
     this.pendingStart = null;
-    this.bound = false;
-    this.refs = {};
+    this.bound        = false;
+    this.refs         = {};
+    // Prevent double-render race on init.
+    this._initBoard   = false;
   }
 
   init() {
     if (this.bound) return;
     this.bound = true;
-    this.refs.playerBadge = document.querySelector("#player-badge");
-    this.refs.playerBestBadge = document.querySelector("#player-best-badge");
-    this.refs.changePlayer = document.querySelector("#change-player");
-    this.refs.tabs = Array.from(document.querySelectorAll("[data-board]"));
-    this.refs.list = document.querySelector("#leaderboard-list");
-    this.refs.empty = document.querySelector("#leaderboard-empty");
-    this.refs.status = document.querySelector("#leaderboard-status");
-    this.refs.refresh = document.querySelector("#leaderboard-refresh");
-    this.refs.playerModal = document.querySelector("#player-modal");
-    this.refs.playerForm = document.querySelector("#player-form");
-    this.refs.playerNickname = document.querySelector("#player-nickname");
-    this.refs.playerFormStatus = document.querySelector("#player-form-status");
-    this.refs.resultModal = document.querySelector("#result-modal");
-    this.refs.resultClose = document.querySelector("#result-close");
-    this.refs.resultScore = document.querySelector("#result-score");
-    this.refs.resultCity = document.querySelector("#result-city");
-    this.refs.resultRank = document.querySelector("#result-rank");
-    this.refs.resultCombo = document.querySelector("#result-combo");
-    this.refs.resultGlobalPosition = document.querySelector("#result-global-position");
-    this.refs.resultWeeklyPosition = document.querySelector("#result-weekly-position");
-    this.refs.resultCityPosition = document.querySelector("#result-city-position");
-    this.refs.resultSummaryCopy = document.querySelector("#result-summary-copy");
-    this.refs.resultTopList = document.querySelector("#result-top-list");
 
+    /* DOM refs */
+    this.refs.playerBadge         = document.querySelector("#player-badge");
+    this.refs.playerBestBadge     = document.querySelector("#player-best-badge");
+    this.refs.changePlayer        = document.querySelector("#change-player");
+    this.refs.tabs                = Array.from(document.querySelectorAll("[data-board]"));
+    this.refs.list                = document.querySelector("#leaderboard-list");
+    this.refs.empty               = document.querySelector("#leaderboard-empty");
+    this.refs.status              = document.querySelector("#leaderboard-status");
+    this.refs.refresh             = document.querySelector("#leaderboard-refresh");
+    this.refs.playerModal         = document.querySelector("#player-modal");
+    this.refs.playerForm          = document.querySelector("#player-form");
+    this.refs.playerNickname      = document.querySelector("#player-nickname");
+    this.refs.playerFormStatus    = document.querySelector("#player-form-status");
+    this.refs.resultModal         = document.querySelector("#result-modal");
+    this.refs.resultClose         = document.querySelector("#result-close");
+    this.refs.resultScore         = document.querySelector("#result-score");
+    this.refs.resultCity          = document.querySelector("#result-city");
+    this.refs.resultRank          = document.querySelector("#result-rank");
+    this.refs.resultCombo         = document.querySelector("#result-combo");
+    this.refs.resultGlobalPosition  = document.querySelector("#result-global-position");
+    this.refs.resultWeeklyPosition  = document.querySelector("#result-weekly-position");
+    this.refs.resultCityPosition    = document.querySelector("#result-city-position");
+    this.refs.resultSummaryCopy   = document.querySelector("#result-summary-copy");
+    this.refs.resultTopList       = document.querySelector("#result-top-list");
+
+    /* Events */
     this.refs.changePlayer?.addEventListener("click", () => this.openPlayerModal());
-    this.refs.refresh?.addEventListener("click", () => this.refreshLeaderboard());
-    this.refs.resultClose?.addEventListener("click", () => this.hideResult());
+    this.refs.refresh?.addEventListener("click",      () => this.refreshLeaderboard());
+    this.refs.resultClose?.addEventListener("click",  () => this.hideResult());
+
     this.refs.tabs?.forEach((tab) => {
       tab.addEventListener("click", () => {
         this.activeScope = tab.dataset.board || "global";
@@ -346,51 +377,59 @@ class CompetitionUI {
         this.refreshLeaderboard();
       });
     });
+
     this.refs.playerForm?.addEventListener("submit", async (event) => {
       event.preventDefault();
       await this.handlePlayerSubmit();
     });
 
+    /* Initial render — single pass:
+       If a player nickname exists we sync remotely which already calls
+       refreshLeaderboard internally; otherwise we call it directly once. */
     this.renderPlayer();
     this.syncTabs();
-    this.refreshLeaderboard();
-    if (this.client.player?.nickname) {
-      this.syncRemotePlayer();
-    }
-  }
 
-  setCity(cityKey) {
-    this.cityKey = cityKey;
-    if (this.activeScope === "city") {
+    if (this.client.player?.nickname) {
+      // syncRemotePlayer calls refreshLeaderboard after syncing.
+      this.syncRemotePlayer();
+    } else {
+      // No player yet — just load the board once.
       this.refreshLeaderboard();
     }
   }
 
+  /* ── City ─────────────────────────────────────────────────── */
+  setCity(cityKey) {
+    this.cityKey = cityKey;
+    if (this.activeScope === "city") this.refreshLeaderboard();
+  }
+
+  /* ── Player Display ──────────────────────────────────────── */
   renderPlayer() {
-    const player = this.client.player;
+    const player        = this.client.player;
     const persistedBest = Number(localStorage.getItem(BEST_KEY) || 0);
-    const resolvedBest = Math.max(player?.bestScore || 0, persistedBest);
-    if (resolvedBest > persistedBest) {
-      localStorage.setItem(BEST_KEY, String(resolvedBest));
-    }
+    const resolvedBest  = Math.max(player?.bestScore || 0, persistedBest);
+
+    if (resolvedBest > persistedBest) localStorage.setItem(BEST_KEY, String(resolvedBest));
     if (player && resolvedBest !== (player.bestScore || 0)) {
       player.bestScore = resolvedBest;
       this.client.savePlayer(player);
     }
-    if (this.refs.playerBadge) {
-      this.refs.playerBadge.textContent = player?.nickname || "Invitado";
-    }
-    if (this.refs.playerBestBadge) {
-      this.refs.playerBestBadge.textContent = resolvedBest ? `PB ${padScore(resolvedBest)}` : "Sin marca";
-    }
+
+    if (this.refs.playerBadge)     this.refs.playerBadge.textContent     = player?.nickname || "Invitado";
+    if (this.refs.playerBestBadge) this.refs.playerBestBadge.textContent = resolvedBest
+      ? `PB ${padScore(resolvedBest)}`
+      : "Sin marca";
   }
 
+  /* ── Tabs ────────────────────────────────────────────────── */
   syncTabs() {
     this.refs.tabs?.forEach((tab) => {
       tab.classList.toggle("is-active", tab.dataset.board === this.activeScope);
     });
   }
 
+  /* ── Player Modal ────────────────────────────────────────── */
   openPlayerModal(onReady) {
     this.pendingStart = onReady || this.pendingStart;
     this.refs.playerModal?.classList.remove("is-hidden");
@@ -405,8 +444,15 @@ class CompetitionUI {
   closePlayerModal() {
     this.refs.playerModal?.classList.add("is-hidden");
     this.refs.playerModal?.setAttribute("aria-hidden", "true");
+    // Reset form status after a short delay so it doesn't flash.
+    setTimeout(() => {
+      if (this.refs.playerFormStatus) {
+        this.refs.playerFormStatus.textContent = "Tu apodo se guardará para futuras partidas.";
+      }
+    }, 400);
   }
 
+  /* ── Result Modal ────────────────────────────────────────── */
   hideResult() {
     this.refs.resultModal?.classList.add("is-hidden");
     this.refs.resultModal?.setAttribute("aria-hidden", "true");
@@ -414,21 +460,23 @@ class CompetitionUI {
 
   showResult(result, payload) {
     if (!this.refs.resultModal) return;
+
     const rankings = result.rankings || {};
-    this.refs.resultScore.textContent = padScore(payload.score);
-    this.refs.resultCity.textContent = CITY_LABELS[payload.cityKey] || payload.cityKey.toUpperCase();
-    this.refs.resultRank.textContent = payload.rankLabel || (payload.victory ? "VICTORIA" : "RUNNER");
-    this.refs.resultCombo.textContent = `x${payload.comboMax || 1}`;
-    this.refs.resultGlobalPosition.textContent = rankings.globalRank ? `#${rankings.globalRank}` : "--";
-    this.refs.resultWeeklyPosition.textContent = rankings.weeklyRank ? `#${rankings.weeklyRank}` : "--";
-    this.refs.resultCityPosition.textContent = rankings.cityRank ? `#${rankings.cityRank}` : "--";
-    this.refs.resultSummaryCopy.textContent =
-      result.source === "offline" || result.source === "offline-fallback"
-        ? "Resultado guardado en modo local. Al activar la base de datos online, este panel mostrará el ranking mundial real."
-        : "Resultado enviado al circuito online. Ya estás compitiendo contra el resto de jugadores.";
+    this.refs.resultScore.textContent         = padScore(payload.score);
+    this.refs.resultCity.textContent          = CITY_LABELS[payload.cityKey] || payload.cityKey.toUpperCase();
+    this.refs.resultRank.textContent          = payload.rankLabel || (payload.victory ? "VICTORIA" : "RUNNER");
+    this.refs.resultCombo.textContent         = `x${payload.comboMax || 1}`;
+    this.refs.resultGlobalPosition.textContent  = rankings.globalRank ? `#${rankings.globalRank}` : "--";
+    this.refs.resultWeeklyPosition.textContent  = rankings.weeklyRank ? `#${rankings.weeklyRank}` : "--";
+    this.refs.resultCityPosition.textContent    = rankings.cityRank   ? `#${rankings.cityRank}`   : "--";
+
+    const isLocal = result.source === "offline" || result.source === "offline-fallback";
+    this.refs.resultSummaryCopy.textContent = isLocal
+      ? "Resultado guardado en modo local. Cuando se active la base de datos online verás el ranking mundial real."
+      : "Resultado enviado al circuito online. ¡Ya estás compitiendo contra el resto del mundo!";
+
     this.refs.resultTopList.innerHTML = "";
-    const preview = result.leaderboardPreview || [];
-    preview.forEach((entry, index) => {
+    (result.leaderboardPreview || []).forEach((entry, index) => {
       const item = document.createElement("li");
       item.className = "result-top-item";
       item.innerHTML = `
@@ -438,76 +486,92 @@ class CompetitionUI {
       `;
       this.refs.resultTopList.appendChild(item);
     });
+
     this.refs.resultModal.classList.remove("is-hidden");
     this.refs.resultModal.setAttribute("aria-hidden", "false");
   }
 
+  /* ── Player Submit ───────────────────────────────────────── */
   async handlePlayerSubmit() {
     const nickname = this.refs.playerNickname?.value?.trim() || "";
-    this.refs.playerFormStatus.textContent = "Registrando dorsal...";
+    if (this.refs.playerFormStatus) this.refs.playerFormStatus.textContent = "Registrando dorsal...";
+
     try {
       await this.client.registerPlayer(nickname);
       this.renderPlayer();
-      this.refs.playerFormStatus.textContent = "Apodo guardado. Ya puedes competir.";
+      if (this.refs.playerFormStatus) this.refs.playerFormStatus.textContent = "¡Apodo guardado! Ya puedes competir.";
       this.closePlayerModal();
       await this.refreshLeaderboard();
       if (this.pendingStart) {
-        const fn = this.pendingStart;
+        const fn      = this.pendingStart;
         this.pendingStart = null;
         fn();
       }
     } catch (error) {
-      this.refs.playerFormStatus.textContent = error.message || "No se pudo guardar el apodo.";
+      if (this.refs.playerFormStatus) {
+        this.refs.playerFormStatus.textContent = error.message || "No se pudo guardar el apodo. Inténtalo de nuevo.";
+      }
     }
   }
 
+  /* ── Remote Player Sync ──────────────────────────────────── */
   async syncRemotePlayer() {
     const nickname = this.client.player?.nickname;
-    if (!nickname) {
-      return;
-    }
+    if (!nickname) return;
     try {
       await this.client.registerPlayer(nickname);
       this.renderPlayer();
-      await this.refreshLeaderboard();
     } catch {
-      // Keep local profile if the remote sync fails; the game remains playable.
+      /* Keep local profile if remote sync fails; game stays playable. */
     }
+    // Refresh leaderboard once after sync (or failure).
+    await this.refreshLeaderboard();
   }
 
+  /* ── Leaderboard ─────────────────────────────────────────── */
   ensurePlayerForStart(onReady) {
-    if (this.client.player) {
-      return true;
-    }
+    if (this.client.player) return true;
     this.openPlayerModal(onReady);
     return false;
   }
 
   async refreshLeaderboard() {
     if (!this.refs.list || !this.refs.empty || !this.refs.status) return;
+
+    /* Show loading skeleton */
     this.refs.status.textContent = "Actualizando ranking...";
+    this.refs.list.classList.add("is-loading");
+
     const payload = await this.client.fetchLeaderboard(this.activeScope, this.cityKey, 8);
     const entries = payload.entries || [];
+
+    this.refs.list.classList.remove("is-loading");
     this.refs.list.innerHTML = "";
+
     if (!entries.length) {
       this.refs.empty.style.display = "block";
-      this.refs.empty.textContent = "Aún no hay carreras válidas. Sé el primero en dejar huella.";
+      this.refs.empty.textContent   = "Aún no hay carreras válidas. Sé el primero en dejar huella.";
     } else {
       this.refs.empty.style.display = "none";
+      const fragment = document.createDocumentFragment();
+
       entries.forEach((entry, index) => {
         const item = document.createElement("li");
         item.className = "leaderboard-item";
-        if (entry.playerId === this.client.player?.id) {
-          item.classList.add("is-self");
-        }
+        if (entry.playerId === this.client.player?.id) item.classList.add("is-self");
         item.innerHTML = `
           <span class="leaderboard-rank">#${entry.rank || index + 1}</span>
           <span class="leaderboard-name">${entry.nickname}</span>
           <strong class="leaderboard-score">${padScore(entry.score)}</strong>
         `;
-        this.refs.list.appendChild(item);
+        fragment.appendChild(item);
       });
-      if (payload.selfEntry && !entries.some((entry) => entry.playerId === payload.selfEntry.playerId)) {
+
+      /* If the player is outside the top-8, append them separately */
+      if (
+        payload.selfEntry &&
+        !entries.some((e) => e.playerId === payload.selfEntry.playerId)
+      ) {
         const item = document.createElement("li");
         item.className = "leaderboard-item is-self";
         item.innerHTML = `
@@ -515,21 +579,26 @@ class CompetitionUI {
           <span class="leaderboard-name">${payload.selfEntry.nickname}</span>
           <strong class="leaderboard-score">${padScore(payload.selfEntry.score)}</strong>
         `;
-        this.refs.list.appendChild(item);
+        fragment.appendChild(item);
       }
+
+      this.refs.list.appendChild(fragment);
     }
-    const suffix =
+
+    const scopeLabel =
       this.activeScope === "city"
         ? `ciudad: ${CITY_LABELS[this.cityKey] || this.cityKey}`
         : this.activeScope === "weekly"
           ? "semana actual"
           : "circuito global";
-    this.refs.status.textContent =
-      payload.source === "offline" || payload.source === "offline-fallback"
-        ? `Ranking local (${suffix})`
-        : `Ranking online (${suffix})`;
+
+    const isLocal = payload.source === "offline" || payload.source === "offline-fallback";
+    this.refs.status.textContent = isLocal
+      ? `📡 Ranking local (${scopeLabel})`
+      : `🌐 Ranking online (${scopeLabel})`;
   }
 
+  /* ── Run API (called by game.js) ─────────────────────────── */
   async startRun(cityKey) {
     this.hideResult();
     this.setCity(cityKey);
