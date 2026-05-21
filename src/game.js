@@ -749,17 +749,17 @@ class BootScene extends Phaser.Scene {
   }
 
   paintRunnerFigure(g, pose = {}) {
-    const lean = pose.lean ?? 0;
+    const lean = pose.lean || 0;
     const crouch = !!pose.crouch;
     const jump = !!pose.jump;
-    const leadLeg = pose.leadLeg ?? 0;
-    const trailLeg = pose.trailLeg ?? 0;
-    const leadFoot = pose.leadFoot ?? 0;
-    const trailFoot = pose.trailFoot ?? 0;
-    const armSwing = pose.armSwing ?? 0;
-    const weaponLift = pose.weaponLift ?? 0;
-    const torsoDrop = pose.torsoDrop ?? 0;
-    const headShift = pose.headShift ?? 0;
+    const leadLeg = pose.leadLeg || 0;
+    const trailLeg = pose.trailLeg || 0;
+    const leadFoot = pose.leadFoot || 0;
+    const trailFoot = pose.trailFoot || 0;
+    const armSwing = pose.armSwing || 0;
+    const weaponLift = pose.weaponLift || 0;
+    const torsoDrop = pose.torsoDrop || 0;
+    const headShift = pose.headShift || 0;
     const headY = crouch ? 15 : 8;
     const torsoY = 34 + torsoDrop + (crouch ? 11 : 0) + (jump ? -3 : 0);
     const torsoH = crouch ? 22 : 28;
@@ -767,86 +767,229 @@ class BootScene extends Phaser.Scene {
     const gunY = torsoY + (crouch ? 6 : 9) + weaponLift;
     const frontLegH = crouch ? 16 : jump ? 16 : 24;
     const backLegH = crouch ? 15 : jump ? 19 : 25;
-
-    g.fillStyle(0x0d0f14);
-    g.fillRect(18, legY + frontLegH - 1, 30 + leadFoot, 8);
-    g.fillRect(48 + trailLeg, legY + backLegH, 32 + trailFoot, 8);
-
-    g.fillStyle(0x1a1d26);
-    g.fillRect(24 + lean, torsoY - 3, 12, 46);
-    g.fillRect(25 + lean, torsoY - 9, 18, 10);
-    g.fillStyle(0x2e3441);
-    g.fillRect(26 + lean, torsoY, 8, 17);
-    g.fillStyle(0x111318);
-    g.fillRect(28 + lean, torsoY + 2, 4, 12);
-
-    g.fillStyle(0xf2ead8);
-    g.fillRect(35 + lean, torsoY, 33, 10);
-    g.fillStyle(0xd0c8ba);
-    g.fillRect(36 + lean, torsoY + 7, 31, 3);
-
-    g.fillStyle(0xd93542);
-    g.fillRect(32 + lean, torsoY + 10, 40, torsoH);
-    g.fillStyle(0xf16b53);
-    g.fillRect(35 + lean, torsoY + 13, 15, 7);
-    g.fillStyle(0x8c1e2e);
-    g.fillRect(63 + lean, torsoY + 10, 7, torsoH);
-    g.fillStyle(0xff8b22);
-    g.fillRect(44 + lean, torsoY + 16, 17, 5);
-    g.fillStyle(0x253c58);
-    g.fillRect(28 + lean, torsoY + 13, 8, 14);
-    g.fillStyle(0x40d8ff);
-    g.fillRect(26 + lean, torsoY + 16, 7, 8);
-
-    g.fillStyle(0xf1c798);
-    g.fillRect(44 + lean + headShift, headY, 24, 24);
-    g.fillRect(61 + armSwing, gunY - 1, 12, 8);
-    g.fillRect(27 + lean, torsoY + 9, 10, 9);
-    g.fillStyle(0xf8dfc2);
-    g.fillRect(48 + lean + headShift, headY + 3, 8, 4);
-    g.fillRect(62 + armSwing, gunY, 5, 3);
-
-    g.fillStyle(0xffd95c);
-    g.fillRect(40 + lean + headShift, headY - 4, 29, 6);
-    g.fillRect(59 + lean + headShift, headY + 1, 10, 4);
-    g.fillStyle(0x5d2c1d);
-    g.fillRect(37 + lean + headShift, headY + 4, 12, 21);
-    g.fillRect(43 + lean + headShift, headY + 21, 21, 5);
-    g.fillStyle(0x101218);
-    g.fillRect(56 + lean + headShift, headY + 9, 5, 4);
-
-    g.fillStyle(0x1a1d24);
-    g.fillRect(64 + armSwing, gunY - 2, 36, 8);
-    g.fillRect(97 + armSwing, gunY - 1, 15, 5);
-    g.fillStyle(0x4f5762);
-    g.fillRect(67 + armSwing, gunY - 2, 12, 3);
-    g.fillStyle(0x9aa5af);
-    g.fillRect(89 + armSwing, gunY, 10, 2);
-    g.fillStyle(0xffb45a);
-    g.fillRect(100 + armSwing, gunY + 1, 6, 2);
-
-    const frontLegX = 36 + leadLeg;
-    const backLegX = 56 + trailLeg;
-    g.fillStyle(0x6e785c);
-    g.fillRect(frontLegX, legY, 14, frontLegH);
-    g.fillRect(backLegX, legY - (jump ? 2 : 0), 14, backLegH);
-    g.fillStyle(0x879372);
-    g.fillRect(frontLegX + 2, legY + 2, 6, 7);
-    g.fillRect(backLegX + 2, legY + 2, 6, 7);
-    g.fillStyle(0x47513f);
-    g.fillRect(frontLegX + 9, legY, 5, frontLegH);
-    g.fillRect(backLegX + 9, legY - (jump ? 2 : 0), 5, backLegH);
-    g.fillStyle(0x2f4a39);
-    g.fillRect(frontLegX + 3, legY + 2, 8, 7);
-    g.fillRect(backLegX + 3, legY + 2, 8, 7);
-
-    g.fillStyle(0x202126);
-    g.fillRect(frontLegX - 3, legY + frontLegH - 1, 20 + leadFoot, 7);
-    g.fillRect(backLegX - 2, legY + backLegH, 21 + trailFoot, 7);
-    g.fillStyle(0x4e545d);
-    g.fillRect(frontLegX - 1, legY + frontLegH - 1, 9, 3);
-    g.fillRect(backLegX, legY + backLegH, 9, 3);
+    const hx = 44 + lean + headShift;
+    g.fillStyle(0x0c0c10);
+    g.fillRect(48 + trailLeg, legY + backLegH, 32 + trailFoot, 9);
+    g.fillStyle(0x28282e);
+    g.fillRect(50 + trailLeg, legY + backLegH, 14, 4);
+    g.fillStyle(0x060608);
+    g.fillRect(46 + trailLeg, legY + backLegH + 8, 34 + trailFoot, 3);
+    g.fillStyle(0x3a5028);
+    g.fillRect(52 + trailLeg, legY - 1, 14, backLegH);
+    g.fillStyle(0x4c6438);
+    g.fillRect(53 + trailLeg, legY - 1, 7, backLegH - 4);
+    g.fillStyle(0x283818);
+    g.fillRect(60 + trailLeg, legY - 1, 5, backLegH);
+    g.fillStyle(0x5c6a42);
+    g.fillRect(51 + trailLeg, legY + backLegH - 10, 15, 5);
+    g.fillStyle(0x78904e);
+    g.fillRect(52 + trailLeg, legY + backLegH - 9, 9, 2);
+    g.fillStyle(0x2c3c1c);
+    g.fillRect(52 + trailLeg, legY + backLegH - 8, 12, 2);
+    g.fillStyle(0x0c0c10);
+    g.fillRect(18, legY + frontLegH - 1, 30 + leadFoot, 9);
+    g.fillStyle(0x28282e);
+    g.fillRect(20, legY + frontLegH - 1, 14, 4);
+    g.fillStyle(0x060608);
+    g.fillRect(16, legY + frontLegH + 7, 32 + leadFoot, 3);
+    g.fillStyle(0x303038);
+    g.fillRect(16, legY + frontLegH + 2, 6, 5);
+    g.fillStyle(0x080808);
+    g.fillRect(14, legY + frontLegH + 5, 5, 4);
+    g.fillStyle(0x3a5028);
+    g.fillRect(22, legY - 1, 14, frontLegH - leadLeg);
+    g.fillStyle(0x4c6438);
+    g.fillRect(23, legY - 1, 7, frontLegH - 4 - leadLeg);
+    g.fillStyle(0x283818);
+    g.fillRect(30, legY - 1, 5, frontLegH - leadLeg);
+    g.fillStyle(0x5c6a42);
+    g.fillRect(21, legY + frontLegH - 12, 15, 5);
+    g.fillStyle(0x78904e);
+    g.fillRect(22, legY + frontLegH - 11, 9, 2);
+    g.fillStyle(0x2c3c1c);
+    g.fillRect(22, legY + frontLegH - 9, 12, 2);
+    g.fillStyle(0x2c3c1c);
+    g.fillRect(51 + trailLeg, legY - 2, 17, 9);
+    g.fillStyle(0x3a4e28);
+    g.fillRect(52 + trailLeg, legY - 2, 12, 8);
+    g.fillStyle(0x4e6434);
+    g.fillRect(53 + trailLeg, legY - 2, 7, 5);
+    g.fillStyle(0x2c3c1c);
+    g.fillRect(20, legY - 2, 17, 9);
+    g.fillStyle(0x3a4e28);
+    g.fillRect(21, legY - 2, 12, 8);
+    g.fillStyle(0x4e6434);
+    g.fillRect(22, legY - 2, 7, 5);
+    g.fillStyle(0x283818);
+    g.fillRect(40 + lean, torsoY, 18, torsoH);
+    g.fillStyle(0x485e2e);
+    g.fillRect(24 + lean, torsoY, 18, torsoH);
+    g.fillStyle(0x608040);
+    g.fillRect(24 + lean, torsoY, 5, torsoH);
+    g.fillStyle(0x7aa050);
+    g.fillRect(24 + lean, torsoY, 3, 8);
+    g.fillStyle(0x364820);
+    g.fillRect(37 + lean, torsoY, 3, torsoH);
+    g.fillStyle(0x688040);
+    g.fillRect(20 + lean, torsoY, 7, 9);
+    g.fillStyle(0x9ab858);
+    g.fillRect(20 + lean, torsoY, 6, 3);
+    g.fillStyle(0x2e4018);
+    g.fillRect(21 + lean, torsoY + 7, 5, 3);
+    g.fillStyle(0x364a20);
+    g.fillRect(26 + lean, torsoY + 3, 8, 7);
+    g.fillStyle(0x2a3c18);
+    g.fillRect(27 + lean, torsoY + 4, 6, 5);
+    g.fillStyle(0xd8a820);
+    g.fillRect(28 + lean, torsoY + 4, 4, 3);
+    g.fillStyle(0xffe840);
+    g.fillRect(28 + lean, torsoY + 4, 2, 1);
+    g.fillStyle(0x688040);
+    g.fillRect(52 + lean, torsoY, 7, 9);
+    g.fillStyle(0x2e4018);
+    g.fillRect(53 + lean, torsoY + 7, 5, 3);
+    g.fillStyle(0x1c1208);
+    g.fillRect(20 + lean, torsoY + torsoH - 8, 38, 7);
+    g.fillStyle(0xb88020);
+    g.fillRect(32 + lean, torsoY + torsoH - 7, 8, 5);
+    g.fillStyle(0xffd840);
+    g.fillRect(33 + lean, torsoY + torsoH - 6, 4, 3);
+    g.fillStyle(0xffe870);
+    g.fillRect(34 + lean, torsoY + torsoH - 6, 2, 1);
+    g.fillStyle(0x382818);
+    g.fillRect(20 + lean, torsoY + torsoH - 7, 10, 6);
+    g.fillStyle(0x4e3c28);
+    g.fillRect(21 + lean, torsoY + torsoH - 6, 5, 4);
+    g.fillStyle(0x382818);
+    g.fillRect(44 + lean, torsoY + torsoH - 7, 9, 6);
+    g.fillStyle(0x4e3c28);
+    g.fillRect(45 + lean, torsoY + torsoH - 6, 4, 4);
+    g.fillStyle(0xd09060);
+    g.fillRect(37 + lean + headShift, torsoY - 5, 8, 6);
+    g.fillStyle(0xa87040);
+    g.fillRect(41 + lean + headShift, torsoY - 4, 4, 5);
+    g.fillStyle(0xd09060);
+    g.fillRect(hx + 2, headY + 14, 18, 10);
+    g.fillStyle(0xdcaa78);
+    g.fillRect(hx + 2, headY + 4, 20, 14);
+    g.fillStyle(0xeecc90);
+    g.fillRect(hx + 3, headY + 5, 10, 8);
+    g.fillStyle(0xb87840);
+    g.fillRect(hx - 1, headY + 7, 4, 6);
+    g.fillStyle(0xd09060);
+    g.fillRect(hx, headY + 8, 2, 4);
+    g.fillStyle(0xa07030);
+    g.fillRect(hx + 16, headY + 11, 6, 10);
+    g.fillStyle(0x301808);
+    g.fillRect(hx + 3, headY + 5, 7, 2);
+    g.fillRect(hx + 13, headY + 5, 6, 2);
+    g.fillStyle(0x9a6030);
+    g.fillRect(hx + 3, headY + 7, 7, 5);
+    g.fillRect(hx + 13, headY + 7, 6, 5);
+    g.fillStyle(0xf8f8e8);
+    g.fillRect(hx + 4, headY + 7, 5, 4);
+    g.fillRect(hx + 14, headY + 7, 4, 4);
+    g.fillStyle(0x204098);
+    g.fillRect(hx + 5, headY + 8, 3, 3);
+    g.fillRect(hx + 15, headY + 8, 2, 3);
+    g.fillStyle(0x080810);
+    g.fillRect(hx + 5, headY + 9, 2, 2);
+    g.fillRect(hx + 15, headY + 9, 2, 2);
+    g.fillStyle(0xffffff);
+    g.fillRect(hx + 6, headY + 8, 1, 1);
+    g.fillRect(hx + 16, headY + 8, 1, 1);
+    g.fillStyle(0xa07030);
+    g.fillRect(hx + 9, headY + 12, 4, 3);
+    g.fillRect(hx + 8, headY + 13, 2, 2);
+    g.fillStyle(0x884030);
+    g.fillRect(hx + 5, headY + 17, 9, 3);
+    g.fillStyle(0xaa5040);
+    g.fillRect(hx + 6, headY + 17, 5, 2);
+    g.fillStyle(0xb07848);
+    g.fillRect(hx + 4, headY + 20, 13, 4);
+    g.fillStyle(0x281808);
+    g.fillRect(hx + 2, headY + 2, 18, 3);
+    g.fillStyle(0xffd040);
+    g.fillRect(hx - 2, headY - 4, 27, 7);
+    g.fillRect(hx + 21, headY, 8, 4);
+    g.fillStyle(0xffe870);
+    g.fillRect(hx - 1, headY - 3, 14, 3);
+    g.fillStyle(0xd89000);
+    g.fillRect(hx - 2, headY + 2, 27, 2);
+    g.fillRect(hx + 22, headY + 2, 6, 3);
+    g.fillStyle(0xffd040);
+    g.fillRect(hx + 19, headY - 2, 6, 8);
+    g.fillStyle(0xffe870);
+    g.fillRect(hx + 20, headY - 1, 3, 4);
+    g.fillStyle(0xd89000);
+    g.fillRect(hx + 20, headY + 5, 5, 2);
+    g.fillStyle(0x485e2e);
+    g.fillRect(24 + lean, torsoY + 2, 8, 12);
+    g.fillStyle(0x608040);
+    g.fillRect(24 + lean, torsoY + 2, 4, 12);
+    g.fillStyle(0xd09060);
+    g.fillRect(27 + lean, torsoY + 10, 11, 10);
+    g.fillStyle(0xeecc90);
+    g.fillRect(28 + lean, torsoY + 10, 5, 5);
+    g.fillStyle(0x181010);
+    g.fillRect(27 + lean, torsoY + 17, 10, 5);
+    g.fillStyle(0x282020);
+    g.fillRect(28 + lean, torsoY + 18, 5, 3);
+    g.fillStyle(0x485e2e);
+    g.fillRect(52 + lean, torsoY + 2, 8, 12);
+    g.fillStyle(0x608040);
+    g.fillRect(52 + lean, torsoY + 2, 4, 8);
+    g.fillStyle(0xd09060);
+    g.fillRect(61 + armSwing, gunY - 1, 13, 9);
+    g.fillStyle(0xeecc90);
+    g.fillRect(62 + armSwing, gunY, 6, 4);
+    g.fillStyle(0x181010);
+    g.fillRect(61 + armSwing, gunY + 4, 12, 5);
+    g.fillStyle(0x3c2c1a);
+    g.fillRect(64 + armSwing, gunY - 3, 15, 14);
+    g.fillStyle(0x5a4430);
+    g.fillRect(65 + armSwing, gunY - 2, 9, 7);
+    g.fillStyle(0x281c10);
+    g.fillRect(71 + armSwing, gunY - 3, 4, 14);
+    g.fillStyle(0x1e1e28);
+    g.fillRect(79 + armSwing, gunY - 4, 22, 11);
+    g.fillStyle(0x2e2e3e);
+    g.fillRect(80 + armSwing, gunY - 3, 18, 5);
+    g.fillStyle(0x3c3c50);
+    g.fillRect(81 + armSwing, gunY - 3, 10, 3);
+    g.fillStyle(0x0e0e14);
+    g.fillRect(94 + armSwing, gunY - 5, 6, 4);
+    g.fillStyle(0x1a1a22);
+    g.fillRect(95 + armSwing, gunY - 4, 3, 2);
+    g.fillStyle(0x28283a);
+    g.fillRect(87 + armSwing, gunY + 5, 8, 13);
+    g.fillStyle(0x38384e);
+    g.fillRect(88 + armSwing, gunY + 6, 5, 6);
+    g.fillStyle(0xc09020);
+    g.fillRect(87 + armSwing, gunY + 17, 8, 2);
+    g.fillStyle(0x141418);
+    g.fillRect(84 + armSwing, gunY + 4, 10, 4);
+    g.fillRect(87 + armSwing, gunY + 4, 6, 7);
+    g.fillStyle(0x121218);
+    g.fillRect(100 + armSwing, gunY - 3, 18, 7);
+    g.fillStyle(0x3e3e50);
+    g.fillRect(101 + armSwing, gunY - 2, 14, 3);
+    g.fillStyle(0x0a0a10);
+    g.fillRect(117 + armSwing, gunY - 3, 6, 7);
+    g.fillStyle(0x505060);
+    g.fillRect(117 + armSwing, gunY - 2, 5, 3);
+    g.fillStyle(0x080808);
+    g.fillRect(102 + armSwing, gunY + 3, 3, 2);
+    g.fillRect(107 + armSwing, gunY + 3, 3, 2);
+    g.fillRect(112 + armSwing, gunY + 3, 3, 2);
+    g.fillStyle(0xff1a1a);
+    g.fillRect(84 + armSwing, gunY - 6, 4, 2);
+    g.fillStyle(0xff6060);
+    g.fillRect(85 + armSwing, gunY - 6, 2, 1);
+    g.fillStyle(0x5a5a70);
+    g.fillRect(82 + armSwing, gunY - 4, 16, 2);
   }
+
 
   buildRunnerPoseTexture(key, pose) {
     const g = this.make.graphics({ x: 0, y: 0, add: false });
@@ -1390,116 +1533,233 @@ class BootScene extends Phaser.Scene {
 
   createObstacleTextures() {
     const barrel = this.make.graphics({ x: 0, y: 0, add: false });
-    barrel.fillStyle(0x4b2119);
-    barrel.fillRect(10, 8, 52, 60);
-    barrel.fillStyle(0x723628);
-    barrel.fillRect(14, 12, 18, 52);
-    barrel.fillStyle(0xb84f32);
-    barrel.fillRect(6, 17, 60, 12);
-    barrel.fillRect(6, 44, 60, 12);
-    barrel.fillStyle(0xe78c5a);
-    barrel.fillRect(12, 20, 42, 4);
-    barrel.fillRect(12, 47, 42, 4);
-    barrel.fillStyle(0x15151c);
-    barrel.fillRect(9, 8, 54, 7);
-    barrel.fillRect(4, 68, 66, 8);
-    barrel.fillStyle(0x2a0f0b);
-    barrel.fillRect(47, 12, 10, 52);
-    barrel.fillStyle(0xffd95c);
-    barrel.fillRect(23, 29, 23, 6);
-    barrel.fillStyle(0xf2ead8);
-    barrel.fillRect(25, 31, 9, 2);
+    barrel.fillStyle(0x0a0a0c);
+    barrel.fillRect(8, 6, 56, 66);
+    barrel.fillStyle(0x3a2010);
+    barrel.fillRect(10, 8, 52, 62);
+    barrel.fillStyle(0x6a3a20);
+    barrel.fillRect(12, 10, 16, 58);
+    barrel.fillStyle(0x522a14);
+    barrel.fillRect(28, 10, 32, 58);
+    barrel.fillStyle(0x1e0e08);
+    barrel.fillRect(52, 10, 8, 58);
+    barrel.fillStyle(0x141418);
+    barrel.fillRect(8, 6, 56, 8);
+    barrel.fillStyle(0x282830);
+    barrel.fillRect(10, 7, 44, 5);
+    barrel.fillStyle(0x3a3a46);
+    barrel.fillRect(12, 7, 20, 3);
+    barrel.fillStyle(0x0e0e10);
+    barrel.fillRect(6, 66, 60, 10);
+    barrel.fillStyle(0x1e1e24);
+    barrel.fillRect(8, 67, 48, 7);
+    barrel.fillStyle(0x1a1a20);
+    barrel.fillRect(6, 22, 60, 8);
+    barrel.fillStyle(0x282830);
+    barrel.fillRect(8, 23, 50, 3);
+    barrel.fillStyle(0x3a3a46);
+    barrel.fillRect(10, 23, 18, 2);
+    barrel.fillStyle(0x1a1a20);
+    barrel.fillRect(6, 48, 60, 8);
+    barrel.fillStyle(0x282830);
+    barrel.fillRect(8, 49, 50, 3);
+    barrel.fillStyle(0x3a3a46);
+    barrel.fillRect(10, 49, 18, 2);
+    barrel.fillStyle(0xffd820);
+    barrel.fillRect(10, 30, 52, 18);
+    barrel.fillStyle(0x0a0a08);
+    barrel.fillRect(10, 30, 8, 18);
+    barrel.fillRect(26, 30, 8, 18);
+    barrel.fillRect(42, 30, 8, 18);
+    barrel.fillRect(58, 30, 4, 18);
+    barrel.fillStyle(0xffe860);
+    barrel.fillRect(12, 32, 5, 3);
+    barrel.fillRect(28, 32, 5, 3);
+    barrel.fillStyle(0x8a3810);
+    barrel.fillRect(38, 14, 3, 22);
+    barrel.fillRect(22, 52, 2, 14);
+    barrel.fillStyle(0xaa4a18);
+    barrel.fillRect(39, 15, 1, 18);
+    barrel.fillStyle(0x140a04);
+    barrel.fillRect(52, 36, 6, 10);
+    barrel.fillStyle(0x7a3018);
+    barrel.fillRect(54, 37, 3, 7);
+    barrel.fillStyle(0x30e820);
+    barrel.fillRect(10, 8, 2, 58);
+    barrel.fillRect(60, 8, 2, 58);
+    barrel.fillStyle(0x18a010);
+    barrel.fillRect(10, 8, 1, 58);
     barrel.generateTexture("barrel", 72, 80);
     barrel.destroy();
 
     const barricade = this.make.graphics({ x: 0, y: 0, add: false });
-    barricade.fillStyle(0xffd95c);
-    barricade.fillRect(4, 8, 98, 15);
-    barricade.fillRect(10, 48, 82, 15);
-    barricade.fillStyle(0xffef99);
-    barricade.fillRect(8, 11, 88, 4);
-    barricade.fillRect(14, 51, 70, 4);
-    barricade.fillStyle(0x15151c);
-    barricade.fillRect(18, 23, 11, 57);
-    barricade.fillRect(73, 23, 11, 57);
-    barricade.fillStyle(0x30343a);
-    barricade.fillRect(20, 25, 3, 53);
-    barricade.fillRect(75, 25, 3, 53);
-    barricade.fillStyle(0xe33c46);
-    barricade.fillRect(11, 12, 18, 7);
-    barricade.fillRect(46, 12, 18, 7);
-    barricade.fillRect(80, 12, 18, 7);
-    barricade.fillStyle(0x8b1825);
-    barricade.fillRect(14, 12, 6, 51);
-    barricade.fillRect(49, 12, 6, 51);
-    barricade.fillRect(83, 12, 6, 51);
-    barricade.generateTexture("barricade", 106, 84);
+    barricade.fillStyle(0x080808);
+    barricade.fillRect(2, 72, 102, 6);
+    barricade.fillStyle(0x2a2a30);
+    barricade.fillRect(4, 8, 98, 14);
+    barricade.fillRect(10, 48, 86, 14);
+    barricade.fillStyle(0x484856);
+    barricade.fillRect(4, 8, 98, 5);
+    barricade.fillRect(10, 48, 86, 5);
+    barricade.fillStyle(0x606070);
+    barricade.fillRect(6, 9, 50, 2);
+    barricade.fillRect(12, 49, 46, 2);
+    barricade.fillStyle(0x181820);
+    barricade.fillRect(4, 18, 98, 4);
+    barricade.fillRect(10, 58, 86, 4);
+    barricade.fillStyle(0x1e1e28);
+    barricade.fillRect(10, 22, 12, 26);
+    barricade.fillStyle(0x2e2e3e);
+    barricade.fillRect(11, 22, 6, 26);
+    barricade.fillStyle(0x0e0e14);
+    barricade.fillRect(18, 22, 4, 26);
+    barricade.fillStyle(0x1e1e28);
+    barricade.fillRect(84, 22, 12, 26);
+    barricade.fillStyle(0x2e2e3e);
+    barricade.fillRect(85, 22, 6, 26);
+    barricade.fillStyle(0x0e0e14);
+    barricade.fillRect(92, 22, 4, 26);
+    barricade.fillStyle(0x242430);
+    barricade.fillRect(30, 22, 46, 10);
+    barricade.fillRect(30, 36, 46, 10);
+    barricade.fillStyle(0x363646);
+    barricade.fillRect(31, 22, 34, 4);
+    barricade.fillRect(31, 36, 34, 4);
+    barricade.fillStyle(0x14141e);
+    barricade.fillRect(62, 22, 14, 10);
+    barricade.fillRect(62, 36, 14, 10);
+    barricade.fillStyle(0xffd820);
+    barricade.fillRect(4, 8, 10, 14);
+    barricade.fillRect(22, 8, 10, 14);
+    barricade.fillRect(40, 8, 10, 14);
+    barricade.fillRect(58, 8, 10, 14);
+    barricade.fillRect(76, 8, 10, 14);
+    barricade.fillRect(92, 8, 10, 14);
+    barricade.fillStyle(0x0a0a08);
+    barricade.fillRect(14, 8, 8, 14);
+    barricade.fillRect(32, 8, 8, 14);
+    barricade.fillRect(50, 8, 8, 14);
+    barricade.fillRect(68, 8, 8, 14);
+    barricade.fillRect(86, 8, 6, 14);
+    barricade.fillStyle(0x0a0a08);
+    barricade.fillRect(10, 48, 10, 14);
+    barricade.fillRect(28, 48, 10, 14);
+    barricade.fillRect(46, 48, 10, 14);
+    barricade.fillRect(64, 48, 10, 14);
+    barricade.fillRect(82, 48, 14, 14);
+    barricade.fillStyle(0xffd820);
+    barricade.fillRect(20, 48, 8, 14);
+    barricade.fillRect(38, 48, 8, 14);
+    barricade.fillRect(56, 48, 8, 14);
+    barricade.fillRect(74, 48, 8, 14);
+    barricade.fillStyle(0xffe860);
+    barricade.fillRect(4, 9, 8, 2);
+    barricade.fillRect(22, 9, 8, 2);
+    barricade.fillRect(40, 9, 8, 2);
+    barricade.fillStyle(0x181820);
+    barricade.fillRect(8, 62, 14, 10);
+    barricade.fillRect(84, 62, 14, 10);
+    barricade.fillStyle(0x2a2a38);
+    barricade.fillRect(9, 62, 8, 4);
+    barricade.fillRect(85, 62, 8, 4);
+    barricade.fillStyle(0x101018);
+    barricade.fillRect(4, 70, 22, 6);
+    barricade.fillRect(80, 70, 22, 6);
+    barricade.generateTexture("barricade", 106, 80);
     barricade.destroy();
 
     const drone = this.make.graphics({ x: 0, y: 0, add: false });
-    drone.fillStyle(0x252936);
-    drone.fillRect(22, 18, 58, 24);
-    drone.fillStyle(0x40485b);
-    drone.fillRect(28, 20, 44, 6);
-    drone.fillStyle(0x40d8ff);
-    drone.fillRect(32, 24, 18, 8);
-    drone.fillStyle(0xff365f);
-    drone.fillRect(54, 24, 14, 8);
-    drone.fillStyle(0x101218);
-    drone.fillRect(30, 36, 42, 4);
-    drone.fillStyle(0x111218);
-    drone.fillRect(0, 14, 22, 8);
-    drone.fillRect(80, 14, 22, 8);
-    drone.fillRect(6, 40, 16, 8);
-    drone.fillRect(80, 40, 16, 8);
-    drone.fillStyle(0xb9efff);
-    drone.fillRect(34, 25, 8, 2);
-    drone.generateTexture("drone", 104, 58);
+    drone.fillStyle(0x141820);
+    drone.fillRect(24, 20, 32, 22);
+    drone.fillStyle(0x242c38);
+    drone.fillRect(25, 20, 22, 10);
+    drone.fillStyle(0x1c2430);
+    drone.fillRect(38, 20, 14, 22);
+    drone.fillStyle(0x3a4454);
+    drone.fillRect(26, 21, 14, 4);
+    drone.fillStyle(0x0e1018);
+    drone.fillRect(28, 36, 24, 8);
+    drone.fillStyle(0x1e2838);
+    drone.fillRect(30, 18, 20, 10);
+    drone.fillStyle(0x2c3c50);
+    drone.fillRect(32, 18, 14, 6);
+    drone.fillStyle(0x405868);
+    drone.fillRect(34, 19, 8, 3);
+    drone.fillStyle(0x0050d0);
+    drone.fillRect(35, 30, 10, 8);
+    drone.fillStyle(0x0080ff);
+    drone.fillRect(36, 31, 8, 6);
+    drone.fillStyle(0x40b0ff);
+    drone.fillRect(37, 31, 5, 3);
+    drone.fillStyle(0x80d8ff);
+    drone.fillRect(38, 32, 3, 2);
+    drone.fillStyle(0xc0f0ff);
+    drone.fillRect(39, 32, 1, 1);
+    drone.fillStyle(0x1c2030);
+    drone.fillRect(8, 24, 18, 6);
+    drone.fillRect(54, 24, 18, 6);
+    drone.fillStyle(0x282e40);
+    drone.fillRect(8, 24, 14, 3);
+    drone.fillRect(54, 24, 14, 3);
+    drone.fillStyle(0x303848);
+    drone.fillRect(4, 20, 10, 14);
+    drone.fillRect(66, 20, 10, 14);
+    drone.fillStyle(0x404a5c);
+    drone.fillRect(5, 21, 7, 8);
+    drone.fillRect(67, 21, 7, 8);
+    drone.fillStyle(0x181c24);
+    drone.fillRect(5, 28, 8, 6);
+    drone.fillRect(67, 28, 8, 6);
+    drone.fillStyle(0x0c0e14);
+    drone.fillRect(0, 22, 10, 3);
+    drone.fillRect(0, 29, 10, 3);
+    drone.fillRect(70, 22, 10, 3);
+    drone.fillRect(70, 29, 10, 3);
+    drone.fillStyle(0x181c28);
+    drone.fillRect(0, 22, 8, 2);
+    drone.fillRect(0, 30, 8, 2);
+    drone.fillRect(72, 22, 8, 2);
+    drone.fillRect(72, 30, 8, 2);
+    drone.fillStyle(0x1e2234);
+    drone.fillRect(0, 25, 6, 4);
+    drone.fillRect(74, 25, 6, 4);
+    drone.fillStyle(0xff0000);
+    drone.fillRect(38, 22, 4, 3);
+    drone.fillStyle(0xff6060);
+    drone.fillRect(39, 22, 2, 2);
+    drone.fillStyle(0xff0000);
+    drone.fillRect(38, 42, 4, 3);
+    drone.fillStyle(0xff4040);
+    drone.fillRect(39, 43, 2, 1);
+    drone.fillStyle(0x0e1018);
+    drone.fillRect(32, 42, 16, 6);
+    drone.fillStyle(0x1c2030);
+    drone.fillRect(33, 43, 10, 4);
+    drone.fillStyle(0x0a0c10);
+    drone.fillRect(36, 46, 8, 6);
+    drone.fillStyle(0xffd000);
+    drone.fillRect(36, 50, 8, 3);
+    drone.fillStyle(0xffe840);
+    drone.fillRect(37, 51, 5, 1);
+    drone.fillStyle(0x2a3040);
+    drone.fillRect(34, 12, 2, 8);
+    drone.fillRect(44, 10, 2, 10);
+    drone.fillStyle(0xff1010);
+    drone.fillRect(34, 10, 3, 3);
+    drone.fillStyle(0xff5050);
+    drone.fillRect(35, 11, 1, 1);
+    drone.fillStyle(0x00d080);
+    drone.fillRect(44, 8, 3, 3);
+    drone.fillStyle(0x60ffe0);
+    drone.fillRect(45, 9, 1, 1);
+    drone.fillStyle(0x0060ff);
+    drone.fillRect(6, 26, 2, 3);
+    drone.fillStyle(0xff3010);
+    drone.fillRect(72, 26, 2, 3);
+    drone.generateTexture("drone", 80, 62);
     drone.destroy();
-
-    const waterGap = this.make.graphics({ x: 0, y: 0, add: false });
-    waterGap.fillStyle(0x0e1724);
-    waterGap.fillRect(0, 24, 176, 24);
-    waterGap.fillStyle(0x17415c);
-    waterGap.fillRect(0, 8, 176, 26);
-    waterGap.fillStyle(0x2a718f);
-    waterGap.fillRect(0, 12, 176, 18);
-    waterGap.fillStyle(0x74d5db);
-    waterGap.fillRect(12, 14, 28, 4);
-    waterGap.fillRect(62, 16, 34, 4);
-    waterGap.fillRect(118, 15, 24, 4);
-    waterGap.fillStyle(0xb9efff);
-    waterGap.fillRect(24, 18, 12, 2);
-    waterGap.fillRect(86, 19, 10, 2);
-    waterGap.fillRect(130, 17, 8, 2);
-    waterGap.fillStyle(0x0b1017);
-    waterGap.fillRect(0, 0, 176, 10);
-    waterGap.fillRect(0, 48, 176, 12);
-    waterGap.generateTexture("water-gap", 176, 60);
-    waterGap.destroy();
-
-    const lavaGap = this.make.graphics({ x: 0, y: 0, add: false });
-    lavaGap.fillStyle(0x1a0908);
-    lavaGap.fillRect(0, 22, 176, 26);
-    lavaGap.fillStyle(0x602014);
-    lavaGap.fillRect(0, 8, 176, 24);
-    lavaGap.fillStyle(0xd94a1c);
-    lavaGap.fillRect(0, 12, 176, 16);
-    lavaGap.fillStyle(0xff9b2f);
-    lavaGap.fillRect(16, 14, 24, 6);
-    lavaGap.fillRect(58, 13, 28, 7);
-    lavaGap.fillRect(108, 15, 20, 6);
-    lavaGap.fillRect(142, 14, 18, 5);
-    lavaGap.fillStyle(0xffe17e);
-    lavaGap.fillRect(20, 16, 8, 2);
-    lavaGap.fillRect(64, 15, 10, 3);
-    lavaGap.fillRect(114, 17, 6, 2);
-    lavaGap.fillStyle(0x0b1017);
-    lavaGap.fillRect(0, 0, 176, 10);
-    lavaGap.fillRect(0, 48, 176, 12);
-    lavaGap.generateTexture("lava-gap", 176, 60);
-    lavaGap.destroy();
   }
+
 
   createRewardTextures() {
     const shirt = this.make.graphics({ x: 0, y: 0, add: false });
@@ -3136,212 +3396,301 @@ class PlayScene extends Phaser.Scene {
   }
 
   createVista() {
-    const addHorizonBand = (y, h, color, alpha = 1) => {
+    const addBand = (y, h, color, alpha = 1) => {
       this.vistaLayer.add(this.add.rectangle(WIDTH / 2, y, WIDTH, h, color, alpha));
     };
     const addGlow = (x, y, w, h, color, alpha = 0.16) => {
       this.vistaLayer.add(this.add.ellipse(x, y, w, h, color, alpha));
     };
+    const addRect = (x, y, w, h, color, alpha = 1) => {
+      this.vistaLayer.add(this.add.rectangle(x, y, w, h, color, alpha));
+    };
+    const addBldg = (x, y, w, h, color, alpha = 1) => {
+      this.vistaLayer.add(this.add.rectangle(x, y - h / 2, w, h, color, alpha));
+    };
 
     if (this.city.key === "valencia") {
-      addHorizonBand(sy(248), sy(20), 0xfff0c6, 0.24);
-      addHorizonBand(sy(304), sy(84), 0x7fe0da, 0.24);
-      addHorizonBand(sy(338), sy(18), 0xf7fffb, 0.14);
-      addGlow(sx(1120), sy(154), sx(520), sy(194), 0xffc176, 0.2);
-
+      addBand(sy(20), sy(40), 0x1a3d6e);
+      addBand(sy(55), sy(40), 0x1f4d84);
+      addBand(sy(90), sy(40), 0x2460a0);
+      addBand(sy(125), sy(35), 0x2e72b8);
+      addBand(sy(158), sy(30), 0x4090c8);
+      addBand(sy(186), sy(28), 0x5da8d0);
+      addBand(sy(210), sy(24), 0x80c0d8);
+      addBand(sy(232), sy(22), 0xa8d8e0);
+      addBand(sy(252), sy(20), 0xd0ece8);
+      addBand(sy(270), sy(16), 0xf0f4d8);
+      addBand(sy(284), sy(12), 0xfce8b0);
+      addBand(sy(294), sy(10), 0xf8d898);
+      addGlow(sx(880), sy(200), sx(320), sy(180), 0xffc060, 0.18);
+      addGlow(sx(880), sy(210), sx(200), sy(120), 0xffe090, 0.22);
+      addRect(sx(880), sy(210), sx(60), sy(60), 0xfff0a0, 0.9);
+      addRect(sx(880), sy(210), sx(40), sy(40), 0xffffff, 0.85);
+      addBldg(sx(80), sy(274), sx(60), sy(80), 0x5088a8, 0.35);
+      addBldg(sx(160), sy(280), sx(40), sy(60), 0x5088a8, 0.3);
+      addBldg(sx(230), sy(268), sx(80), sy(100), 0x5088a8, 0.35);
+      addBldg(sx(340), sy(278), sx(50), sy(50), 0x5088a8, 0.28);
+      addBldg(sx(440), sy(270), sx(70), sy(90), 0x5088a8, 0.32);
+      addBldg(sx(580), sy(276), sx(90), sy(70), 0x5088a8, 0.3);
+      addBldg(sx(720), sy(264), sx(55), sy(110), 0x5088a8, 0.35);
+      addBldg(sx(820), sy(278), sx(45), sy(60), 0x5088a8, 0.28);
+      addBldg(sx(50), sy(286), sx(80), sy(60), 0xc8904a, 0.55);
+      addBldg(sx(150), sy(280), sx(55), sy(80), 0xd4a060, 0.58);
+      addBldg(sx(220), sy(275), sx(100), sy(100), 0xc08040, 0.52);
+      addBldg(sx(360), sy(284), sx(60), sy(70), 0xb87838, 0.5);
+      addBldg(sx(470), sy(278), sx(80), sy(88), 0xcc9050, 0.55);
+      addBldg(sx(600), sy(282), sx(70), sy(74), 0xc08840, 0.5);
+      addBldg(sx(720), sy(274), sx(90), sy(100), 0xb87838, 0.52);
+      addBldg(sx(850), sy(280), sx(65), sy(80), 0xc08040, 0.5);
+      addBldg(sx(30), sy(290), sx(70), sy(50), 0xe8a060, 0.7);
+      addBldg(sx(115), sy(286), sx(50), sy(60), 0xd48840, 0.68);
+      addBldg(sx(200), sy(282), sx(90), sy(80), 0xe09050, 0.72);
+      addBldg(sx(330), sy(288), sx(55), sy(52), 0xcc8038, 0.65);
+      addBldg(sx(430), sy(284), sx(75), sy(72), 0xe09858, 0.7);
+      addBldg(sx(550), sy(286), sx(65), sy(60), 0xd48840, 0.68);
+      addBldg(sx(680), sy(280), sx(85), sy(86), 0xe09050, 0.72);
+      addBldg(sx(820), sy(285), sx(60), sy(68), 0xcc8038, 0.65);
+      addBldg(sx(920), sy(282), sx(80), sy(78), 0xe09858, 0.7);
+      addBand(sy(286), sy(14), 0xfce8b0, 0.18);
+      addBand(sy(294), sy(8), 0xffd898, 0.22);
       const postcard = this.add.container(sx(92), sy(292));
       postcard.add(this.add.rectangle(sx(624), sy(58), sx(1326), sy(10), 0x294d60, 0.94));
       postcard.add(this.add.rectangle(sx(624), sy(72), sx(1326), sy(6), 0xcafcf3, 0.12));
-
+      this.vistaLayer.add(postcard);
       const agora = this.add.container(sx(6), -sy(4));
       agora.add(this.add.triangle(0, 0, -sx(118), sy(4), 0, -sy(138), sx(118), sy(4), 0x7b3f88, 0.96));
-      for (let i = 0; i < 8; i += 1) {
-        agora.add(this.add.rectangle(-sx(78) + i * sx(20), -sy(58) + i * sy(14), sx(164 - i * 18), sy(5), 0xffc655, 0.86));
+      for (let i = 0; i < 5; i++) {
+        const ax = -sx(90) + i * sx(44);
+        agora.add(this.add.rectangle(ax, sy(2), sx(8), sy(142), 0xfce8c8, 0.14));
       }
-      agora.add(this.add.rectangle(0, sy(6), sx(236), sy(10), 0x2f2738));
-      postcard.add(agora);
-
-      const sciences = this.add.container(sx(282), -sy(6));
-      sciences.add(this.add.rectangle(0, sy(64), sx(350), sy(10), 0x234a5b));
-      sciences.add(this.add.arc(-sx(120), sy(22), sx(104), 180, 360, false, 0xf8fcff, 0.96));
-      sciences.add(this.add.arc(-sx(120), sy(22), sx(80), 180, 360, false, 0xffbf74, 0.2));
-      sciences.add(this.add.arc(-sx(8), sy(28), sx(64), 180, 360, false, 0xf8fcff, 0.92));
-      sciences.add(this.add.arc(-sx(8), sy(28), sx(44), 180, 360, false, 0x86e2e0, 0.18));
-      sciences.add(this.add.triangle(sx(132), -sy(12), sx(36), sy(64), sx(122), -sy(62), sx(188), sy(64), 0xf8fcff, 0.98));
-      sciences.add(this.add.triangle(sx(138), sy(2), sx(52), sy(52), sx(126), -sy(34), sx(178), sy(52), 0x88e1e0, 0.32));
-      sciences.add(this.add.rectangle(sx(134), sy(60), sx(130), sy(8), 0x203946));
-      sciences.add(this.add.rectangle(-sx(10), sy(56), sx(94), sy(8), 0x203946));
-      postcard.add(sciences);
-
-      const oldTown = this.add.container(sx(836), -sy(18));
-      const miguelete = this.add.container(-sx(44), 0);
-      miguelete.add(this.add.rectangle(0, 0, sx(34), sy(156), 0xd59f34, 0.96).setOrigin(0.5, 1));
-      miguelete.add(this.add.rectangle(0, -sy(122), sx(50), sy(14), 0x35545f));
-      miguelete.add(this.add.circle(0, -sy(100), sx(9), 0x35545f));
-      miguelete.add(this.add.rectangle(0, -sy(146), sx(6), sy(20), 0x35545f));
-      oldTown.add(miguelete);
-
-      const cathedral = this.add.container(sx(112), sy(14));
-      cathedral.add(this.add.rectangle(0, sy(34), sx(164), sy(84), 0x703565, 0.92).setOrigin(0.5, 1));
-      cathedral.add(this.add.rectangle(0, -sy(18), sx(92), sy(14), 0x703565));
-      cathedral.add(this.add.circle(0, sy(0), sx(26), 0xffd95c, 0.94).setStrokeStyle(4, 0x703565));
-      cathedral.add(this.add.triangle(0, sy(16), -sx(30), sy(48), 0, -sy(20), sx(30), sy(48), 0xffd95c, 0.92));
-      cathedral.add(this.add.rectangle(0, sy(42), sx(30), sy(36), 0x5c2420));
-      cathedral.add(this.add.rectangle(-sx(60), sy(20), sx(22), sy(62), 0xc94838, 0.9));
-      cathedral.add(this.add.rectangle(sx(60), sy(20), sx(22), sy(62), 0xc94838, 0.9));
-      oldTown.add(cathedral);
-
-      const basilica = this.add.container(sx(258), sy(22));
-      basilica.add(this.add.rectangle(0, sy(38), sx(138), sy(70), 0xa6c548, 0.9).setOrigin(0.5, 1));
-      basilica.add(this.add.circle(0, -sy(4), sx(32), 0x2d8f49, 0.96));
-      basilica.add(this.add.rectangle(0, -sy(42), sx(12), sy(28), 0xffd95c, 0.92));
-      basilica.add(this.add.triangle(0, -sy(58), -sx(12), -sy(32), 0, -sy(76), sx(12), -sy(32), 0xffd95c));
-      oldTown.add(basilica);
-      postcard.add(oldTown);
-
-      const serranos = this.add.container(sx(1178), sy(4));
-      serranos.add(this.add.rectangle(0, sy(44), sx(176), sy(78), 0x59a9df, 0.92).setOrigin(0.5, 1));
-      serranos.add(this.add.rectangle(-sx(56), -sy(6), sx(42), sy(88), 0x44b7f4, 0.96));
-      serranos.add(this.add.rectangle(sx(56), -sy(6), sx(42), sy(88), 0x44b7f4, 0.96));
-      serranos.add(this.add.rectangle(0, sy(46), sx(32), sy(36), 0x2a607d));
-      serranos.add(this.add.rectangle(-sx(56), -sy(34), sx(50), sy(8), 0xe6f6ff, 0.22));
-      serranos.add(this.add.rectangle(sx(56), -sy(34), sx(50), sy(8), 0xe6f6ff, 0.22));
-      postcard.add(serranos);
-
-      for (const x of [sx(128), sx(396), sx(1046), sx(1284)]) {
-        const palm = this.add.container(x, sy(302));
-        palm.add(this.add.rectangle(0, sy(18), sx(7), sy(58), 0x6f4720));
-        palm.add(this.add.triangle(0, -sy(10), -sx(32), sy(12), 0, -sy(38), sx(32), sy(12), 0x30c977));
-        palm.add(this.add.triangle(-sx(18), sy(2), -sx(34), sy(14), -sx(12), -sy(22), sx(4), sy(14), 0x4ddd8c));
-        postcard.add(palm);
-      }
-      for (let i = 0; i < 7; i += 1) {
-        postcard.add(this.add.rectangle(sx(162) + i * sx(168), sy(74) + (i % 2) * sy(6), sx(92), sy(3), 0xf6fffb, i % 2 ? 0.08 : 0.16));
-      }
-      this.vistaLayer.add(postcard);
+      agora.add(this.add.rectangle(0, -sy(138), sx(20), sy(22), 0xfce8c8, 0.55));
+      agora.add(this.add.rectangle(0, -sy(120), sx(8), sy(8), 0xfff0d0, 0.7));
+      this.vistaLayer.add(agora);
       return;
     }
 
     if (this.city.key === "roma") {
-      addHorizonBand(sy(274), sy(22), 0xf6ddb4, 0.1);
-      addGlow(sx(1090), sy(164), sx(480), sy(180), 0xf1b071, 0.14);
-
-      const hills = [
-        [sx(54), sy(296), sx(280), sy(96), 0x7c5d4d],
-        [sx(300), sy(284), sx(340), sy(110), 0x946f59],
-        [sx(632), sy(292), sx(300), sy(90), 0x6c4d3e],
-        [sx(916), sy(286), sx(360), sy(108), 0x855f4b],
-        [sx(1220), sy(298), sx(260), sy(84), 0x684638],
-      ];
-      hills.forEach(([x, y, w, h, c]) => {
-        this.vistaLayer.add(this.add.arc(x, y, w, h, 180, 360, false, c, 0.88));
-      });
-
-      const rome = this.add.container(sx(720), sy(282));
+      addBand(sy(20), sy(40), 0x2a1a0e);
+      addBand(sy(55), sy(40), 0x3c2410);
+      addBand(sy(90), sy(38), 0x582e14);
+      addBand(sy(124), sy(34), 0x7a3e1c);
+      addBand(sy(155), sy(30), 0xa05028);
+      addBand(sy(182), sy(26), 0xc46a30);
+      addBand(sy(206), sy(24), 0xd88440);
+      addBand(sy(228), sy(22), 0xe8a050);
+      addBand(sy(248), sy(20), 0xf0b860);
+      addBand(sy(266), sy(18), 0xf4cc80);
+      addBand(sy(282), sy(14), 0xf8dc98);
+      addBand(sy(294), sy(8), 0xfce8b0);
+      addGlow(sx(640), sy(260), sx(500), sy(200), 0xff6020, 0.2);
+      addGlow(sx(640), sy(270), sx(280), sy(120), 0xff9040, 0.18);
+      addRect(sx(640), sy(280), sx(50), sy(50), 0xffa030, 0.8);
+      addRect(sx(640), sy(280), sx(30), sy(30), 0xffd060, 0.85);
+      for (let i = 0; i < 5; i++) {
+        const hx = sx(54 + i * 190);
+        const hy = sy(292 + (i % 2) * 6);
+        const hw = sx(280 + (i % 3) * 40);
+        const hh = sy(80 + (i % 2) * 20);
+        const hc = [0x7c5d4d, 0x946f59, 0x6c4d3e, 0x855f4b, 0x684638][i];
+        this.vistaLayer.add(this.add.ellipse(hx, hy, hw, hh, hc, 0.88));
+      }
+      addBldg(sx(100), sy(272), sx(30), sy(90), 0x5a3a28, 0.6);
+      addBldg(sx(120), sy(265), sx(8), sy(110), 0x6a4030, 0.65);
+      addBldg(sx(180), sy(270), sx(80), sy(80), 0x5a3a28, 0.55);
+      addBldg(sx(300), sy(268), sx(20), sy(100), 0x6a4030, 0.6);
+      addBldg(sx(330), sy(272), sx(60), sy(60), 0x5a3a28, 0.5);
+      addBldg(sx(600), sy(266), sx(140), sy(100), 0x5a3a28, 0.55);
+      addBldg(sx(700), sy(260), sx(18), sy(120), 0x6a4030, 0.6);
+      addBldg(sx(740), sy(260), sx(18), sy(120), 0x6a4030, 0.6);
+      addBldg(sx(780), sy(260), sx(18), sy(120), 0x6a4030, 0.6);
+      addBldg(sx(820), sy(260), sx(18), sy(120), 0x6a4030, 0.6);
+      const rome = this.add.container(sx(720), sy(280));
       rome.add(this.add.rectangle(0, sy(46), sx(720), sy(8), 0x2e231e));
-      rome.add(this.add.arc(-sx(128), sy(18), sx(92), 180, 360, false, 0x73584a, 0.96));
-      for (let i = 0; i < 4; i += 1) {
-        rome.add(this.add.rectangle(-sx(164) + i * sx(28), sy(26), sx(16), sy(58), 0x2f2520, 0.86));
+      rome.add(this.add.ellipse(-sx(128), sy(18), sx(184), sy(100), 0x73584a, 0.96));
+      rome.add(this.add.ellipse(-sx(128), sy(18), sx(140), sy(76), 0x4a3028, 0.9));
+      for (let i = 0; i < 5; i++) {
+        rome.add(this.add.rectangle(-sx(158) + i * sx(28), sy(24), sx(14), sy(64), 0x2f2520, 0.9));
+        rome.add(this.add.rectangle(-sx(154) + i * sx(28), sy(24), sx(7), sx(20), 0x6a5040, 0.5));
       }
-      rome.add(this.add.rectangle(sx(30), sy(22), sx(128), sy(64), 0x6f5445, 0.92));
-      rome.add(this.add.arc(sx(30), sy(2), sx(42), 180, 360, false, 0xb38d6f, 0.28));
-      rome.add(this.add.rectangle(sx(172), sy(10), sx(188), sy(22), 0x8f705a, 0.86));
-      for (let i = 0; i < 5; i += 1) {
-        rome.add(this.add.arc(sx(108) + i * sx(20), sy(10), sx(14), 180, 360, false, 0x2b211c, 0.7));
+      rome.add(this.add.rectangle(-sx(40), sy(28), sx(76), sy(52), 0x3c2c20, 0.95));
+      rome.add(this.add.rectangle(-sx(36), sy(22), sx(64), sx(12), 0x6a5040, 0.7));
+      rome.add(this.add.rectangle(-sx(36), sy(38), sx(64), sx(8), 0x2a1e16, 0.8));
+      rome.add(this.add.rectangle(-sx(36), sy(48), sx(64), sx(8), 0x2a1e16, 0.8));
+      rome.add(this.add.rectangle(sx(60), sy(22), sx(36), sy(72), 0x68503c, 0.95));
+      rome.add(this.add.rectangle(sx(78), sy(20), sx(18), sy(30), 0x5a4030, 0.9));
+      rome.add(this.add.rectangle(sx(160), -sy(8), sx(80), sy(92), 0x4e3c2c, 0.9));
+      rome.add(this.add.rectangle(sx(154), -sy(12), sx(70), sx(18), 0x7a5c44, 0.7));
+      for (let i = 0; i < 4; i++) {
+        rome.add(this.add.rectangle(sx(130) + i * sx(26), sy(20), sx(8), sy(50), 0x2a1e16, 0.75));
       }
-      rome.add(this.add.circle(-sx(258), -sy(20), sx(22), 0x8f6b59, 0.94));
-      rome.add(this.add.rectangle(-sx(258), sy(22), sx(54), sy(48), 0x7d5d4b, 0.92));
       this.vistaLayer.add(rome);
-
-      for (const x of [sx(164), sx(410), sx(1178)]) {
-        const cypress = this.add.container(x, sy(314));
-        cypress.add(this.add.triangle(0, 0, -sx(16), sy(8), 0, -sy(70), sx(16), sy(8), 0x223427, 0.92));
-        cypress.add(this.add.rectangle(0, sy(18), sx(4), sy(22), 0x6c4d35, 0.5));
-        this.vistaLayer.add(cypress);
-      }
       return;
     }
 
     if (this.city.key === "paris") {
-      addHorizonBand(sy(278), sy(22), 0xf7ddf1, 0.08);
-      addGlow(sx(1122), sy(126), sx(340), sy(180), 0xf7f3ff, 0.14);
-      this.vistaLayer.add(this.add.circle(sx(1122), sy(122), sx(72), 0xf8f6ff, 0.94));
-
-      for (let i = 0; i < 14; i += 1) {
-        this.vistaLayer.add(this.add.rectangle(sx(80) + i * sx(98), sy(110) + (i % 4) * sy(16), sx(72 + (i % 3) * 22), sy(3), 0xf8f3ff, i % 2 ? 0.14 : 0.24));
+      addBand(sy(20), sy(50), 0x050510);
+      addBand(sy(65), sy(50), 0x080820);
+      addBand(sy(110), sy(40), 0x0c0c2c);
+      addBand(sy(145), sy(35), 0x100e34);
+      addBand(sy(176), sy(30), 0x1a1048);
+      addBand(sy(202), sy(26), 0x24185c);
+      addBand(sy(224), sy(22), 0x30206e);
+      addBand(sy(242), sy(20), 0x3a2a80);
+      addBand(sy(260), sy(18), 0x1a1858);
+      addBand(sy(276), sy(14), 0x0e0e3c);
+      addBand(sy(288), sy(10), 0x0a0a28);
+      const stars = [[sx(80), sy(40)], [sx(180), sy(25)], [sx(320), sy(60)], [sx(460), sy(30)], [sx(540), sy(70)],
+        [sx(660), sy(20)], [sx(720), sy(55)], [sx(800), sy(35)], [sx(880), sy(65)], [sx(920), sy(25)],
+        [sx(140), sy(80)], [sx(280), sy(48)], [sx(420), sy(85)], [sx(580), sy(42)], [sx(750), sy(78)]];
+      stars.forEach(([sx2, sy2]) => {
+        this.vistaLayer.add(this.add.rectangle(sx2, sy2, sx(3), sx(3), 0xffffff, 0.7));
+      });
+      addGlow(sx(200), sy(80), sx(140), sy(100), 0xc8d8ff, 0.15);
+      addRect(sx(200), sy(80), sx(36), sy(36), 0xe8f0ff, 0.9);
+      addRect(sx(200), sy(80), sx(24), sy(24), 0xf8fcff, 0.95);
+      addRect(sx(192), sy(74), sx(6), sy(6), 0xdce8ff, 0.5);
+      addRect(sx(204), sy(84), sx(4), sy(4), 0xdce8ff, 0.4);
+      addGlow(WIDTH / 2, sy(310), WIDTH * 0.8, sy(80), 0x4468ff, 0.12);
+      addGlow(sx(640), sy(280), sx(400), sy(100), 0x3050ff, 0.1);
+      addBldg(sx(50), sy(280), sx(70), sy(80), 0x1a1a30, 0.9);
+      addBldg(sx(130), sy(272), sx(50), sy(100), 0x1c1c34, 0.9);
+      addBldg(sx(200), sy(278), sx(80), sy(84), 0x181828, 0.9);
+      addBldg(sx(310), sy(268), sx(55), sy(110), 0x1c1c30, 0.9);
+      addBldg(sx(400), sy(275), sx(65), sy(90), 0x1a1a2c, 0.9);
+      addBldg(sx(500), sy(270), sx(80), sy(100), 0x181828, 0.9);
+      addBldg(sx(620), sy(265), sx(55), sy(120), 0x1c1c34, 0.9);
+      addBldg(sx(720), sy(272), sx(90), sy(100), 0x1a1a2c, 0.9);
+      addBldg(sx(840), sy(268), sx(60), sy(110), 0x1c1c30, 0.9);
+      addBldg(sx(920), sy(274), sx(70), sy(90), 0x1a1a2c, 0.9);
+      const winColors = [0xffd840, 0xffe880, 0x80c0ff, 0xffaa40];
+      [[sx(60), sy(265)], [sx(100), sy(255)], [sx(210), sy(260)], [sx(270), sy(250)],
+       [sx(320), sy(245)], [sx(360), sy(260)], [sx(510), sy(248)], [sx(560), sy(258)],
+       [sx(640), sy(240)], [sx(680), sy(252)], [sx(730), sy(248)], [sx(770), sy(260)],
+       [sx(860), sy(244)], [sx(900), sy(256)]].forEach(([wx, wy], i) => {
+        this.vistaLayer.add(this.add.rectangle(wx, wy, sx(6), sy(8), winColors[i % 4], 0.7));
+        this.vistaLayer.add(this.add.rectangle(wx + sx(10), wy + sy(12), sx(5), sy(7), winColors[(i + 1) % 4], 0.55));
+      });
+      const tower = this.add.container(sx(440), sy(290));
+      tower.add(this.add.triangle(0, 0, -sx(62), sy(4), 0, -sy(180), sx(62), sy(4), 0x2a2440, 0.97));
+      tower.add(this.add.triangle(0, 0, -sx(36), -sy(54), 0, -sy(180), sx(36), -sy(54), 0x3a344e, 0.9));
+      tower.add(this.add.triangle(0, 0, -sx(14), -sy(106), 0, -sy(180), sx(14), -sy(106), 0x4a4460, 0.85));
+      tower.add(this.add.rectangle(0, -sy(180), sx(6), sy(28), 0x5a5470, 0.9));
+      for (let i = 0; i < 3; i++) {
+        const ty = -sy(40) - i * sy(38);
+        tower.add(this.add.rectangle(0, ty, sx(72 - i * 18), sy(5), 0x3a3450, 0.85));
       }
-
-      const roofs = this.add.container(sx(112), sy(286));
-      for (let i = 0; i < 7; i += 1) {
-        const baseX = i * sx(176);
-        roofs.add(this.add.rectangle(baseX, sy(42), sx(124), sy(54), 0x394459, 0.88).setOrigin(0.5, 1));
-        roofs.add(this.add.triangle(baseX, -sy(8), -sx(62), sy(42), 0, -sy(30), sx(62), sy(42), 0x232942, 0.94));
-        roofs.add(this.add.rectangle(baseX, sy(14), sx(98), sy(3), 0x93ddff, 0.08));
-      }
-      const tower = this.add.container(sx(744), sy(270));
-      tower.add(this.add.triangle(0, -sy(12), 0, -sy(138), -sx(42), sy(88), sx(42), sy(88), 0x58d5ff, 0.92));
-      tower.add(this.add.triangle(-sx(8), -sy(16), -sx(2), -sy(108), -sx(28), sy(62), sx(4), sy(62), 0xf1eadf, 0.32));
-      roofs.add(tower);
-      this.vistaLayer.add(roofs);
+      const towerLights = [[sx(-40), -sy(56)], [sx(40), -sy(56)], [sx(-20), -sy(108)], [sx(20), -sy(108)], [sx(0), -sy(170)]];
+      towerLights.forEach(([tx, ty]) => {
+        tower.add(this.add.rectangle(tx, ty, sx(4), sy(4), 0xffd840, 0.85));
+        tower.add(this.add.ellipse(tx, ty, sx(16), sy(16), 0xffa020, 0.15));
+      });
+      this.vistaLayer.add(tower);
       return;
     }
 
     if (this.city.key === "venecia") {
-      addHorizonBand(sy(284), sy(26), 0xf3e8d9, 0.08);
-      addHorizonBand(sy(316), sy(78), 0x7de3da, 0.18);
-      addGlow(sx(1110), sy(152), sx(420), sy(180), 0xffd6a9, 0.12);
-
-      const lagoon = this.add.container(sx(116), sy(286));
-      lagoon.add(this.add.rectangle(sx(620), sy(40), sx(1300), sy(8), 0x2a575f, 0.92));
-      lagoon.add(this.add.rectangle(sx(620), sy(56), sx(1300), sy(6), 0xbaf6ef, 0.12));
-      for (let i = 0; i < 8; i += 1) {
-        lagoon.add(this.add.rectangle(i * sx(158), sy(56) + (i % 2) * sy(6), sx(58), sy(3), 0xe8fff8, i % 2 ? 0.1 : 0.16));
-      }
-      const palazzoX = [sx(80), sx(280), sx(470), sx(668), sx(868), sx(1052)];
-      palazzoX.forEach((x, i) => {
-        lagoon.add(this.add.rectangle(x, sy(34), sx(124), sy(58 + (i % 3) * 10), i % 2 ? 0x566f75 : 0x6b837f, 0.88).setOrigin(0.5, 1));
-        lagoon.add(this.add.arc(x, sy(10), sx(26), 180, 360, false, i % 2 ? 0x9e8a71 : 0xc0a889, 0.24));
-      });
-      const campanile = this.add.container(sx(822), -sy(10));
-      campanile.add(this.add.rectangle(0, sy(20), sx(24), sy(142), 0xb99566, 0.94).setOrigin(0.5, 1));
-      campanile.add(this.add.rectangle(0, -sy(92), sx(42), sy(16), 0xcbb596));
-      campanile.add(this.add.triangle(0, -sy(112), -sx(14), -sy(88), 0, -sy(138), sx(14), -sy(88), 0xc66f5a));
-      lagoon.add(campanile);
-      const dome = this.add.container(sx(558), sy(14));
-      dome.add(this.add.circle(0, 0, sx(36), 0xb9d2ca, 0.96));
-      dome.add(this.add.rectangle(0, sy(38), sx(96), sy(34), 0x68837c, 0.88));
-      dome.add(this.add.rectangle(0, -sy(34), sx(10), sy(20), 0xd4c5ab));
-      lagoon.add(dome);
-      this.vistaLayer.add(lagoon);
+      addBand(sy(20), sy(40), 0x0e0a24);
+      addBand(sy(55), sy(38), 0x1e0a30);
+      addBand(sy(88), sy(36), 0x380c40);
+      addBand(sy(120), sy(32), 0x5e1448);
+      addBand(sy(148), sy(28), 0x8a2050);
+      addBand(sy(174), sy(26), 0xba3850);
+      addBand(sy(198), sy(24), 0xd8504a);
+      addBand(sy(220), sy(22), 0xe87040);
+      addBand(sy(240), sy(20), 0xf09040);
+      addBand(sy(258), sy(18), 0xf8b050);
+      addBand(sy(274), sy(16), 0xfcd068);
+      addBand(sy(288), sy(10), 0xfde880);
+      addGlow(sx(500), sy(250), sx(500), sy(220), 0xff6030, 0.22);
+      addGlow(sx(500), sy(270), sx(300), sy(120), 0xff9040, 0.2);
+      addRect(sx(500), sy(268), sx(44), sy(44), 0xffa030, 0.88);
+      addRect(sx(500), sy(268), sx(28), sy(28), 0xffd060, 0.9);
+      addRect(sx(500), sy(268), sx(14), sy(14), 0xffffff, 0.85);
+      addBand(sy(290), sy(16), 0xc06828, 0.2);
+      addBand(sy(298), sy(8), 0xd08038, 0.15);
+      addBldg(sx(60), sy(278), sx(60), sy(70), 0x7a4830, 0.6);
+      addBldg(sx(140), sy(270), sx(40), sy(90), 0x6a3c28, 0.65);
+      addBldg(sx(200), sy(274), sx(80), sy(70), 0x7a4830, 0.6);
+      addBldg(sx(320), sy(268), sx(50), sy(90), 0x6a3c28, 0.62);
+      addBldg(sx(420), sy(272), sx(70), sy(78), 0x7a4830, 0.58);
+      addBldg(sx(560), sy(268), sx(90), sy(90), 0x6a3c28, 0.62);
+      addBldg(sx(700), sy(274), sx(60), sy(70), 0x7a4830, 0.58);
+      addBldg(sx(820), sy(268), sx(80), sy(90), 0x6a3c28, 0.62);
+      addBldg(sx(920), sy(272), sx(60), sy(78), 0x7a4830, 0.6);
+      this.vistaLayer.add(this.add.ellipse(sx(340), sy(268), sx(80), sy(50), 0x8a5a3c, 0.7));
+      this.vistaLayer.add(this.add.ellipse(sx(340), sy(268), sx(60), sy(38), 0x6a4428, 0.75));
+      this.vistaLayer.add(this.add.ellipse(sx(720), sy(264), sx(90), sy(55), 0x8a5a3c, 0.68));
+      this.vistaLayer.add(this.add.ellipse(sx(720), sy(264), sx(68), sy(42), 0x6a4428, 0.72));
+      addBldg(sx(300), sy(268), sx(16), sy(120), 0x5a3820, 0.8);
+      addRect(sx(300), sy(208), sx(22), sy(10), 0x5a3820, 0.8);
+      addBldg(sx(700), sy(264), sx(16), sy(130), 0x5a3820, 0.78);
+      addRect(sx(700), sy(200), sx(22), sy(10), 0x5a3820, 0.78);
+      addBand(sy(290), sy(6), 0xe07030, 0.18);
+      addBand(sy(294), sy(5), 0xf08840, 0.12);
+      this.vistaLayer.add(this.add.rectangle(WIDTH / 2, sy(294), WIDTH, sy(8), 0x1a3840, 0.92));
+      this.vistaLayer.add(this.add.rectangle(WIDTH / 2, sy(300), WIDTH, sy(4), 0x00d8c0, 0.08));
       return;
     }
 
-    if (this.city.key === "londres") {
-      addHorizonBand(sy(276), sy(28), 0xb6c3cf, 0.08);
-      addGlow(sx(1098), sy(122), sx(360), sy(180), 0xc7b070, 0.12);
-
-      const parliament = this.add.container(sx(120), sy(288));
-      parliament.add(this.add.rectangle(sx(560), sy(44), sx(1160), sy(8), 0x1a1f28, 0.94));
-      for (let i = 0; i < 7; i += 1) {
-        parliament.add(this.add.rectangle(sx(96) + i * sx(146), sy(14), sx(108), sy(68 + (i % 2) * 8), 0x313a46, 0.9).setOrigin(0.5, 1));
-      }
-      const bigBen = this.add.container(sx(820), -sy(12));
-      bigBen.add(this.add.rectangle(0, sy(28), sx(26), sy(146), 0x324051, 0.96).setOrigin(0.5, 1));
-      bigBen.add(this.add.rectangle(0, -sy(90), sx(46), sy(20), 0xc5b06c));
-      bigBen.add(this.add.rectangle(0, -sy(116), sx(10), sy(20), 0x324051));
-      bigBen.add(this.add.triangle(0, -sy(136), -sx(14), -sy(108), 0, -sy(162), sx(14), -sy(108), 0xc5b06c));
-      bigBen.add(this.add.circle(0, -sy(90), sx(7), 0xf2ead8));
-      parliament.add(bigBen);
-      const bridge = this.add.container(sx(1086), sy(12));
-      bridge.add(this.add.rectangle(0, 0, sx(210), sy(8), 0x171b22));
-      bridge.add(this.add.rectangle(-sx(72), -sy(28), sx(12), sy(58), 0x334051));
-      bridge.add(this.add.rectangle(sx(72), -sy(28), sx(12), sy(58), 0x334051));
-      bridge.add(this.add.rectangle(-sx(72), -sy(46), sx(34), sy(8), 0xc5b06c, 0.72));
-      bridge.add(this.add.rectangle(sx(72), -sy(46), sx(34), sy(8), 0xc5b06c, 0.72));
-      parliament.add(bridge);
-      this.vistaLayer.add(parliament);
-    }
+    addBand(sy(20), sy(50), 0x040408);
+    addBand(sy(65), sy(50), 0x060610);
+    addBand(sy(110), sy(44), 0x08081a);
+    addBand(sy(148), sy(38), 0x0a0a1e);
+    addBand(sy(180), sy(32), 0x0e0e28);
+    addBand(sy(206), sy(28), 0x141430);
+    addBand(sy(228), sy(24), 0x1a1a3a);
+    addBand(sy(248), sy(20), 0x141a30);
+    addBand(sy(266), sy(18), 0x0e1020);
+    addBand(sy(282), sy(12), 0x090c16);
+    addBand(sy(292), sy(8), 0x060810);
+    addGlow(sx(300), sy(80), sx(350), sy(80), 0x2a2a3e, 0.4);
+    addGlow(sx(650), sy(60), sx(400), sy(70), 0x1e1e30, 0.45);
+    addGlow(sx(900), sy(90), sx(300), sy(60), 0x242438, 0.38);
+    addGlow(sx(200), sy(70), sx(120), sy(80), 0x5560a0, 0.12);
+    addRect(sx(200), sy(70), sx(28), sy(28), 0x8090c0, 0.4);
+    addRect(sx(680), sy(40), sx(4), sy(4), 0xff2020, 0.6);
+    addGlow(sx(680), sy(40), sx(20), sy(20), 0xff0000, 0.15);
+    addBldg(sx(50), sy(278), sx(60), sy(80), 0x1a1c28, 0.95);
+    addBldg(sx(130), sy(264), sx(40), sy(120), 0x181a24, 0.95);
+    addBldg(sx(195), sy(272), sx(70), sy(90), 0x1c1e2c, 0.95);
+    addBldg(sx(310), sy(260), sx(50), sy(120), 0x181a24, 0.95);
+    addBldg(sx(400), sy(268), sx(70), sy(100), 0x1a1c28, 0.95);
+    addBldg(sx(520), sy(255), sx(55), sy(130), 0x181a24, 0.95);
+    addBldg(sx(620), sy(265), sx(80), sy(100), 0x1c1e2c, 0.95);
+    addBldg(sx(740), sy(258), sx(60), sy(120), 0x181a24, 0.95);
+    addBldg(sx(840), sy(264), sx(75), sy(100), 0x1a1c28, 0.95);
+    addBldg(sx(920), sy(262), sx(50), sy(110), 0x181a24, 0.95);
+    [[sx(58), sy(260)], [sx(72), sy(248)], [sx(200), sy(252)], [sx(250), sy(242)],
+     [sx(410), sy(244)], [sx(450), sy(256)], [sx(530), sy(232)], [sx(580), sy(248)],
+     [sx(640), sy(240)], [sx(760), sy(234)], [sx(800), sy(248)], [sx(860), sy(240)]].forEach(([wx, wy], i) => {
+      const wc = i % 3 === 0 ? 0xffd840 : i % 3 === 1 ? 0x80c8ff : 0xffaa40;
+      this.vistaLayer.add(this.add.rectangle(wx, wy, sx(5), sy(7), wc, 0.55));
+      this.vistaLayer.add(this.add.ellipse(wx, wy, sx(12), sy(14), wc, 0.08));
+    });
+    const ben = this.add.container(sx(570), sy(282));
+    ben.add(this.add.rectangle(0, sy(42), sx(46), sy(10), 0x2c313a, 0.97));
+    ben.add(this.add.rectangle(0, sy(24), sx(34), sy(50), 0x383d46, 0.97));
+    ben.add(this.add.rectangle(0, sy(4), sx(26), sy(44), 0x40454e, 0.97));
+    ben.add(this.add.rectangle(0, -sy(16), sx(28), sy(44), 0x484f5e, 0.97));
+    ben.add(this.add.triangle(0, 0, -sx(16), -sy(16), 0, -sy(46), sx(16), -sy(16), 0x3a3f48, 0.97));
+    ben.add(this.add.rectangle(0, -sy(46), sx(4), sy(18), 0x545a66, 0.9));
+    ben.add(this.add.rectangle(0, -sy(2), sx(18), sy(18), 0xe8e0a8, 0.9));
+    ben.add(this.add.ellipse(0, -sy(2), sx(14), sy(14), 0xc8c090, 0.9));
+    ben.add(this.add.rectangle(sx(0), -sy(2), sx(2), sy(8), 0x1a1a24, 0.9));
+    ben.add(this.add.rectangle(-sx(4), -sy(2), sx(8), sy(2), 0x1a1a24, 0.9));
+    ben.add(this.add.ellipse(0, -sy(2), sx(22), sy(22), 0xffe860, 0.12));
+    ben.add(this.add.ellipse(-sx(6), sy(28), sx(30), sy(24), 0xd41830, 0.1));
+    this.vistaLayer.add(ben);
+    this.vistaLayer.add(this.add.rectangle(sx(120), sy(290), sx(90), sy(38), 0xcc1420, 0.7));
+    this.vistaLayer.add(this.add.rectangle(sx(120), sy(278), sx(86), sy(18), 0xcc1420, 0.65));
+    this.vistaLayer.add(this.add.rectangle(sx(88), sy(294), sx(16), sy(8), 0x1a1a24, 0.8));
+    this.vistaLayer.add(this.add.rectangle(sx(152), sy(294), sx(16), sy(8), 0x1a1a24, 0.8));
+    this.vistaLayer.add(this.add.rectangle(sx(120), sy(272), sx(80), sy(12), 0x2a2a38, 0.5));
+    [[sx(96), sy(278)], [sx(112), sy(278)], [sx(128), sy(278)], [sx(144), sy(278)]].forEach(([wx, wy]) => {
+      this.vistaLayer.add(this.add.rectangle(wx, wy, sx(10), sy(8), 0xffe860, 0.5));
+    });
   }
+
 
   createSkyBackdrop() {
     const art = CITY_ART[this.city.key] || CITY_ART.valencia;
