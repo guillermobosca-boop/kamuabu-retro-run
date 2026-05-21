@@ -1069,63 +1069,137 @@ class BootScene extends Phaser.Scene {
     });
   }
 
-  createRunnerBigTexture() {
+createRunnerBigTexture() {
     const g = this.make.graphics({ x: 0, y: 0, add: false });
-    g.fillStyle(0x111218);
-    g.fillRect(8, 25, 14, 58);
-    g.fillRect(18, 105, 90, 13);
-    g.fillRect(62, 47, 62, 15);
-    g.fillStyle(0xf1c798);
-    g.fillRect(32, 8, 39, 38);
-    g.fillRect(68, 52, 22, 15);
-    g.fillStyle(0xffd95c);
-    g.fillRect(28, 5, 46, 9);
-    g.fillRect(66, 14, 20, 7);
-    g.fillStyle(0x5d2c1d);
-    g.fillRect(22, 14, 17, 37);
-    g.fillRect(32, 42, 38, 9);
-    g.fillStyle(0x15151c);
-    g.fillRect(58, 24, 8, 7);
-    g.fillRect(72, 56, 55, 7);
-    g.fillStyle(0xf2ead8);
-    g.fillRect(23, 52, 56, 14);
-    g.fillStyle(0xd93542);
-    g.fillRect(19, 66, 66, 27);
-    g.fillStyle(0xf16b53);
-    g.fillRect(24, 70, 27, 7);
-    g.fillStyle(0x8c1e2e);
-    g.fillRect(67, 66, 14, 27);
-    g.fillStyle(0xff8b22);
-    g.fillRect(36, 72, 34, 7);
-    g.fillStyle(0x6e785c);
-    g.fillRect(28, 93, 28, 30);
-    g.fillRect(63, 91, 25, 32);
-    g.fillStyle(0x879372);
-    g.fillRect(31, 97, 13, 10);
-    g.fillRect(66, 95, 11, 10);
-    g.fillStyle(0x47513f);
-    g.fillRect(46, 93, 10, 30);
-    g.fillRect(78, 91, 10, 32);
-    g.fillStyle(0x2f4a39);
-    g.fillRect(34, 96, 16, 11);
-    g.fillRect(68, 94, 15, 11);
-    g.fillStyle(0x202126);
-    g.fillRect(16, 122, 46, 10);
-    g.fillRect(57, 122, 53, 10);
-    g.fillStyle(0x4e545d);
-    g.fillRect(18, 122, 18, 4);
-    g.fillRect(59, 122, 20, 4);
-    g.fillStyle(0x3d4249);
-    g.fillRect(88, 46, 37, 11);
-    g.fillRect(120, 50, 23, 6);
-    g.fillStyle(0x686f77);
-    g.fillRect(89, 46, 14, 4);
-    g.fillStyle(0x40d8ff);
-    g.fillRect(4, 61, 22, 10);
-    g.fillRect(84, 68, 14, 7);
-    g.generateTexture("runner-big", 146, 136);
+    const draw = (lean, fLeg, bLeg, duck, jump) => {
+      g.clear();
+      const hY = duck ? 34 : jump ? 10 : 12;
+      const tY = duck ? 60 : 48;
+      const tH = duck ? 26 : 34;
+      const lY = tY + tH;
+      const fLH = duck ? 20 : jump ? 20 : 32;
+      const bLH = duck ? 18 : jump ? 24 : 34;
+      const hx = 58 + lean;
+      g.fillStyle(0x0c0c10); g.fillRect(62+bLeg, lY+bLH, 36, 11);
+      g.fillStyle(0x28282e); g.fillRect(64+bLeg, lY+bLH, 16, 5);
+      g.fillStyle(0x060608); g.fillRect(60+bLeg, lY+bLH+9, 38, 3);
+      g.fillStyle(0x3a5028); g.fillRect(64+bLeg, lY, 16, bLH);
+      g.fillStyle(0x4c6438); g.fillRect(65+bLeg, lY, 9, bLH-5);
+      g.fillStyle(0x283818); g.fillRect(72+bLeg, lY, 6, bLH);
+      g.fillStyle(0x5c6a42); g.fillRect(63+bLeg, lY+bLH-12, 17, 7);
+      g.fillStyle(0x78904e); g.fillRect(64+bLeg, lY+bLH-11, 10, 3);
+      g.fillStyle(0x0c0c10); g.fillRect(20, lY+fLH, 34, 11);
+      g.fillStyle(0x28282e); g.fillRect(22, lY+fLH, 16, 5);
+      g.fillStyle(0x060608); g.fillRect(18, lY+fLH+9, 36, 3);
+      g.fillStyle(0x303038); g.fillRect(18, lY+fLH+2, 7, 7);
+      g.fillStyle(0x080808); g.fillRect(16, lY+fLH+6, 6, 5);
+      g.fillStyle(0x3a5028); g.fillRect(24, lY-fLeg, 16, fLH);
+      g.fillStyle(0x4c6438); g.fillRect(25, lY-fLeg, 9, fLH-5);
+      g.fillStyle(0x283818); g.fillRect(32, lY-fLeg, 6, fLH);
+      g.fillStyle(0x5c6a42); g.fillRect(23, lY+fLH-14, 17, 7);
+      g.fillStyle(0x78904e); g.fillRect(24, lY+fLH-13, 10, 3);
+      g.fillStyle(0x2c3c1c); g.fillRect(63+bLeg, lY-4, 20, 12);
+      g.fillStyle(0x3a4e28); g.fillRect(64+bLeg, lY-4, 14, 10);
+      g.fillStyle(0x4e6434); g.fillRect(65+bLeg, lY-4, 8, 7);
+      g.fillStyle(0x2c3c1c); g.fillRect(22, lY-4, 20, 12);
+      g.fillStyle(0x3a4e28); g.fillRect(23, lY-4, 14, 10);
+      g.fillStyle(0x4e6434); g.fillRect(24, lY-4, 8, 7);
+      g.fillStyle(0x283818); g.fillRect(52+lean, tY, 24, tH);
+      g.fillStyle(0x485e2e); g.fillRect(30+lean, tY, 24, tH);
+      g.fillStyle(0x608040); g.fillRect(30+lean, tY, 7, tH);
+      g.fillStyle(0x7aa050); g.fillRect(30+lean, tY, 4, 11);
+      g.fillStyle(0x364820); g.fillRect(48+lean, tY, 4, tH);
+      g.fillStyle(0x688040); g.fillRect(26+lean, tY, 9, 12);
+      g.fillStyle(0x9ab858); g.fillRect(26+lean, tY, 8, 4);
+      g.fillStyle(0x2e4018); g.fillRect(27+lean, tY+9, 6, 4);
+      g.fillStyle(0x364a20); g.fillRect(34+lean, tY+4, 11, 10);
+      g.fillStyle(0x2a3c18); g.fillRect(35+lean, tY+5, 9, 8);
+      g.fillStyle(0xd8a820); g.fillRect(36+lean, tY+5, 6, 5);
+      g.fillStyle(0xffe840); g.fillRect(36+lean, tY+5, 2, 2);
+      g.fillStyle(0x688040); g.fillRect(68+lean, tY, 9, 12);
+      g.fillStyle(0x2e4018); g.fillRect(69+lean, tY+9, 6, 4);
+      g.fillStyle(0x1c1208); g.fillRect(26+lean, tY+tH-9, 50, 9);
+      g.fillStyle(0xb88020); g.fillRect(42+lean, tY+tH-8, 12, 7);
+      g.fillStyle(0xffd840); g.fillRect(43+lean, tY+tH-7, 7, 5);
+      g.fillStyle(0xffe870); g.fillRect(44+lean, tY+tH-7, 3, 2);
+      g.fillStyle(0x382818); g.fillRect(26+lean, tY+tH-8, 14, 7);
+      g.fillStyle(0x4e3c28); g.fillRect(27+lean, tY+tH-7, 7, 5);
+      g.fillStyle(0x382818); g.fillRect(60+lean, tY+tH-8, 14, 7);
+      g.fillStyle(0x4e3c28); g.fillRect(61+lean, tY+tH-7, 7, 5);
+      g.fillStyle(0xd09060); g.fillRect(48+lean, tY-8, 11, 9);
+      g.fillStyle(0xa87040); g.fillRect(52+lean, tY-7, 5, 8);
+      g.fillStyle(0xd09060); g.fillRect(hx+2, hY+20, 24, 14);
+      g.fillStyle(0xdcaa78); g.fillRect(hx+2, hY+6, 28, 20);
+      g.fillStyle(0xeecc90); g.fillRect(hx+3, hY+7, 14, 11);
+      g.fillStyle(0xb87840); g.fillRect(hx-2, hY+10, 5, 9);
+      g.fillStyle(0xd09060); g.fillRect(hx-1, hY+11, 2, 6);
+      g.fillStyle(0xa07030); g.fillRect(hx+22, hY+16, 8, 14);
+      g.fillStyle(0x301808); g.fillRect(hx+4, hY+8, 10, 3);
+      g.fillRect(hx+18, hY+8, 8, 3);
+      g.fillStyle(0xf8f8e8); g.fillRect(hx+5, hY+11, 8, 6);
+      g.fillRect(hx+18, hY+11, 7, 6);
+      g.fillStyle(0x204098); g.fillRect(hx+6, hY+12, 5, 4);
+      g.fillRect(hx+19, hY+12, 4, 4);
+      g.fillStyle(0x080810); g.fillRect(hx+7, hY+13, 3, 2);
+      g.fillRect(hx+20, hY+13, 2, 2);
+      g.fillStyle(0xffffff); g.fillRect(hx+7, hY+12, 2, 1);
+      g.fillRect(hx+19, hY+12, 2, 1);
+      g.fillStyle(0xa07030); g.fillRect(hx+13, hY+17, 5, 4);
+      g.fillRect(hx+12, hY+19, 3, 3);
+      g.fillStyle(0x884030); g.fillRect(hx+7, hY+24, 13, 5);
+      g.fillStyle(0xaa5040); g.fillRect(hx+8, hY+24, 7, 3);
+      g.fillStyle(0xb07848); g.fillRect(hx+5, hY+28, 18, 6);
+      g.fillStyle(0x281808); g.fillRect(hx+2, hY+3, 26, 5);
+      g.fillStyle(0xffd040); g.fillRect(hx-3, hY-5, 38, 10);
+      g.fillRect(hx+31, hY, 11, 7);
+      g.fillStyle(0xffe870); g.fillRect(hx-2, hY-4, 20, 5);
+      g.fillStyle(0xd89000); g.fillRect(hx-3, hY+4, 38, 3);
+      g.fillRect(hx+32, hY+4, 9, 4);
+      g.fillStyle(0xffd040); g.fillRect(hx+27, hY-3, 9, 12);
+      g.fillStyle(0xffe870); g.fillRect(hx+28, hY-2, 5, 6);
+      g.fillStyle(0xd89000); g.fillRect(hx+28, hY+7, 8, 3);
+      g.fillStyle(0x485e2e); g.fillRect(30+lean, tY+3, 12, 15);
+      g.fillStyle(0x608040); g.fillRect(30+lean, tY+3, 6, 15);
+      g.fillStyle(0xd09060); g.fillRect(34+lean, tY+14, 15, 14);
+      g.fillStyle(0xeecc90); g.fillRect(35+lean, tY+14, 8, 7);
+      g.fillStyle(0x181010); g.fillRect(34+lean, tY+25, 14, 7);
+      g.fillStyle(0x282020); g.fillRect(35+lean, tY+26, 8, 5);
+      g.fillStyle(0x485e2e); g.fillRect(68+lean, tY+3, 12, 15);
+      g.fillStyle(0x608040); g.fillRect(68+lean, tY+3, 6, 11);
+      g.fillStyle(0xd09060); g.fillRect(80+lean, tY-1, 18, 12);
+      g.fillStyle(0xeecc90); g.fillRect(81+lean, tY, 9, 6);
+      g.fillStyle(0x181010); g.fillRect(80+lean, tY+7, 17, 7);
+      g.fillStyle(0x3c2c1a); g.fillRect(90+lean, tY-5, 20, 20);
+      g.fillStyle(0x5a4430); g.fillRect(91+lean, tY-4, 14, 10);
+      g.fillStyle(0x281c10); g.fillRect(100+lean, tY-5, 5, 20);
+      g.fillStyle(0x1e1e28); g.fillRect(110+lean, tY-6, 28, 16);
+      g.fillStyle(0x2e2e3e); g.fillRect(111+lean, tY-5, 24, 8);
+      g.fillStyle(0x3c3c50); g.fillRect(112+lean, tY-5, 16, 5);
+      g.fillStyle(0x0e0e14); g.fillRect(126+lean, tY-8, 7, 6);
+      g.fillStyle(0x28283a); g.fillRect(118+lean, tY+8, 12, 18);
+      g.fillStyle(0x38384e); g.fillRect(119+lean, tY+9, 8, 10);
+      g.fillStyle(0xc09020); g.fillRect(118+lean, tY+24, 12, 3);
+      g.fillStyle(0x141418); g.fillRect(114+lean, tY+6, 14, 6);
+      g.fillRect(118+lean, tY+6, 8, 10);
+      g.fillStyle(0x121218); g.fillRect(138+lean, tY-5, 8, 10);
+      g.fillStyle(0x3e3e50); g.fillRect(139+lean, tY-4, 6, 5);
+      g.fillStyle(0x080808); g.fillRect(112+lean, tY+4, 4, 3);
+      g.fillRect(118+lean, tY+4, 4, 3);
+      g.fillStyle(0x0a0a10); g.fillRect(140+lean, tY-6, 4, 12);
+      g.fillStyle(0x505060); g.fillRect(140+lean, tY-5, 4, 5);
+      g.fillStyle(0xff1a1a); g.fillRect(115+lean, tY-9, 6, 3);
+      g.fillStyle(0xff6060); g.fillRect(116+lean, tY-9, 3, 1);
+      g.fillStyle(0x5a5a70); g.fillRect(113+lean, tY-7, 22, 2);
+    };
+    draw(0, 0, 0, false, false); g.generateTexture("runner-big", 146, 136);
+    draw(3, -6, 4, false, false); g.generateTexture("runner-big-run", 146, 136);
+    draw(1, 0, 2, false, false); g.generateTexture("runner-big-run-mid", 146, 136);
+    draw(-2, 6, -4, false, false); g.generateTexture("runner-big-run-alt", 146, 136);
+    draw(-5, 0, 0, true, false); g.generateTexture("runner-big-duck", 146, 136);
+    draw(3, 0, 0, false, true); g.generateTexture("runner-big-jump", 146, 136);
     g.destroy();
   }
+
 
   createRunnerBigRunTexture() {
     const g = this.make.graphics({ x: 0, y: 0, add: false });
@@ -1762,478 +1836,325 @@ class BootScene extends Phaser.Scene {
 
 
   createRewardTextures() {
-    const shirt = this.make.graphics({ x: 0, y: 0, add: false });
-    shirt.fillStyle(0x111218);
-    shirt.fillRect(10, 11, 58, 58);
-    shirt.fillRect(0, 18, 21, 25);
-    shirt.fillRect(57, 18, 21, 25);
-    shirt.fillStyle(0xf2ead8);
-    shirt.fillRect(17, 13, 44, 11);
-    shirt.fillStyle(0xd93542);
-    shirt.fillRect(14, 23, 50, 42);
-    shirt.fillStyle(0xf16b53);
-    shirt.fillRect(17, 26, 20, 8);
-    shirt.fillStyle(0x8c1e2e);
-    shirt.fillRect(48, 23, 13, 42);
-    shirt.fillStyle(0xff8b22);
-    shirt.fillRect(25, 39, 28, 7);
-    shirt.fillStyle(0x40d8ff);
-    shirt.fillRect(3, 22, 17, 17);
-    shirt.fillRect(58, 22, 17, 17);
-    shirt.fillStyle(0xc7ff3a);
-    shirt.fillRect(30, 51, 18, 6);
-    shirt.fillStyle(0x15151c);
-    shirt.fillRect(29, 20, 22, 5);
-    shirt.generateTexture("shirt", 80, 76);
-    shirt.destroy();
+    const g = this.make.graphics({ x: 0, y: 0, add: false });
 
-    const socks = this.make.graphics({ x: 0, y: 0, add: false });
-    socks.fillStyle(0x15151c);
-    socks.fillRect(12, 5, 21, 49);
-    socks.fillRect(41, 5, 21, 49);
-    socks.fillRect(6, 48, 34, 12);
-    socks.fillRect(35, 48, 34, 12);
-    socks.fillStyle(0xf2ead8);
-    socks.fillRect(15, 8, 15, 40);
-    socks.fillRect(44, 8, 15, 40);
-    socks.fillStyle(0xffffff);
-    socks.fillRect(17, 10, 7, 26);
-    socks.fillRect(46, 10, 7, 26);
-    socks.fillStyle(0xff8b22);
-    socks.fillRect(15, 8, 15, 10);
-    socks.fillRect(44, 8, 15, 10);
-    socks.fillStyle(0xca5f1e);
-    socks.fillRect(24, 8, 6, 10);
-    socks.fillRect(53, 8, 6, 10);
-    socks.fillStyle(0x40d8ff);
-    socks.fillRect(9, 49, 28, 8);
-    socks.fillRect(38, 49, 28, 8);
-    socks.fillStyle(0xd93542);
-    socks.fillRect(19, 27, 8, 5);
-    socks.fillRect(48, 27, 8, 5);
-    socks.generateTexture("socks", 74, 66);
-    socks.destroy();
+    // SHIRT -> Tactical Vest (80x76)
+    g.clear();
+    g.fillStyle(0x6b5a3e); g.fillRect(16, 8, 14, 8); g.fillRect(50, 8, 14, 8);
+    g.fillStyle(0x8b7355); g.fillRect(12, 16, 56, 46);
+    g.fillStyle(0x7a6244); g.fillRect(12, 16, 56, 4);
+    g.fillStyle(0x9b8365); g.fillRect(14, 20, 24, 28);
+    g.fillStyle(0x9b8365); g.fillRect(42, 20, 24, 28);
+    g.fillStyle(0xc8a040); g.fillRect(36, 16, 8, 46);
+    g.fillStyle(0xe0b840); g.fillRect(37, 18, 6, 42);
+    g.fillStyle(0x5a4a30); g.fillRect(16, 24, 18, 14);
+    g.fillStyle(0x4a3a20); g.fillRect(17, 25, 16, 12);
+    g.fillStyle(0xc8a040); g.fillRect(23, 24, 4, 2);
+    g.fillStyle(0x5a4a30); g.fillRect(46, 24, 18, 14);
+    g.fillStyle(0x4a3a20); g.fillRect(47, 25, 16, 12);
+    g.fillStyle(0xc8a040); g.fillRect(53, 24, 4, 2);
+    g.fillStyle(0x5a4a30); g.fillRect(14, 42, 12, 16);
+    g.fillStyle(0x5a4a30); g.fillRect(28, 42, 6, 16);
+    g.fillStyle(0x5a4a30); g.fillRect(54, 42, 12, 16);
+    g.fillStyle(0x6b5a3e); g.fillRect(30, 10, 20, 10);
+    g.fillStyle(0x7a6a4e); g.fillRect(32, 11, 16, 8);
+    g.fillStyle(0xffe080); g.fillRect(16, 20, 22, 3);
+    g.fillStyle(0xffe080); g.fillRect(42, 20, 22, 3);
+    g.generateTexture("shirt", 80, 76);
 
-    const shoe = this.make.graphics({ x: 0, y: 0, add: false });
-    shoe.fillStyle(0xff365f);
-    shoe.fillRect(8, 24, 48, 20);
-    shoe.fillStyle(0xff7090);
-    shoe.fillRect(12, 27, 20, 5);
-    shoe.fillStyle(0x981734);
-    shoe.fillRect(42, 24, 12, 20);
-    shoe.fillStyle(0xc7ff3a);
-    shoe.fillRect(50, 34, 29, 10);
-    shoe.fillStyle(0x15151c);
-    shoe.fillRect(4, 44, 78, 8);
-    shoe.fillStyle(0x4e545d);
-    shoe.fillRect(8, 44, 18, 3);
-    shoe.fillStyle(0xf2ead8);
-    shoe.fillRect(22, 28, 21, 5);
-    shoe.generateTexture("shoe", 86, 60);
-    shoe.destroy();
+    // SOCKS -> Ammo Belt (74x66)
+    g.clear();
+    g.fillStyle(0x5a4a30); g.fillRect(4, 26, 66, 14);
+    g.fillStyle(0x8b7355); g.fillRect(4, 28, 66, 6);
+    g.fillStyle(0x6b5a40); g.fillRect(4, 30, 66, 4);
+    g.fillStyle(0xc8a040); g.fillRect(30, 22, 14, 22);
+    g.fillStyle(0x8b6820); g.fillRect(33, 24, 8, 18);
+    g.fillStyle(0xffd060); g.fillRect(34, 26, 6, 4);
+    for (let i = 0; i < 5; i++) {
+      const bx = 6 + i * 12;
+      g.fillStyle(0xf0c040); g.fillRect(bx, 12, 8, 14);
+      g.fillStyle(0xd0a030); g.fillRect(bx, 14, 8, 10);
+      g.fillStyle(0xffd860); g.fillRect(bx + 1, 12, 4, 3);
+      g.fillStyle(0x6b5a3e); g.fillRect(bx, 24, 8, 4);
+    }
+    for (let i = 0; i < 3; i++) {
+      const bx = 8 + i * 16;
+      g.fillStyle(0xf0c040); g.fillRect(bx, 40, 8, 14);
+      g.fillStyle(0xd0a030); g.fillRect(bx, 42, 8, 10);
+      g.fillStyle(0x6b5a3e); g.fillRect(bx, 38, 8, 4);
+    }
+    g.generateTexture("socks", 74, 66);
 
-    const scooter = this.make.graphics({ x: 0, y: 0, add: false });
-    scooter.fillStyle(0x111218);
-    scooter.fillRect(8, 36, 72, 8);
-    scooter.fillRect(54, 18, 10, 22);
-    scooter.fillRect(60, 10, 18, 5);
-    scooter.fillStyle(0xff365f);
-    scooter.fillRect(18, 24, 38, 16);
-    scooter.fillStyle(0xff6e8f);
-    scooter.fillRect(22, 26, 18, 5);
-    scooter.fillStyle(0x8b1b31);
-    scooter.fillRect(44, 24, 10, 16);
-    scooter.fillStyle(0x40d8ff);
-    scooter.fillRect(22, 27, 16, 6);
-    scooter.fillStyle(0xf2ead8);
-    scooter.fillRect(44, 24, 9, 8);
-    scooter.fillStyle(0x15151c);
-    scooter.fillCircle(22, 48, 12);
-    scooter.fillCircle(64, 48, 12);
-    scooter.generateTexture("scooter", 90, 64);
-    scooter.destroy();
+    // SHOE -> Combat Boots (86x60)
+    g.clear();
+    g.fillStyle(0x2a1a0a); g.fillRect(2, 48, 36, 6);
+    g.fillStyle(0x3a2a1a); g.fillRect(4, 36, 30, 14);
+    g.fillStyle(0x4a3a2a); g.fillRect(2, 40, 36, 10);
+    g.fillStyle(0x2a1a0a); g.fillRect(8, 10, 24, 30);
+    g.fillStyle(0x3a2a1a); g.fillRect(6, 12, 26, 28);
+    g.fillStyle(0xd0c0a0);
+    for (let i = 0; i < 5; i++) { g.fillRect(10, 14 + i * 5, 14, 2); }
+    g.fillStyle(0xb0a080); g.fillRect(15, 12, 4, 28);
+    g.fillStyle(0x5a4a3a); g.fillRect(2, 40, 36, 4);
+    g.fillStyle(0x6a5a4a); g.fillRect(4, 40, 32, 2);
+    g.fillStyle(0x2a1a0a); g.fillRect(48, 48, 36, 6);
+    g.fillStyle(0x3a2a1a); g.fillRect(50, 36, 30, 14);
+    g.fillStyle(0x4a3a2a); g.fillRect(48, 40, 36, 10);
+    g.fillStyle(0x2a1a0a); g.fillRect(54, 10, 24, 30);
+    g.fillStyle(0x3a2a1a); g.fillRect(52, 12, 26, 28);
+    g.fillStyle(0xd0c0a0);
+    for (let i = 0; i < 5; i++) { g.fillRect(56, 14 + i * 5, 14, 2); }
+    g.fillStyle(0xb0a080); g.fillRect(61, 12, 4, 28);
+    g.fillStyle(0x5a4a3a); g.fillRect(48, 40, 36, 4);
+    g.fillStyle(0x6a5a4a); g.fillRect(50, 40, 32, 2);
+    g.generateTexture("shoe", 86, 60);
 
-    const outfit = this.make.graphics({ x: 0, y: 0, add: false });
-    outfit.fillStyle(0x111218);
-    outfit.fillRect(12, 10, 56, 62);
-    outfit.fillRect(0, 18, 18, 26);
-    outfit.fillRect(62, 18, 18, 26);
-    outfit.fillStyle(0xffd95c);
-    outfit.fillRect(18, 14, 44, 10);
-    outfit.fillRect(21, 28, 38, 30);
-    outfit.fillStyle(0xffef9d);
-    outfit.fillRect(22, 17, 22, 5);
-    outfit.fillStyle(0xff365f);
-    outfit.fillRect(23, 31, 34, 20);
-    outfit.fillStyle(0xff7997);
-    outfit.fillRect(26, 34, 14, 6);
-    outfit.fillStyle(0x971b35);
-    outfit.fillRect(47, 31, 8, 20);
-    outfit.fillStyle(0x40d8ff);
-    outfit.fillRect(4, 21, 13, 19);
-    outfit.fillRect(63, 21, 13, 19);
-    outfit.fillStyle(0xc7ff3a);
-    outfit.fillRect(28, 56, 24, 8);
-    outfit.fillStyle(0xf2ead8);
-    outfit.fillRect(30, 17, 20, 6);
-    outfit.generateTexture("outfit", 82, 78);
-    outfit.destroy();
+    // SCOOTER -> Military Moped (90x64)
+    g.clear();
+    g.fillStyle(0x485e2e); g.fillRect(18, 18, 54, 22);
+    g.fillStyle(0x3a4e20); g.fillRect(18, 30, 54, 10);
+    g.fillStyle(0x2a3e18); g.fillRect(62, 12, 8, 28);
+    g.fillStyle(0x3a4e20); g.fillRect(58, 10, 12, 6);
+    g.fillStyle(0x1a2010); g.fillRect(54, 8, 6, 8);
+    g.fillStyle(0x1a2010); g.fillRect(70, 8, 6, 8);
+    g.fillStyle(0xc8a040); g.fillRect(54, 8, 6, 3);
+    g.fillStyle(0xc8a040); g.fillRect(70, 8, 6, 3);
+    g.fillStyle(0x2a3010); g.fillRect(24, 26, 30, 18);
+    g.fillStyle(0x3a4020); g.fillRect(26, 28, 26, 14);
+    g.fillStyle(0x1a1a1a); g.fillRect(22, 14, 32, 8);
+    g.fillStyle(0x333333); g.fillRect(24, 15, 28, 5);
+    g.fillStyle(0x666666); g.fillRect(10, 36, 10, 6);
+    g.fillStyle(0x888888); g.fillRect(8, 37, 4, 4);
+    g.fillStyle(0xff6600); g.fillRect(6, 37, 4, 4);
+    g.fillStyle(0x1a1a1a); g.fillRect(54, 42, 28, 18);
+    g.fillStyle(0x3a3a3a); g.fillRect(56, 44, 24, 14);
+    g.fillStyle(0x888888); g.fillRect(64, 46, 8, 10);
+    g.fillStyle(0xaaaaaa); g.fillRect(66, 48, 4, 6);
+    g.fillStyle(0x555555); g.fillRect(67, 44, 2, 14); g.fillRect(56, 50, 22, 2);
+    g.fillStyle(0x1a1a1a); g.fillRect(8, 42, 28, 18);
+    g.fillStyle(0x3a3a3a); g.fillRect(10, 44, 24, 14);
+    g.fillStyle(0x888888); g.fillRect(18, 46, 8, 10);
+    g.fillStyle(0xaaaaaa); g.fillRect(20, 48, 4, 6);
+    g.fillStyle(0x555555); g.fillRect(21, 44, 2, 14); g.fillRect(10, 50, 22, 2);
+    g.fillStyle(0xffd040); g.fillRect(42, 18, 4, 18); g.fillRect(36, 24, 16, 6);
+    g.generateTexture("scooter", 90, 64);
 
-    const laser = this.make.graphics({ x: 0, y: 0, add: false });
-    laser.fillStyle(0x111218);
-    laser.fillRect(10, 28, 70, 12);
-    laser.fillStyle(0x40d8ff);
-    laser.fillRect(16, 31, 52, 6);
-    laser.fillStyle(0xbff7ff);
-    laser.fillRect(22, 33, 40, 2);
-    laser.fillStyle(0xffd95c);
-    laser.fillRect(66, 24, 10, 20);
-    laser.fillStyle(0x253049);
-    laser.fillRect(18, 24, 16, 20);
-    laser.generateTexture("laser", 90, 64);
-    laser.destroy();
+    // OUTFIT -> Full Combat Gear Set (82x78)
+    g.clear();
+    g.fillStyle(0x485e2e); g.fillRect(26, 2, 30, 22);
+    g.fillStyle(0x3a4e20); g.fillRect(24, 16, 34, 10);
+    g.fillStyle(0xffd040); g.fillRect(28, 4, 26, 8);
+    g.fillStyle(0xffb800); g.fillRect(30, 5, 22, 5);
+    g.fillStyle(0x485e2e); g.fillRect(28, 10, 26, 8);
+    g.fillStyle(0x5a7030); g.fillRect(30, 4, 8, 4);
+    g.fillStyle(0x5a7030); g.fillRect(44, 6, 8, 4);
+    g.fillStyle(0x8b7355); g.fillRect(12, 28, 58, 32);
+    g.fillStyle(0x9b8365); g.fillRect(14, 30, 26, 24);
+    g.fillStyle(0x9b8365); g.fillRect(42, 30, 26, 24);
+    g.fillStyle(0xc8a040); g.fillRect(38, 28, 6, 32);
+    g.fillStyle(0x5a4a30); g.fillRect(16, 34, 16, 12);
+    g.fillStyle(0x5a4a30); g.fillRect(50, 34, 16, 12);
+    g.fillStyle(0x5a4a30); g.fillRect(16, 48, 10, 10);
+    g.fillStyle(0x5a4a30); g.fillRect(56, 48, 10, 10);
+    g.fillStyle(0x3a2a1a); g.fillRect(14, 62, 22, 14);
+    g.fillStyle(0x3a2a1a); g.fillRect(46, 62, 22, 14);
+    g.fillStyle(0x2a1a0a); g.fillRect(12, 72, 26, 4);
+    g.fillStyle(0x2a1a0a); g.fillRect(44, 72, 26, 4);
+    g.fillStyle(0xd0c0a0);
+    for (let i = 0; i < 3; i++) { g.fillRect(17, 64 + i * 4, 12, 2); }
+    for (let i = 0; i < 3; i++) { g.fillRect(49, 64 + i * 4, 12, 2); }
+    g.fillStyle(0xffe080); g.fillRect(14, 30, 24, 3);
+    g.fillStyle(0xffe080); g.fillRect(44, 30, 24, 3);
+    g.generateTexture("outfit", 82, 78);
 
-    const rocket = this.make.graphics({ x: 0, y: 0, add: false });
-    rocket.fillStyle(0x111218);
-    rocket.fillRect(8, 26, 58, 16);
-    rocket.fillStyle(0xd93542);
-    rocket.fillRect(12, 28, 38, 12);
-    rocket.fillStyle(0xff7c90);
-    rocket.fillRect(16, 30, 16, 4);
-    rocket.fillStyle(0xc7ff3a);
-    rocket.fillRect(50, 28, 12, 12);
-    rocket.fillStyle(0xffd95c);
-    rocket.fillRect(62, 30, 18, 8);
-    rocket.fillStyle(0xf2ead8);
-    rocket.fillRect(68, 32, 8, 4);
-    rocket.fillStyle(0x4e545d);
-    rocket.fillRect(6, 22, 12, 24);
-    rocket.generateTexture("rocket", 86, 64);
-    rocket.destroy();
+    // LASER -> Laser Rifle (90x64)
+    g.clear();
+    g.fillStyle(0x2a2a4a); g.fillRect(6, 22, 72, 18);
+    g.fillStyle(0x3a3a6a); g.fillRect(8, 22, 72, 6);
+    g.fillStyle(0x1a1a3a); g.fillRect(6, 34, 72, 6);
+    g.fillStyle(0x4a4a8a); g.fillRect(72, 18, 14, 26);
+    g.fillStyle(0x6666aa); g.fillRect(74, 20, 10, 22);
+    g.fillStyle(0x0066ff); g.fillRect(82, 16, 8, 30);
+    g.fillStyle(0x2288ff); g.fillRect(84, 18, 6, 26);
+    g.fillStyle(0x88ccff); g.fillRect(85, 20, 4, 22);
+    g.fillStyle(0xffffff); g.fillRect(86, 24, 2, 14);
+    g.fillStyle(0x444466); g.fillRect(28, 12, 28, 12);
+    g.fillStyle(0x6666aa); g.fillRect(30, 14, 24, 8);
+    g.fillStyle(0x8888cc); g.fillRect(34, 15, 12, 4);
+    g.fillStyle(0x88aaff); g.fillRect(38, 15, 4, 2);
+    g.fillStyle(0x1a1a1a); g.fillRect(18, 38, 10, 18);
+    g.fillStyle(0x2a2a2a); g.fillRect(20, 40, 6, 14);
+    g.fillStyle(0x1a1a1a); g.fillRect(46, 38, 12, 20);
+    g.fillStyle(0x2a2a2a); g.fillRect(48, 40, 8, 16);
+    g.fillStyle(0x333333);
+    for (let i = 0; i < 4; i++) { g.fillRect(48, 42 + i * 4, 8, 2); }
+    g.fillStyle(0x003388); g.fillRect(36, 26, 12, 8);
+    g.fillStyle(0x0044cc); g.fillRect(38, 27, 8, 5);
+    g.fillStyle(0x2266ff); g.fillRect(40, 28, 4, 3);
+    g.fillStyle(0x1a1a3a); g.fillRect(2, 26, 8, 12);
+    g.fillStyle(0x2a2a4a); g.fillRect(4, 27, 4, 10);
+    g.generateTexture("laser", 90, 64);
+
+    // ROCKET -> RPG Launcher (86x64)
+    g.clear();
+    g.fillStyle(0x4a4a4a); g.fillRect(4, 20, 70, 24);
+    g.fillStyle(0x5a5a5a); g.fillRect(6, 22, 70, 8);
+    g.fillStyle(0x3a3a3a); g.fillRect(4, 36, 70, 8);
+    g.fillStyle(0x333333); g.fillRect(70, 14, 14, 36);
+    g.fillStyle(0x555555); g.fillRect(72, 16, 10, 32);
+    g.fillStyle(0x222222); g.fillRect(76, 12, 6, 40);
+    g.fillStyle(0xcc2200); g.fillRect(10, 24, 22, 16);
+    g.fillStyle(0xdd3300); g.fillRect(12, 25, 18, 13);
+    g.fillStyle(0xff4400); g.fillRect(8, 22, 8, 20);
+    g.fillStyle(0xff6600); g.fillRect(6, 20, 6, 24);
+    g.fillStyle(0xffaa00); g.fillRect(4, 18, 4, 28);
+    g.fillStyle(0xaa1100); g.fillRect(28, 20, 4, 8);
+    g.fillStyle(0xaa1100); g.fillRect(28, 36, 4, 8);
+    g.fillStyle(0xcc2200); g.fillRect(30, 18, 2, 8);
+    g.fillStyle(0xcc2200); g.fillRect(30, 38, 2, 8);
+    g.fillStyle(0xff6600); g.fillRect(0, 22, 8, 20);
+    g.fillStyle(0xffaa00); g.fillRect(2, 24, 6, 16);
+    g.fillStyle(0xffee00); g.fillRect(4, 26, 4, 12);
+    g.fillStyle(0xffffff); g.fillRect(5, 28, 2, 8);
+    g.fillStyle(0x222222); g.fillRect(34, 44, 18, 16);
+    g.fillStyle(0x1a1a1a); g.fillRect(48, 44, 14, 16);
+    g.fillStyle(0x333333); g.fillRect(36, 46, 14, 12);
+    g.fillStyle(0x1a1a1a); g.fillRect(42, 40, 10, 8);
+    g.fillStyle(0xffd040); g.fillRect(4, 20, 6, 4);
+    g.fillStyle(0xffd040); g.fillRect(62, 20, 6, 4);
+    g.generateTexture("rocket", 86, 64);
+
+    g.destroy();
   }
 
   createCombatTextures() {
-    const enemyIdle = this.make.graphics({ x: 0, y: 0, add: false });
-    enemyIdle.fillStyle(0x111218);
-    enemyIdle.fillRect(11, 18, 13, 50);
-    enemyIdle.fillRect(54, 36, 42, 10);
-    enemyIdle.fillRect(15, 86, 71, 9);
-    enemyIdle.fillStyle(0xf0c18f);
-    enemyIdle.fillRect(27, 6, 28, 27);
-    enemyIdle.fillRect(57, 38, 14, 11);
-    enemyIdle.fillStyle(0x2b1718);
-    enemyIdle.fillRect(21, 11, 12, 24);
-    enemyIdle.fillRect(30, 30, 20, 6);
-    enemyIdle.fillStyle(0xff365f);
-    enemyIdle.fillRect(25, 4, 34, 7);
-    enemyIdle.fillRect(49, 9, 14, 6);
-    enemyIdle.fillStyle(0x111218);
-    enemyIdle.fillRect(45, 17, 6, 5);
-    enemyIdle.fillRect(69, 39, 29, 6);
-    enemyIdle.fillStyle(0xf3ead8);
-    enemyIdle.fillRect(20, 35, 42, 11);
-    enemyIdle.fillStyle(0x2ad8ff);
-    enemyIdle.fillRect(16, 46, 49, 18);
-    enemyIdle.fillStyle(0xffd95c);
-    enemyIdle.fillRect(31, 50, 18, 5);
-    enemyIdle.fillStyle(0x45484f);
-    enemyIdle.fillRect(20, 64, 18, 23);
-    enemyIdle.fillRect(44, 62, 18, 25);
-    enemyIdle.fillStyle(0xb4ff32);
-    enemyIdle.fillRect(6, 40, 15, 8);
-    enemyIdle.fillRect(62, 48, 10, 5);
-    enemyIdle.fillStyle(0x202126);
-    enemyIdle.fillRect(11, 86, 30, 8);
-    enemyIdle.fillRect(41, 86, 31, 8);
-    enemyIdle.fillStyle(0x2b2b30);
-    enemyIdle.fillRect(73, 34, 25, 9);
-    enemyIdle.generateTexture("enemy-grunt", 102, 98);
-    enemyIdle.destroy();
+    const g = this.make.graphics({ x: 0, y: 0, add: false });
 
-    const enemyRunA = this.make.graphics({ x: 0, y: 0, add: false });
-    enemyRunA.fillStyle(0x111218);
-    enemyRunA.fillRect(11, 18, 13, 50);
-    enemyRunA.fillRect(59, 32, 43, 10);
-    enemyRunA.fillRect(10, 85, 39, 8);
-    enemyRunA.fillRect(58, 78, 36, 8);
-    enemyRunA.fillStyle(0xf0c18f);
-    enemyRunA.fillRect(27, 6, 28, 27);
-    enemyRunA.fillRect(61, 34, 14, 11);
-    enemyRunA.fillStyle(0x2b1718);
-    enemyRunA.fillRect(21, 11, 12, 24);
-    enemyRunA.fillRect(30, 30, 20, 6);
-    enemyRunA.fillStyle(0xff365f);
-    enemyRunA.fillRect(25, 4, 34, 7);
-    enemyRunA.fillRect(49, 9, 14, 6);
-    enemyRunA.fillStyle(0x111218);
-    enemyRunA.fillRect(45, 17, 6, 5);
-    enemyRunA.fillRect(74, 35, 29, 6);
-    enemyRunA.fillStyle(0xf3ead8);
-    enemyRunA.fillRect(20, 35, 42, 11);
-    enemyRunA.fillStyle(0x2ad8ff);
-    enemyRunA.fillRect(16, 46, 49, 18);
-    enemyRunA.fillStyle(0xffd95c);
-    enemyRunA.fillRect(31, 50, 18, 5);
-    enemyRunA.fillStyle(0x45484f);
-    enemyRunA.fillRect(18, 64, 18, 23);
-    enemyRunA.fillRect(49, 60, 25, 19);
-    enemyRunA.fillStyle(0xb4ff32);
-    enemyRunA.fillRect(6, 41, 15, 8);
-    enemyRunA.fillRect(65, 45, 10, 5);
-    enemyRunA.fillStyle(0x202126);
-    enemyRunA.fillRect(5, 84, 42, 8);
-    enemyRunA.fillRect(60, 78, 37, 8);
-    enemyRunA.fillStyle(0x2b2b30);
-    enemyRunA.fillRect(77, 31, 25, 9);
-    enemyRunA.generateTexture("enemy-run-a", 104, 98);
-    enemyRunA.destroy();
+    // RIOT COP: navy armor + round helmet + visor + pistol + baton
+    // DISTINCT from player (olive green soldier + yellow bandana + SMG)
+    const drawCop = (lean, fLeg, bLeg, duck, jump) => {
+      g.clear();
+      const hY = duck ? 40 : jump ? 4 : 8;
+      const tY = duck ? 50 : 32;
+      const hX = 50 + lean;
+      const tH = duck ? 20 : 28;
 
-    const enemyRunB = this.make.graphics({ x: 0, y: 0, add: false });
-    enemyRunB.fillStyle(0x111218);
-    enemyRunB.fillRect(13, 20, 12, 48);
-    enemyRunB.fillRect(46, 44, 18, 10);
-    enemyRunB.fillRect(62, 53, 39, 10);
-    enemyRunB.fillRect(13, 78, 37, 8);
-    enemyRunB.fillRect(57, 87, 38, 8);
-    enemyRunB.fillStyle(0xf0c18f);
-    enemyRunB.fillRect(28, 6, 28, 27);
-    enemyRunB.fillRect(53, 44, 14, 11);
-    enemyRunB.fillStyle(0x2b1718);
-    enemyRunB.fillRect(22, 11, 12, 24);
-    enemyRunB.fillRect(31, 30, 20, 6);
-    enemyRunB.fillStyle(0xff365f);
-    enemyRunB.fillRect(26, 4, 34, 7);
-    enemyRunB.fillRect(50, 9, 14, 6);
-    enemyRunB.fillStyle(0x111218);
-    enemyRunB.fillRect(46, 17, 6, 5);
-    enemyRunB.fillRect(69, 54, 33, 6);
-    enemyRunB.fillStyle(0xf3ead8);
-    enemyRunB.fillRect(21, 35, 42, 11);
-    enemyRunB.fillStyle(0x2ad8ff);
-    enemyRunB.fillRect(17, 46, 49, 18);
-    enemyRunB.fillStyle(0xffd95c);
-    enemyRunB.fillRect(32, 50, 18, 5);
-    enemyRunB.fillStyle(0x45484f);
-    enemyRunB.fillRect(20, 64, 26, 18);
-    enemyRunB.fillRect(49, 64, 18, 23);
-    enemyRunB.fillStyle(0xb4ff32);
-    enemyRunB.fillRect(7, 41, 15, 8);
-    enemyRunB.fillRect(61, 43, 10, 5);
-    enemyRunB.fillStyle(0x202126);
-    enemyRunB.fillRect(8, 77, 42, 8);
-    enemyRunB.fillRect(58, 87, 39, 8);
-    enemyRunB.fillStyle(0x2b2b30);
-    enemyRunB.fillRect(84, 50, 22, 9);
-    enemyRunB.generateTexture("enemy-run-b", 108, 100);
-    enemyRunB.destroy();
+      // BACK LEG
+      const bLX = hX - 8;
+      const bLY = tY + tH;
+      g.fillStyle(0x1a2240); g.fillRect(bLX - 8, bLY + bLeg, 12, 18);
+      g.fillStyle(0x2a3250); g.fillRect(bLX - 6, bLY + 16 + bLeg, 10, 16);
+      g.fillStyle(0x1a1a1a); g.fillRect(bLX - 8, bLY + 30 + bLeg, 14, 6);
+      g.fillStyle(0x2a2a2a); g.fillRect(bLX - 10, bLY + 34 + bLeg, 16, 4);
 
-    const runnerBullet = this.make.graphics({ x: 0, y: 0, add: false });
-    runnerBullet.fillStyle(0xfff2a8);
-    runnerBullet.fillRect(0, 3, 22, 6);
-    runnerBullet.fillStyle(0xff8b22);
-    runnerBullet.fillRect(15, 0, 8, 12);
-    runnerBullet.generateTexture("player-bullet", 24, 12);
-    runnerBullet.destroy();
+      // BACK ARM with electric baton
+      const bAX = hX - 14 + lean;
+      const bAY = tY + 4;
+      g.fillStyle(0x1a2240); g.fillRect(bAX - 4, bAY, 8, 14);
+      g.fillStyle(0x1a2240); g.fillRect(bAX - 2, bAY + 12, 6, 10);
+      g.fillStyle(0xdcaa78); g.fillRect(bAX - 2, bAY + 21, 6, 5);
+      g.fillStyle(0x111111); g.fillRect(bAX - 3, bAY + 24, 4, 18);
+      g.fillStyle(0x333333); g.fillRect(bAX - 5, bAY + 21, 8, 5);
+      g.fillStyle(0xff4400); g.fillRect(bAX - 1, bAY + 38, 2, 4);
+      g.fillStyle(0xffcc00); g.fillRect(bAX - 1, bAY + 39, 2, 2);
 
-    const enemyBullet = this.make.graphics({ x: 0, y: 0, add: false });
-    enemyBullet.fillStyle(0xff365f);
-    enemyBullet.fillRect(2, 2, 14, 14);
-    enemyBullet.fillStyle(0xfff2a8);
-    enemyBullet.fillRect(6, 6, 6, 6);
-    enemyBullet.generateTexture("enemy-bullet", 18, 18);
-    enemyBullet.destroy();
+      // TORSO - dark navy body armor (NOT olive green)
+      g.fillStyle(0x1a2240); g.fillRect(hX - 18, tY, 36, tH);
+      g.fillStyle(0x2a3250); g.fillRect(hX - 16, tY + 2, 32, tH - 2);
+      g.fillStyle(0x111820); g.fillRect(hX - 16, tY + 2, 14, tH - 6);
+      g.fillStyle(0x111820); g.fillRect(hX + 2, tY + 2, 14, tH - 6);
+      g.fillStyle(0x0a1020); g.fillRect(hX - 2, tY + 2, 4, tH - 2);
+      g.fillStyle(0x0a1020); g.fillRect(hX - 16, tY + 10, 32, 2);
+      g.fillStyle(0x3366cc); g.fillRect(hX - 14, tY + 4, 10, 7);
+      g.fillStyle(0xaaccff); g.fillRect(hX - 13, tY + 5, 8, 3);
+      g.fillStyle(0xffffff); g.fillRect(hX - 12, tY + 5, 3, 2);
+      g.fillStyle(0x0a0a0a); g.fillRect(hX - 18, tY + tH - 5, 36, 5);
+      g.fillStyle(0x444444); g.fillRect(hX - 2, tY + tH - 5, 4, 5);
+      g.fillStyle(0x666666); g.fillRect(hX - 1, tY + tH - 4, 2, 3);
 
-    const enemyCigarette = this.make.graphics({ x: 0, y: 0, add: false });
-    enemyCigarette.fillStyle(0xf4efe2);
-    enemyCigarette.fillRect(0, 3, 20, 6);
-    enemyCigarette.fillStyle(0xd89e52);
-    enemyCigarette.fillRect(14, 3, 6, 6);
-    enemyCigarette.fillStyle(0xff5b3d);
-    enemyCigarette.fillRect(0, 3, 3, 6);
-    enemyCigarette.fillStyle(0x8cc9ff, 0.55);
-    enemyCigarette.fillRect(-4, 4, 4, 4);
-    enemyCigarette.generateTexture("enemy-cigarette", 24, 12);
-    enemyCigarette.destroy();
+      // HEAD - round riot helmet (NOT bandana, NOT soft cap)
+      const hH = duck ? 16 : 24;
+      g.fillStyle(0x1a1a1a); g.fillRect(hX - 12, hY, 24, hH);
+      g.fillStyle(0x111111); g.fillRect(hX - 14, hY + hH - 5, 28, 5);
+      // visor (blue tinted dark glass)
+      g.fillStyle(0x334466); g.fillRect(hX - 10, hY + 4, 20, 12);
+      g.fillStyle(0x4466aa); g.fillRect(hX - 8, hY + 6, 16, 8);
+      g.fillStyle(0x6688cc); g.fillRect(hX - 6, hY + 7, 7, 4);
+      g.fillStyle(0x88aadd); g.fillRect(hX - 5, hY + 8, 3, 2);
+      // helmet ridge & center fin
+      g.fillStyle(0x2a2a2a); g.fillRect(hX - 12, hY, 24, 3);
+      g.fillStyle(0x111111); g.fillRect(hX - 2, hY, 4, hH);
+      // radio antenna
+      if (!duck) {
+        g.fillStyle(0x555555); g.fillRect(hX + 8, hY - 8, 3, 10);
+        g.fillStyle(0xff0000); g.fillRect(hX + 8, hY - 10, 3, 3);
+        g.fillStyle(0xff6666); g.fillRect(hX + 9, hY - 9, 1, 1);
+      }
 
-    const warning = this.make.graphics({ x: 0, y: 0, add: false });
-    warning.fillStyle(0xfff2a8);
-    warning.fillRect(8, 0, 8, 24);
-    warning.fillRect(8, 30, 8, 8);
-    warning.fillStyle(0xff365f);
-    warning.fillRect(11, 3, 3, 18);
-    warning.generateTexture("warning", 24, 42);
-    warning.destroy();
+      // FRONT ARM with pistol (not SMG)
+      const fAX = hX + 12 + lean;
+      const fAY = tY + 2;
+      g.fillStyle(0x1a2240); g.fillRect(fAX, fAY, 8, 14);
+      g.fillStyle(0x1a2240); g.fillRect(fAX + 2, fAY + 12, 8, 10);
+      g.fillStyle(0xdcaa78); g.fillRect(fAX + 2, fAY + 21, 8, 5);
+      g.fillStyle(0x111111); g.fillRect(fAX + 8, fAY + 18, 14, 6);
+      g.fillStyle(0x222222); g.fillRect(fAX + 18, fAY + 16, 4, 8);
+      g.fillStyle(0x1a1a1a); g.fillRect(fAX + 6, fAY + 23, 8, 10);
+      g.fillStyle(0x333333); g.fillRect(fAX + 7, fAY + 25, 6, 7);
+      g.fillStyle(0xcccc00); g.fillRect(fAX + 9, fAY + 18, 2, 6);
 
-    this.createEnemyArchetypeTextures();
-    this.createBossArchetypeTextures();
-
-    const crate = this.make.graphics({ x: 0, y: 0, add: false });
-    crate.fillStyle(0x7a4a25);
-    crate.fillRect(4, 4, 58, 58);
-    crate.fillStyle(0xb67837);
-    crate.fillRect(10, 10, 46, 46);
-    crate.fillStyle(0x2a1a12);
-    crate.fillRect(6, 28, 54, 8);
-    crate.fillRect(28, 6, 8, 54);
-    crate.generateTexture("crate", 66, 66);
-    crate.destroy();
-
-    const makePlatformTexture = (key, palette) => {
-      const platform = this.make.graphics({ x: 0, y: 0, add: false });
-      platform.fillStyle(palette.outline);
-      platform.fillRect(0, 0, 78, 58);
-      platform.fillStyle(palette.bodyDark);
-      platform.fillRect(3, 4, 72, 50);
-      platform.fillStyle(palette.top);
-      platform.fillRect(4, 4, 70, 12);
-      platform.fillStyle(palette.topHighlight);
-      platform.fillRect(8, 7, 62, 4);
-      platform.fillStyle(palette.topShadow);
-      platform.fillRect(6, 15, 66, 3);
-      platform.fillStyle(palette.bodyMid);
-      platform.fillRect(4, 18, 70, 34);
-      platform.fillStyle(palette.bodyHighlight);
-      platform.fillRect(8, 23, 16, 4);
-      platform.fillRect(30, 30, 12, 3);
-      platform.fillRect(54, 25, 14, 4);
-      platform.fillRect(18, 40, 10, 3);
-      platform.fillStyle(palette.bodyShadow);
-      platform.fillRect(10, 34, 58, 4);
-      platform.fillRect(12, 46, 54, 3);
-      platform.fillStyle(palette.motifA);
-      platform.fillRect(10, 20, 16, 8);
-      platform.fillRect(32, 20, 14, 8);
-      platform.fillRect(52, 20, 16, 8);
-      platform.fillStyle(palette.motifB);
-      platform.fillRect(14, 22, 8, 4);
-      platform.fillRect(36, 22, 6, 4);
-      platform.fillRect(56, 22, 8, 4);
-      platform.fillStyle(palette.rim);
-      platform.fillRect(4, 52, 70, 3);
-      platform.fillStyle(palette.shadowEdge);
-      platform.fillRect(4, 55, 70, 3);
-      platform.generateTexture(key, 78, 58);
-      platform.destroy();
+      // FRONT LEG
+      const fLX = hX + 6;
+      const fLY = tY + tH;
+      g.fillStyle(0x1a2240); g.fillRect(fLX - 2, fLY + fLeg, 12, 18);
+      g.fillStyle(0x2a3250); g.fillRect(fLX, fLY + 16 + fLeg, 10, 16);
+      g.fillStyle(0x222222); g.fillRect(fLX - 2, fLY + 14 + fLeg, 12, 6);
+      g.fillStyle(0x333333); g.fillRect(fLX - 1, fLY + 15 + fLeg, 10, 4);
+      g.fillStyle(0x1a1a1a); g.fillRect(fLX - 2, fLY + 30 + fLeg, 14, 6);
+      g.fillStyle(0x2a2a2a); g.fillRect(fLX - 4, fLY + 34 + fLeg, 16, 4);
     };
 
-    makePlatformTexture("solid-box", {
-      outline: 0x15151c,
-      top: 0x9ece5c,
-      topHighlight: 0xc6ef86,
-      topShadow: 0x6d8a39,
-      bodyMid: 0xa8663c,
-      bodyDark: 0x7a4326,
-      bodyHighlight: 0xd38f60,
-      bodyShadow: 0x5b311d,
-      motifA: 0x7f4b2e,
-      motifB: 0xc48a60,
-      rim: 0x6f3e25,
-      shadowEdge: 0x312016,
-    });
+    drawCop(0, 0, 0, false, false);   g.generateTexture("enemy-grunt", 102, 98);
+    drawCop(3, -8, 6, false, false);  g.generateTexture("enemy-run-a", 104, 98);
+    drawCop(-3, 8, -6, false, false); g.generateTexture("enemy-run-b", 108, 100);
 
-    makePlatformTexture("solid-box-valencia", {
-      outline: 0x1e323c,
-      top: 0xf8f2e4,
-      topHighlight: 0xffffff,
-      topShadow: 0xdccca9,
-      bodyMid: 0xe5d3b3,
-      bodyDark: 0xb99267,
-      bodyHighlight: 0xf8ead4,
-      bodyShadow: 0x8d6846,
-      motifA: 0xff8d33,
-      motifB: 0x4ddfe3,
-      rim: 0x2f596d,
-      shadowEdge: 0x14232c,
-    });
+    // PLAYER BULLET (24x12) - golden energy shot
+    g.clear();
+    g.fillStyle(0xff8800); g.fillRect(0, 3, 24, 6);
+    g.fillStyle(0xffbb00); g.fillRect(2, 4, 20, 4);
+    g.fillStyle(0xffee44); g.fillRect(3, 4, 14, 4);
+    g.fillStyle(0xffffff); g.fillRect(4, 5, 8, 2);
+    g.fillStyle(0xff4400); g.fillRect(18, 2, 6, 8);
+    g.fillStyle(0xffaa00); g.fillRect(20, 3, 4, 6);
+    g.fillStyle(0xffffff); g.fillRect(21, 4, 2, 4);
+    g.generateTexture("player-bullet", 24, 12);
 
-    makePlatformTexture("solid-box-roma", {
-      outline: 0x1d1714,
-      top: 0xd8c39f,
-      topHighlight: 0xf2e3c2,
-      topShadow: 0xb49771,
-      bodyMid: 0x9e7759,
-      bodyDark: 0x73503d,
-      bodyHighlight: 0xcda27c,
-      bodyShadow: 0x573b2e,
-      motifA: 0xe0c38b,
-      motifB: 0x8a5d41,
-      rim: 0x6d4f3d,
-      shadowEdge: 0x2d211a,
-    });
+    // ENEMY BULLET (18x18) - red threat orb
+    g.clear();
+    g.fillStyle(0x880000); g.fillRect(2, 2, 14, 14);
+    g.fillStyle(0xcc0000); g.fillRect(3, 3, 12, 12);
+    g.fillStyle(0xff1100); g.fillRect(4, 4, 10, 10);
+    g.fillStyle(0xff4444); g.fillRect(5, 5, 6, 5);
+    g.fillStyle(0xff8888); g.fillRect(5, 5, 3, 2);
+    g.fillStyle(0xff2200); g.fillRect(3, 9, 3, 2);
+    g.generateTexture("enemy-bullet", 18, 18);
 
-    makePlatformTexture("solid-box-paris", {
-      outline: 0x171925,
-      top: 0xe8e1d9,
-      topHighlight: 0xf9f5ef,
-      topShadow: 0xc9c0b6,
-      bodyMid: 0x536073,
-      bodyDark: 0x3a4455,
-      bodyHighlight: 0x74859d,
-      bodyShadow: 0x29303c,
-      motifA: 0x46d9ff,
-      motifB: 0xf7d0ea,
-      rim: 0x252b36,
-      shadowEdge: 0x11141b,
-    });
+    // ENEMY CIGARETTE (24x12) - tear-gas canister + smoke
+    g.clear();
+    g.fillStyle(0xaabbaa); g.fillRect(0, 5, 14, 6);
+    g.fillStyle(0xbbccbb); g.fillRect(1, 4, 10, 6);
+    g.fillStyle(0xccddcc); g.fillRect(2, 3, 8, 5);
+    g.fillStyle(0xddeedd); g.fillRect(3, 2, 6, 4);
+    g.fillStyle(0xeeffee); g.fillRect(4, 1, 4, 3);
+    g.fillStyle(0xffffff); g.fillRect(5, 0, 3, 2);
+    g.fillStyle(0x556633); g.fillRect(14, 1, 10, 10);
+    g.fillStyle(0x667744); g.fillRect(15, 2, 8, 8);
+    g.fillStyle(0xaaaa44); g.fillRect(15, 2, 8, 3);
+    g.fillStyle(0x334422); g.fillRect(15, 8, 8, 2);
+    g.fillStyle(0xffff00); g.fillRect(16, 3, 6, 2);
+    g.generateTexture("enemy-cigarette", 24, 12);
 
-    makePlatformTexture("solid-box-venecia", {
-      outline: 0x18272f,
-      top: 0xdce7db,
-      topHighlight: 0xf2faf2,
-      topShadow: 0xb8c9bb,
-      bodyMid: 0x6f8982,
-      bodyDark: 0x516760,
-      bodyHighlight: 0x93b0a8,
-      bodyShadow: 0x374842,
-      motifA: 0x50dfd0,
-      motifB: 0xc79d71,
-      rim: 0x28424a,
-      shadowEdge: 0x131d22,
-    });
-
-    makePlatformTexture("solid-box-londres", {
-      outline: 0x16181f,
-      top: 0x9eafbf,
-      topHighlight: 0xc2d3df,
-      topShadow: 0x788899,
-      bodyMid: 0x55616d,
-      bodyDark: 0x3d4650,
-      bodyHighlight: 0x738190,
-      bodyShadow: 0x2c333b,
-      motifA: 0xc5b06c,
-      motifB: 0xb9d9f4,
-      rim: 0x242932,
-      shadowEdge: 0x111319,
-    });
-
-    const pow = this.make.graphics({ x: 0, y: 0, add: false });
-    pow.fillStyle(0xf1d2aa);
-    pow.fillRect(22, 8, 22, 22);
-    pow.fillStyle(0x15151c);
-    pow.fillRect(37, 16, 5, 5);
-    pow.fillStyle(0xf2ead8);
-    pow.fillRect(12, 30, 44, 36);
-    pow.fillStyle(0xff8b22);
-    pow.fillRect(17, 39, 34, 8);
-    pow.fillStyle(0x40d8ff);
-    pow.fillRect(18, 66, 15, 22);
-    pow.fillRect(40, 66, 15, 22);
-    pow.fillStyle(0x111218);
-    pow.fillRect(12, 87, 26, 7);
-    pow.fillRect(37, 87, 27, 7);
-    pow.generateTexture("pow", 68, 96);
-    pow.destroy();
-
-    const explosion = this.make.graphics({ x: 0, y: 0, add: false });
-    explosion.fillStyle(0xfff2a8);
-    explosion.fillRect(24, 0, 18, 62);
-    explosion.fillRect(0, 24, 66, 18);
-    explosion.fillStyle(0xff8b22);
-    explosion.fillRect(14, 14, 38, 38);
-    explosion.fillStyle(0xff365f);
-    explosion.fillRect(24, 24, 18, 18);
-    explosion.generateTexture("hit-burst", 66, 66);
-    explosion.destroy();
+    g.destroy();
   }
 
   createEnemyArchetypeTextures() {
