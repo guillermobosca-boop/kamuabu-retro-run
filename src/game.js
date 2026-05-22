@@ -764,232 +764,185 @@ class BootScene extends Phaser.Scene {
     const torsoY = 34 + torsoDrop + (crouch ? 11 : 0) + (jump ? -3 : 0);
     const torsoH = crouch ? 22 : 28;
     const legY = torsoY + torsoH;
-    const gunY = torsoY + (crouch ? 6 : 9) + weaponLift;
     const frontLegH = crouch ? 16 : jump ? 16 : 24;
     const backLegH = crouch ? 15 : jump ? 19 : 25;
     const hx = 44 + lean + headShift;
-    g.fillStyle(0x0c0c10);
-    g.fillRect(48 + trailLeg, legY + backLegH, 32 + trailFoot, 9);
-    g.fillStyle(0x28282e);
-    g.fillRect(50 + trailLeg, legY + backLegH, 14, 4);
-    g.fillStyle(0x060608);
-    g.fillRect(46 + trailLeg, legY + backLegH + 8, 34 + trailFoot, 3);
-    g.fillStyle(0x3a5028);
-    g.fillRect(52 + trailLeg, legY - 1, 14, backLegH);
-    g.fillStyle(0x4c6438);
-    g.fillRect(53 + trailLeg, legY - 1, 7, backLegH - 4);
-    g.fillStyle(0x283818);
-    g.fillRect(60 + trailLeg, legY - 1, 5, backLegH);
-    g.fillStyle(0x5c6a42);
-    g.fillRect(51 + trailLeg, legY + backLegH - 10, 15, 5);
-    g.fillStyle(0x78904e);
-    g.fillRect(52 + trailLeg, legY + backLegH - 9, 9, 2);
-    g.fillStyle(0x2c3c1c);
-    g.fillRect(52 + trailLeg, legY + backLegH - 8, 12, 2);
-    g.fillStyle(0x0c0c10);
-    g.fillRect(18, legY + frontLegH - 1, 30 + leadFoot, 9);
-    g.fillStyle(0x28282e);
-    g.fillRect(20, legY + frontLegH - 1, 14, 4);
-    g.fillStyle(0x060608);
-    g.fillRect(16, legY + frontLegH + 7, 32 + leadFoot, 3);
-    g.fillStyle(0x303038);
-    g.fillRect(16, legY + frontLegH + 2, 6, 5);
-    g.fillStyle(0x080808);
-    g.fillRect(14, legY + frontLegH + 5, 5, 4);
-    g.fillStyle(0x3a5028);
-    g.fillRect(22, legY - 1, 14, frontLegH - leadLeg);
-    g.fillStyle(0x4c6438);
-    g.fillRect(23, legY - 1, 7, frontLegH - 4 - leadLeg);
-    g.fillStyle(0x283818);
-    g.fillRect(30, legY - 1, 5, frontLegH - leadLeg);
-    g.fillStyle(0x5c6a42);
-    g.fillRect(21, legY + frontLegH - 12, 15, 5);
-    g.fillStyle(0x78904e);
-    g.fillRect(22, legY + frontLegH - 11, 9, 2);
-    g.fillStyle(0x2c3c1c);
-    g.fillRect(22, legY + frontLegH - 9, 12, 2);
-    g.fillStyle(0x2c3c1c);
-    g.fillRect(51 + trailLeg, legY - 2, 17, 9);
-    g.fillStyle(0x3a4e28);
-    g.fillRect(52 + trailLeg, legY - 2, 12, 8);
-    g.fillStyle(0x4e6434);
-    g.fillRect(53 + trailLeg, legY - 2, 7, 5);
-    g.fillStyle(0x2c3c1c);
-    g.fillRect(20, legY - 2, 17, 9);
-    g.fillStyle(0x3a4e28);
-    g.fillRect(21, legY - 2, 12, 8);
-    g.fillStyle(0x4e6434);
-    g.fillRect(22, legY - 2, 7, 5);
-    g.fillStyle(0x283818);
-    g.fillRect(40 + lean, torsoY, 18, torsoH);
-    g.fillStyle(0x485e2e);
-    g.fillRect(24 + lean, torsoY, 18, torsoH);
-    g.fillStyle(0x608040);
-    g.fillRect(24 + lean, torsoY, 5, torsoH);
-    g.fillStyle(0x7aa050);
-    g.fillRect(24 + lean, torsoY, 3, 8);
-    g.fillStyle(0x364820);
-    g.fillRect(37 + lean, torsoY, 3, torsoH);
-    g.fillStyle(0x688040);
-    g.fillRect(20 + lean, torsoY, 7, 9);
-    g.fillStyle(0x9ab858);
-    g.fillRect(20 + lean, torsoY, 6, 3);
-    g.fillStyle(0x2e4018);
-    g.fillRect(21 + lean, torsoY + 7, 5, 3);
-    g.fillStyle(0x364a20);
-    g.fillRect(26 + lean, torsoY + 3, 8, 7);
-    g.fillStyle(0x2a3c18);
-    g.fillRect(27 + lean, torsoY + 4, 6, 5);
-    g.fillStyle(0xd8a820);
-    g.fillRect(28 + lean, torsoY + 4, 4, 3);
-    g.fillStyle(0xffe840);
-    g.fillRect(28 + lean, torsoY + 4, 2, 1);
-    g.fillStyle(0x688040);
-    g.fillRect(52 + lean, torsoY, 7, 9);
-    g.fillStyle(0x2e4018);
-    g.fillRect(53 + lean, torsoY + 7, 5, 3);
-    g.fillStyle(0x1c1208);
-    g.fillRect(20 + lean, torsoY + torsoH - 8, 38, 7);
-    g.fillStyle(0xb88020);
-    g.fillRect(32 + lean, torsoY + torsoH - 7, 8, 5);
-    g.fillStyle(0xffd840);
-    g.fillRect(33 + lean, torsoY + torsoH - 6, 4, 3);
-    g.fillStyle(0xffe870);
-    g.fillRect(34 + lean, torsoY + torsoH - 6, 2, 1);
-    g.fillStyle(0x382818);
-    g.fillRect(20 + lean, torsoY + torsoH - 7, 10, 6);
-    g.fillStyle(0x4e3c28);
-    g.fillRect(21 + lean, torsoY + torsoH - 6, 5, 4);
-    g.fillStyle(0x382818);
-    g.fillRect(44 + lean, torsoY + torsoH - 7, 9, 6);
-    g.fillStyle(0x4e3c28);
-    g.fillRect(45 + lean, torsoY + torsoH - 6, 4, 4);
-    g.fillStyle(0xd09060);
-    g.fillRect(37 + lean + headShift, torsoY - 5, 8, 6);
-    g.fillStyle(0xa87040);
-    g.fillRect(41 + lean + headShift, torsoY - 4, 4, 5);
-    g.fillStyle(0xd09060);
-    g.fillRect(hx + 2, headY + 14, 18, 10);
-    g.fillStyle(0xdcaa78);
-    g.fillRect(hx + 2, headY + 4, 20, 14);
-    g.fillStyle(0xeecc90);
-    g.fillRect(hx + 3, headY + 5, 10, 8);
-    g.fillStyle(0xb87840);
-    g.fillRect(hx - 1, headY + 7, 4, 6);
-    g.fillStyle(0xd09060);
-    g.fillRect(hx, headY + 8, 2, 4);
-    g.fillStyle(0xa07030);
-    g.fillRect(hx + 16, headY + 11, 6, 10);
-    g.fillStyle(0x301808);
-    g.fillRect(hx + 3, headY + 5, 7, 2);
-    g.fillRect(hx + 13, headY + 5, 6, 2);
-    g.fillStyle(0x9a6030);
-    g.fillRect(hx + 3, headY + 7, 7, 5);
-    g.fillRect(hx + 13, headY + 7, 6, 5);
-    g.fillStyle(0xf8f8e8);
-    g.fillRect(hx + 4, headY + 7, 5, 4);
-    g.fillRect(hx + 14, headY + 7, 4, 4);
-    g.fillStyle(0x204098);
-    g.fillRect(hx + 5, headY + 8, 3, 3);
-    g.fillRect(hx + 15, headY + 8, 2, 3);
-    g.fillStyle(0x080810);
-    g.fillRect(hx + 5, headY + 9, 2, 2);
-    g.fillRect(hx + 15, headY + 9, 2, 2);
-    g.fillStyle(0xffffff);
-    g.fillRect(hx + 6, headY + 8, 1, 1);
-    g.fillRect(hx + 16, headY + 8, 1, 1);
-    g.fillStyle(0xa07030);
-    g.fillRect(hx + 9, headY + 12, 4, 3);
-    g.fillRect(hx + 8, headY + 13, 2, 2);
-    g.fillStyle(0x884030);
-    g.fillRect(hx + 5, headY + 17, 9, 3);
-    g.fillStyle(0xaa5040);
-    g.fillRect(hx + 6, headY + 17, 5, 2);
-    g.fillStyle(0xb07848);
-    g.fillRect(hx + 4, headY + 20, 13, 4);
-    g.fillStyle(0x281808);
-    g.fillRect(hx + 2, headY + 2, 18, 3);
-    g.fillStyle(0xffd040);
-    g.fillRect(hx - 2, headY - 4, 27, 7);
-    g.fillRect(hx + 21, headY, 8, 4);
-    g.fillStyle(0xffe870);
-    g.fillRect(hx - 1, headY - 3, 14, 3);
-    g.fillStyle(0xd89000);
-    g.fillRect(hx - 2, headY + 2, 27, 2);
-    g.fillRect(hx + 22, headY + 2, 6, 3);
-    g.fillStyle(0xffd040);
-    g.fillRect(hx + 19, headY - 2, 6, 8);
-    g.fillStyle(0xffe870);
-    g.fillRect(hx + 20, headY - 1, 3, 4);
-    g.fillStyle(0xd89000);
-    g.fillRect(hx + 20, headY + 5, 5, 2);
-    g.fillStyle(0x485e2e);
-    g.fillRect(24 + lean, torsoY + 2, 8, 12);
-    g.fillStyle(0x608040);
-    g.fillRect(24 + lean, torsoY + 2, 4, 12);
-    g.fillStyle(0xd09060);
-    g.fillRect(27 + lean, torsoY + 10, 11, 10);
-    g.fillStyle(0xeecc90);
-    g.fillRect(28 + lean, torsoY + 10, 5, 5);
-    g.fillStyle(0x181010);
-    g.fillRect(27 + lean, torsoY + 17, 10, 5);
-    g.fillStyle(0x282020);
-    g.fillRect(28 + lean, torsoY + 18, 5, 3);
-    g.fillStyle(0x485e2e);
-    g.fillRect(52 + lean, torsoY + 2, 8, 12);
-    g.fillStyle(0x608040);
-    g.fillRect(52 + lean, torsoY + 2, 4, 8);
-    g.fillStyle(0xd09060);
-    g.fillRect(61 + armSwing, gunY - 1, 13, 9);
-    g.fillStyle(0xeecc90);
-    g.fillRect(62 + armSwing, gunY, 6, 4);
-    g.fillStyle(0x181010);
-    g.fillRect(61 + armSwing, gunY + 4, 12, 5);
-    g.fillStyle(0x3c2c1a);
-    g.fillRect(64 + armSwing, gunY - 3, 15, 14);
-    g.fillStyle(0x5a4430);
-    g.fillRect(65 + armSwing, gunY - 2, 9, 7);
-    g.fillStyle(0x281c10);
-    g.fillRect(71 + armSwing, gunY - 3, 4, 14);
-    g.fillStyle(0x1e1e28);
-    g.fillRect(79 + armSwing, gunY - 4, 22, 11);
-    g.fillStyle(0x2e2e3e);
-    g.fillRect(80 + armSwing, gunY - 3, 18, 5);
-    g.fillStyle(0x3c3c50);
-    g.fillRect(81 + armSwing, gunY - 3, 10, 3);
-    g.fillStyle(0x0e0e14);
-    g.fillRect(94 + armSwing, gunY - 5, 6, 4);
-    g.fillStyle(0x1a1a22);
-    g.fillRect(95 + armSwing, gunY - 4, 3, 2);
-    g.fillStyle(0x28283a);
-    g.fillRect(87 + armSwing, gunY + 5, 8, 13);
-    g.fillStyle(0x38384e);
-    g.fillRect(88 + armSwing, gunY + 6, 5, 6);
-    g.fillStyle(0xc09020);
-    g.fillRect(87 + armSwing, gunY + 17, 8, 2);
-    g.fillStyle(0x141418);
-    g.fillRect(84 + armSwing, gunY + 4, 10, 4);
-    g.fillRect(87 + armSwing, gunY + 4, 6, 7);
-    g.fillStyle(0x121218);
-    g.fillRect(100 + armSwing, gunY - 3, 18, 7);
-    g.fillStyle(0x3e3e50);
-    g.fillRect(101 + armSwing, gunY - 2, 14, 3);
-    g.fillStyle(0x0a0a10);
-    g.fillRect(117 + armSwing, gunY - 3, 6, 7);
-    g.fillStyle(0x505060);
-    g.fillRect(117 + armSwing, gunY - 2, 5, 3);
-    g.fillStyle(0x080808);
-    g.fillRect(102 + armSwing, gunY + 3, 3, 2);
-    g.fillRect(107 + armSwing, gunY + 3, 3, 2);
-    g.fillRect(112 + armSwing, gunY + 3, 3, 2);
-    g.fillStyle(0xff1a1a);
-    g.fillRect(84 + armSwing, gunY - 6, 4, 2);
-    g.fillStyle(0xff6060);
-    g.fillRect(85 + armSwing, gunY - 6, 2, 1);
-    g.fillStyle(0x5a5a70);
-    g.fillRect(82 + armSwing, gunY - 4, 16, 2);
-  }
+    const cx = 44 + lean;
 
+    // ââ TRAIL SHOE (back leg) âââââââââââââââââââââââââââââââââââââââââââââ
+    g.fillStyle(0x1a1a1a);
+    g.fillRect(48 + trailLeg, legY + backLegH + 5 + trailFoot, 30 + trailFoot, 4);
+    g.fillStyle(0xff6600);
+    g.fillRect(49 + trailLeg, legY + backLegH + 2 + trailFoot, 28 + trailFoot, 4);
+    g.fillStyle(0xf0f0f0);
+    g.fillRect(50 + trailLeg, legY + backLegH - 2 + trailFoot, 26 + trailFoot, 5);
+    g.fillStyle(0xffffff);
+    g.fillRect(52 + trailLeg, legY + backLegH - 2 + trailFoot, 16, 3);
+    g.fillStyle(0xe0e0e0);
+    g.fillRect(72 + trailLeg + trailFoot, legY + backLegH - 1 + trailFoot, 6, 4);
+
+    // ââ TRAIL SHIN (back leg, skin) âââââââââââââââââââââââââââââââââââââââ
+    g.fillStyle(0xd4956a);
+    g.fillRect(52 + trailLeg, legY + 1, 14, backLegH - 1);
+    g.fillStyle(0xf5c498);
+    g.fillRect(53 + trailLeg, legY + 1, 10, backLegH - 3);
+    g.fillStyle(0xf8d8b0);
+    g.fillRect(54 + trailLeg, legY + 2, 5, 6);
+
+    // ââ TRAIL THIGH + SHORTS (back leg) âââââââââââââââââââââââââââââââââââ
+    g.fillStyle(0x007799);
+    g.fillRect(51 + trailLeg, legY - 2, 16, 11);
+    g.fillStyle(0x00aacc);
+    g.fillRect(52 + trailLeg, legY - 2, 14, 10);
+    g.fillStyle(0x33ccee);
+    g.fillRect(53 + trailLeg, legY - 1, 8, 4);
+
+    // ââ BACK ARM (trail side, swings back) âââââââââââââââââââââââââââââââ
+    const baX = cx + 6 + armSwing;
+    const baY = torsoY + 4;
+    g.fillStyle(0xd4956a);
+    g.fillRect(baX + 1, baY, 10, 14);
+    g.fillStyle(0xf5c498);
+    g.fillRect(baX + 2, baY + 1, 8, 12);
+    g.fillStyle(0xd4956a);
+    g.fillRect(baX + 3, baY + 12, 8, 10);
+    g.fillStyle(0xf5c498);
+    g.fillRect(baX + 4, baY + 13, 6, 8);
+    g.fillStyle(0xc8884e);
+    g.fillRect(baX + 2, baY + 20, 9, 7);
+    g.fillStyle(0xf5c498);
+    g.fillRect(baX + 3, baY + 21, 7, 5);
+
+    // ââ TORSO â orange tank top âââââââââââââââââââââââââââââââââââââââââââ
+    g.fillStyle(0xbb5500);
+    g.fillRect(cx + 4, torsoY, 12, torsoH);
+    g.fillStyle(0xff7722);
+    g.fillRect(cx - 14, torsoY, 20, torsoH);
+    g.fillStyle(0xffaa44);
+    g.fillRect(cx - 14, torsoY, 4, torsoH - 2);
+    g.fillStyle(0xffd080);
+    g.fillRect(cx - 13, torsoY + 2, 2, 6);
+    g.fillStyle(0xffaa44);
+    g.fillRect(cx - 14, torsoY, 18, 4);
+    // "K" logo on chest (white pixels)
+    const kx = cx - 10;
+    const ky = torsoY + 8;
+    g.fillStyle(0xffffff);
+    g.fillRect(kx, ky, 3, 10);
+    g.fillRect(kx + 3, ky + 3, 3, 3);
+    g.fillRect(kx + 3, ky, 4, 3);
+    g.fillRect(kx + 4, ky + 7, 4, 3);
+    // Shorts waistband
+    g.fillStyle(0x005577);
+    g.fillRect(cx - 14, torsoY + torsoH - 6, 26, 6);
+    g.fillStyle(0x007799);
+    g.fillRect(cx - 13, torsoY + torsoH - 5, 24, 5);
+
+    // ââ FRONT ARM (lead side, pumps forward) âââââââââââââââââââââââââââââ
+    const faX = cx - 20 - armSwing;
+    const faY = torsoY + 2 + weaponLift;
+    g.fillStyle(0xd4956a);
+    g.fillRect(faX, faY, 10, 14);
+    g.fillStyle(0xf5c498);
+    g.fillRect(faX + 1, faY + 1, 8, 12);
+    g.fillStyle(0xd4956a);
+    g.fillRect(faX + 1, faY + 12, 8, 10);
+    g.fillStyle(0xf5c498);
+    g.fillRect(faX + 2, faY + 13, 6, 8);
+    g.fillStyle(0xc8884e);
+    g.fillRect(faX, faY + 20, 9, 7);
+    g.fillStyle(0xf5c498);
+    g.fillRect(faX + 1, faY + 21, 7, 5);
+
+    // ââ LEAD SHOE (front leg) âââââââââââââââââââââââââââââââââââââââââââââ
+    g.fillStyle(0x1a1a1a);
+    g.fillRect(14, legY + frontLegH + 3 + leadFoot, 34 + leadFoot, 4);
+    g.fillStyle(0xff6600);
+    g.fillRect(15, legY + frontLegH + leadFoot, 32 + leadFoot, 4);
+    g.fillStyle(0xf0f0f0);
+    g.fillRect(16, legY + frontLegH - 3 + leadFoot, 28 + leadFoot, 5);
+    g.fillStyle(0xffffff);
+    g.fillRect(18, legY + frontLegH - 3 + leadFoot, 18, 3);
+    g.fillStyle(0xcccccc);
+    g.fillRect(20, legY + frontLegH - 3 + leadFoot, 2, 1);
+    g.fillRect(24, legY + frontLegH - 3 + leadFoot, 2, 1);
+    g.fillRect(28, legY + frontLegH - 3 + leadFoot, 2, 1);
+
+    // ââ LEAD SHIN (front leg, skin) âââââââââââââââââââââââââââââââââââââââ
+    g.fillStyle(0xd4956a);
+    g.fillRect(20, legY + 1, 14, frontLegH - 2 - leadLeg);
+    g.fillStyle(0xf5c498);
+    g.fillRect(21, legY + 1, 10, frontLegH - 4 - leadLeg);
+    g.fillStyle(0xf8d8b0);
+    g.fillRect(22, legY + 2, 5, 5);
+
+    // ââ LEAD THIGH + SHORTS (front leg) âââââââââââââââââââââââââââââââââââ
+    g.fillStyle(0x007799);
+    g.fillRect(19, legY - 2, 16, 11);
+    g.fillStyle(0x00aacc);
+    g.fillRect(20, legY - 2, 14, 10);
+    g.fillStyle(0x33ccee);
+    g.fillRect(21, legY - 1, 8, 4);
+
+    // ââ HEAD ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+    // Neck
+    g.fillStyle(0xd4956a);
+    g.fillRect(hx - 3, headY + 13, 8, 5);
+    g.fillStyle(0xf5c498);
+    g.fillRect(hx - 2, headY + 13, 6, 4);
+    // Head (skin)
+    g.fillStyle(0xd4956a);
+    g.fillRect(hx - 8, headY + 2, 16, 13);
+    g.fillStyle(0xf5c498);
+    g.fillRect(hx - 7, headY + 2, 14, 12);
+    g.fillStyle(0xf8d8b0);
+    g.fillRect(hx - 5, headY + 3, 7, 6);
+    // Ear
+    g.fillStyle(0xd4956a);
+    g.fillRect(hx + 6, headY + 5, 3, 5);
+    g.fillStyle(0xf5c498);
+    g.fillRect(hx + 7, headY + 6, 2, 3);
+    // Eyes (dark, determined)
+    g.fillStyle(0x1a0a00);
+    g.fillRect(hx - 4, headY + 5, 4, 3);
+    g.fillStyle(0xffffff);
+    g.fillRect(hx - 4, headY + 5, 1, 1);
+    // Nose
+    g.fillStyle(0xc8804a);
+    g.fillRect(hx + 1, headY + 8, 3, 2);
+    // Mouth
+    g.fillStyle(0xa06040);
+    g.fillRect(hx - 2, headY + 11, 5, 1);
+    g.fillStyle(0xff9977);
+    g.fillRect(hx - 1, headY + 10, 3, 1);
+
+    // ââ RUNNING CAP (orange, visor forward) ââââââââââââââââââââââââââââââ
+    g.fillStyle(0xcc3300);
+    g.fillRect(hx - 9, headY - 3, 17, 7);
+    g.fillStyle(0xff5500);
+    g.fillRect(hx - 8, headY - 4, 15, 7);
+    g.fillStyle(0xff7722);
+    g.fillRect(hx - 7, headY - 5, 13, 6);
+    g.fillStyle(0xff9944);
+    g.fillRect(hx - 5, headY - 5, 8, 3);
+    g.fillStyle(0xffcc88);
+    g.fillRect(hx - 4, headY - 4, 4, 2);
+    // Visor
+    g.fillStyle(0xaa2200);
+    g.fillRect(hx + 5, headY - 1, 9, 4);
+    g.fillStyle(0xcc3300);
+    g.fillRect(hx + 6, headY - 1, 8, 3);
+    g.fillStyle(0x881100);
+    g.fillRect(hx + 6, headY + 2, 8, 2);
+    // Cap "K" logo
+    g.fillStyle(0xffffff);
+    g.fillRect(hx - 3, headY - 3, 2, 5);
+    g.fillRect(hx - 1, headY - 3, 2, 2);
+    g.fillRect(hx - 1, headY, 2, 2);
+    // Hair at back
+    g.fillStyle(0x221100);
+    g.fillRect(hx - 11, headY + 1, 4, 4);
+  }
 
   buildRunnerPoseTexture(key, pose) {
     const g = this.make.graphics({ x: 0, y: 0, add: false });
@@ -1069,436 +1022,250 @@ class BootScene extends Phaser.Scene {
     });
   }
 
-createRunnerBigTexture() {
+  createRunnerBigTexture() {
     const g = this.make.graphics({ x: 0, y: 0, add: false });
-    const draw = (lean, fLeg, bLeg, duck, jump) => {
-      g.clear();
-      const hY = duck ? 34 : jump ? 10 : 12;
-      const tY = duck ? 60 : 48;
-      const tH = duck ? 26 : 34;
-      const lY = tY + tH;
-      const fLH = duck ? 20 : jump ? 20 : 32;
-      const bLH = duck ? 18 : jump ? 24 : 34;
-      const hx = 58 + lean;
-      g.fillStyle(0x0c0c10); g.fillRect(62+bLeg, lY+bLH, 36, 11);
-      g.fillStyle(0x28282e); g.fillRect(64+bLeg, lY+bLH, 16, 5);
-      g.fillStyle(0x060608); g.fillRect(60+bLeg, lY+bLH+9, 38, 3);
-      g.fillStyle(0x3a5028); g.fillRect(64+bLeg, lY, 16, bLH);
-      g.fillStyle(0x4c6438); g.fillRect(65+bLeg, lY, 9, bLH-5);
-      g.fillStyle(0x283818); g.fillRect(72+bLeg, lY, 6, bLH);
-      g.fillStyle(0x5c6a42); g.fillRect(63+bLeg, lY+bLH-12, 17, 7);
-      g.fillStyle(0x78904e); g.fillRect(64+bLeg, lY+bLH-11, 10, 3);
-      g.fillStyle(0x0c0c10); g.fillRect(20, lY+fLH, 34, 11);
-      g.fillStyle(0x28282e); g.fillRect(22, lY+fLH, 16, 5);
-      g.fillStyle(0x060608); g.fillRect(18, lY+fLH+9, 36, 3);
-      g.fillStyle(0x303038); g.fillRect(18, lY+fLH+2, 7, 7);
-      g.fillStyle(0x080808); g.fillRect(16, lY+fLH+6, 6, 5);
-      g.fillStyle(0x3a5028); g.fillRect(24, lY-fLeg, 16, fLH);
-      g.fillStyle(0x4c6438); g.fillRect(25, lY-fLeg, 9, fLH-5);
-      g.fillStyle(0x283818); g.fillRect(32, lY-fLeg, 6, fLH);
-      g.fillStyle(0x5c6a42); g.fillRect(23, lY+fLH-14, 17, 7);
-      g.fillStyle(0x78904e); g.fillRect(24, lY+fLH-13, 10, 3);
-      g.fillStyle(0x2c3c1c); g.fillRect(63+bLeg, lY-4, 20, 12);
-      g.fillStyle(0x3a4e28); g.fillRect(64+bLeg, lY-4, 14, 10);
-      g.fillStyle(0x4e6434); g.fillRect(65+bLeg, lY-4, 8, 7);
-      g.fillStyle(0x2c3c1c); g.fillRect(22, lY-4, 20, 12);
-      g.fillStyle(0x3a4e28); g.fillRect(23, lY-4, 14, 10);
-      g.fillStyle(0x4e6434); g.fillRect(24, lY-4, 8, 7);
-      g.fillStyle(0x283818); g.fillRect(52+lean, tY, 24, tH);
-      g.fillStyle(0x485e2e); g.fillRect(30+lean, tY, 24, tH);
-      g.fillStyle(0x608040); g.fillRect(30+lean, tY, 7, tH);
-      g.fillStyle(0x7aa050); g.fillRect(30+lean, tY, 4, 11);
-      g.fillStyle(0x364820); g.fillRect(48+lean, tY, 4, tH);
-      g.fillStyle(0x688040); g.fillRect(26+lean, tY, 9, 12);
-      g.fillStyle(0x9ab858); g.fillRect(26+lean, tY, 8, 4);
-      g.fillStyle(0x2e4018); g.fillRect(27+lean, tY+9, 6, 4);
-      g.fillStyle(0x364a20); g.fillRect(34+lean, tY+4, 11, 10);
-      g.fillStyle(0x2a3c18); g.fillRect(35+lean, tY+5, 9, 8);
-      g.fillStyle(0xd8a820); g.fillRect(36+lean, tY+5, 6, 5);
-      g.fillStyle(0xffe840); g.fillRect(36+lean, tY+5, 2, 2);
-      g.fillStyle(0x688040); g.fillRect(68+lean, tY, 9, 12);
-      g.fillStyle(0x2e4018); g.fillRect(69+lean, tY+9, 6, 4);
-      g.fillStyle(0x1c1208); g.fillRect(26+lean, tY+tH-9, 50, 9);
-      g.fillStyle(0xb88020); g.fillRect(42+lean, tY+tH-8, 12, 7);
-      g.fillStyle(0xffd840); g.fillRect(43+lean, tY+tH-7, 7, 5);
-      g.fillStyle(0xffe870); g.fillRect(44+lean, tY+tH-7, 3, 2);
-      g.fillStyle(0x382818); g.fillRect(26+lean, tY+tH-8, 14, 7);
-      g.fillStyle(0x4e3c28); g.fillRect(27+lean, tY+tH-7, 7, 5);
-      g.fillStyle(0x382818); g.fillRect(60+lean, tY+tH-8, 14, 7);
-      g.fillStyle(0x4e3c28); g.fillRect(61+lean, tY+tH-7, 7, 5);
-      g.fillStyle(0xd09060); g.fillRect(48+lean, tY-8, 11, 9);
-      g.fillStyle(0xa87040); g.fillRect(52+lean, tY-7, 5, 8);
-      g.fillStyle(0xd09060); g.fillRect(hx+2, hY+20, 24, 14);
-      g.fillStyle(0xdcaa78); g.fillRect(hx+2, hY+6, 28, 20);
-      g.fillStyle(0xeecc90); g.fillRect(hx+3, hY+7, 14, 11);
-      g.fillStyle(0xb87840); g.fillRect(hx-2, hY+10, 5, 9);
-      g.fillStyle(0xd09060); g.fillRect(hx-1, hY+11, 2, 6);
-      g.fillStyle(0xa07030); g.fillRect(hx+22, hY+16, 8, 14);
-      g.fillStyle(0x301808); g.fillRect(hx+4, hY+8, 10, 3);
-      g.fillRect(hx+18, hY+8, 8, 3);
-      g.fillStyle(0xf8f8e8); g.fillRect(hx+5, hY+11, 8, 6);
-      g.fillRect(hx+18, hY+11, 7, 6);
-      g.fillStyle(0x204098); g.fillRect(hx+6, hY+12, 5, 4);
-      g.fillRect(hx+19, hY+12, 4, 4);
-      g.fillStyle(0x080810); g.fillRect(hx+7, hY+13, 3, 2);
-      g.fillRect(hx+20, hY+13, 2, 2);
-      g.fillStyle(0xffffff); g.fillRect(hx+7, hY+12, 2, 1);
-      g.fillRect(hx+19, hY+12, 2, 1);
-      g.fillStyle(0xa07030); g.fillRect(hx+13, hY+17, 5, 4);
-      g.fillRect(hx+12, hY+19, 3, 3);
-      g.fillStyle(0x884030); g.fillRect(hx+7, hY+24, 13, 5);
-      g.fillStyle(0xaa5040); g.fillRect(hx+8, hY+24, 7, 3);
-      g.fillStyle(0xb07848); g.fillRect(hx+5, hY+28, 18, 6);
-      g.fillStyle(0x281808); g.fillRect(hx+2, hY+3, 26, 5);
-      g.fillStyle(0xffd040); g.fillRect(hx-3, hY-5, 38, 10);
-      g.fillRect(hx+31, hY, 11, 7);
-      g.fillStyle(0xffe870); g.fillRect(hx-2, hY-4, 20, 5);
-      g.fillStyle(0xd89000); g.fillRect(hx-3, hY+4, 38, 3);
-      g.fillRect(hx+32, hY+4, 9, 4);
-      g.fillStyle(0xffd040); g.fillRect(hx+27, hY-3, 9, 12);
-      g.fillStyle(0xffe870); g.fillRect(hx+28, hY-2, 5, 6);
-      g.fillStyle(0xd89000); g.fillRect(hx+28, hY+7, 8, 3);
-      g.fillStyle(0x485e2e); g.fillRect(30+lean, tY+3, 12, 15);
-      g.fillStyle(0x608040); g.fillRect(30+lean, tY+3, 6, 15);
-      g.fillStyle(0xd09060); g.fillRect(34+lean, tY+14, 15, 14);
-      g.fillStyle(0xeecc90); g.fillRect(35+lean, tY+14, 8, 7);
-      g.fillStyle(0x181010); g.fillRect(34+lean, tY+25, 14, 7);
-      g.fillStyle(0x282020); g.fillRect(35+lean, tY+26, 8, 5);
-      g.fillStyle(0x485e2e); g.fillRect(68+lean, tY+3, 12, 15);
-      g.fillStyle(0x608040); g.fillRect(68+lean, tY+3, 6, 11);
-      g.fillStyle(0xd09060); g.fillRect(80+lean, tY-1, 18, 12);
-      g.fillStyle(0xeecc90); g.fillRect(81+lean, tY, 9, 6);
-      g.fillStyle(0x181010); g.fillRect(80+lean, tY+7, 17, 7);
-      g.fillStyle(0x3c2c1a); g.fillRect(90+lean, tY-5, 20, 20);
-      g.fillStyle(0x5a4430); g.fillRect(91+lean, tY-4, 14, 10);
-      g.fillStyle(0x281c10); g.fillRect(100+lean, tY-5, 5, 20);
-      g.fillStyle(0x1e1e28); g.fillRect(110+lean, tY-6, 28, 16);
-      g.fillStyle(0x2e2e3e); g.fillRect(111+lean, tY-5, 24, 8);
-      g.fillStyle(0x3c3c50); g.fillRect(112+lean, tY-5, 16, 5);
-      g.fillStyle(0x0e0e14); g.fillRect(126+lean, tY-8, 7, 6);
-      g.fillStyle(0x28283a); g.fillRect(118+lean, tY+8, 12, 18);
-      g.fillStyle(0x38384e); g.fillRect(119+lean, tY+9, 8, 10);
-      g.fillStyle(0xc09020); g.fillRect(118+lean, tY+24, 12, 3);
-      g.fillStyle(0x141418); g.fillRect(114+lean, tY+6, 14, 6);
-      g.fillRect(118+lean, tY+6, 8, 10);
-      g.fillStyle(0x121218); g.fillRect(138+lean, tY-5, 8, 10);
-      g.fillStyle(0x3e3e50); g.fillRect(139+lean, tY-4, 6, 5);
-      g.fillStyle(0x080808); g.fillRect(112+lean, tY+4, 4, 3);
-      g.fillRect(118+lean, tY+4, 4, 3);
-      g.fillStyle(0x0a0a10); g.fillRect(140+lean, tY-6, 4, 12);
-      g.fillStyle(0x505060); g.fillRect(140+lean, tY-5, 4, 5);
-      g.fillStyle(0xff1a1a); g.fillRect(115+lean, tY-9, 6, 3);
-      g.fillStyle(0xff6060); g.fillRect(116+lean, tY-9, 3, 1);
-      g.fillStyle(0x5a5a70); g.fillRect(113+lean, tY-7, 22, 2);
-    };
-    draw(0, 0, 0, false, false); g.generateTexture("runner-big", 146, 136);
-    draw(3, -6, 4, false, false); g.generateTexture("runner-big-run", 146, 136);
-    draw(1, 0, 2, false, false); g.generateTexture("runner-big-run-mid", 146, 136);
-    draw(-2, 6, -4, false, false); g.generateTexture("runner-big-run-alt", 146, 136);
-    draw(-5, 0, 0, true, false); g.generateTexture("runner-big-duck", 146, 136);
-    draw(3, 0, 0, false, true); g.generateTexture("runner-big-jump", 146, 136);
+    this.paintBigRunnerFigure(g, {});
+    g.generateTexture("runner-big", 146, 136);
     g.destroy();
   }
 
-
   createRunnerBigRunTexture() {
     const g = this.make.graphics({ x: 0, y: 0, add: false });
-    g.fillStyle(0x111218);
-    g.fillRect(8, 25, 14, 58);
-    g.fillRect(20, 105, 84, 13);
-    g.fillRect(66, 43, 64, 15);
-    g.fillStyle(0xf1c798);
-    g.fillRect(32, 8, 39, 38);
-    g.fillRect(72, 49, 22, 15);
-    g.fillStyle(0xffd95c);
-    g.fillRect(28, 5, 46, 9);
-    g.fillRect(66, 14, 20, 7);
-    g.fillStyle(0x5d2c1d);
-    g.fillRect(22, 14, 17, 37);
-    g.fillRect(32, 42, 38, 9);
-    g.fillStyle(0x15151c);
-    g.fillRect(58, 24, 8, 7);
-    g.fillRect(77, 53, 55, 7);
-    g.fillStyle(0xf2ead8);
-    g.fillRect(23, 52, 56, 14);
-    g.fillStyle(0xd93542);
-    g.fillRect(19, 66, 66, 27);
-    g.fillStyle(0xf16b53);
-    g.fillRect(24, 70, 27, 7);
-    g.fillStyle(0x8c1e2e);
-    g.fillRect(67, 66, 14, 27);
-    g.fillStyle(0xff8b22);
-    g.fillRect(36, 72, 34, 7);
-    g.fillStyle(0x6e785c);
-    g.fillRect(26, 93, 24, 30);
-    g.fillRect(66, 88, 34, 26);
-    g.fillStyle(0x879372);
-    g.fillRect(29, 97, 11, 10);
-    g.fillRect(70, 92, 14, 10);
-    g.fillStyle(0x47513f);
-    g.fillRect(42, 93, 8, 30);
-    g.fillRect(86, 88, 14, 26);
-    g.fillStyle(0x2f4a39);
-    g.fillRect(32, 96, 14, 11);
-    g.fillRect(73, 92, 20, 11);
-    g.fillStyle(0x202126);
-    g.fillRect(10, 122, 52, 10);
-    g.fillRect(75, 112, 50, 10);
-    g.fillStyle(0x4e545d);
-    g.fillRect(12, 122, 18, 4);
-    g.fillRect(77, 112, 18, 4);
-    g.fillStyle(0x3d4249);
-    g.fillRect(92, 43, 37, 11);
-    g.fillRect(124, 47, 23, 6);
-    g.fillStyle(0x686f77);
-    g.fillRect(93, 43, 14, 4);
-    g.fillStyle(0x40d8ff);
-    g.fillRect(4, 61, 22, 10);
-    g.fillRect(88, 65, 14, 7);
+    this.paintBigRunnerFigure(g, { lean: 4, leadLeg: -10, trailLeg: 10, leadFoot: 5, trailFoot: -1, armSwing: 4, weaponLift: -1, torsoDrop: -1 });
     g.generateTexture("runner-big-run", 146, 136);
     g.destroy();
   }
 
   createRunnerBigRunMidTexture() {
     const g = this.make.graphics({ x: 0, y: 0, add: false });
-    g.fillStyle(0x111218);
-    g.fillRect(9, 25, 14, 58);
-    g.fillRect(20, 107, 90, 12);
-    g.fillRect(64, 45, 62, 14);
-    g.fillStyle(0xf1c798);
-    g.fillRect(32, 8, 39, 38);
-    g.fillRect(70, 49, 22, 15);
-    g.fillStyle(0xffd95c);
-    g.fillRect(28, 5, 46, 9);
-    g.fillRect(66, 14, 20, 7);
-    g.fillStyle(0x5d2c1d);
-    g.fillRect(22, 14, 17, 37);
-    g.fillRect(32, 42, 38, 9);
-    g.fillStyle(0x15151c);
-    g.fillRect(58, 24, 8, 7);
-    g.fillRect(74, 53, 54, 7);
-    g.fillStyle(0xf2ead8);
-    g.fillRect(23, 52, 56, 14);
-    g.fillStyle(0xd93542);
-    g.fillRect(19, 66, 66, 27);
-    g.fillStyle(0xf16b53);
-    g.fillRect(24, 70, 27, 7);
-    g.fillStyle(0x8c1e2e);
-    g.fillRect(67, 66, 14, 27);
-    g.fillStyle(0xff8b22);
-    g.fillRect(36, 72, 34, 7);
-    g.fillStyle(0x6e785c);
-    g.fillRect(27, 93, 26, 28);
-    g.fillRect(64, 92, 24, 29);
-    g.fillStyle(0x879372);
-    g.fillRect(30, 97, 12, 10);
-    g.fillRect(67, 96, 11, 10);
-    g.fillStyle(0x47513f);
-    g.fillRect(43, 93, 10, 28);
-    g.fillRect(78, 92, 10, 29);
-    g.fillStyle(0x2f4a39);
-    g.fillRect(33, 96, 15, 11);
-    g.fillRect(69, 95, 14, 11);
-    g.fillStyle(0x202126);
-    g.fillRect(15, 121, 44, 10);
-    g.fillRect(59, 121, 49, 10);
-    g.fillStyle(0x4e545d);
-    g.fillRect(17, 121, 17, 4);
-    g.fillRect(61, 121, 18, 4);
-    g.fillStyle(0x3d4249);
-    g.fillRect(90, 45, 37, 11);
-    g.fillRect(123, 49, 22, 6);
-    g.fillStyle(0x686f77);
-    g.fillRect(91, 45, 14, 4);
-    g.fillStyle(0x40d8ff);
-    g.fillRect(4, 61, 22, 10);
-    g.fillRect(86, 67, 14, 7);
+    this.paintBigRunnerFigure(g, { lean: 3, leadLeg: -4, trailLeg: 4, leadFoot: 3, trailFoot: 1, armSwing: 2, torsoDrop: 0 });
     g.generateTexture("runner-big-run-mid", 146, 136);
     g.destroy();
   }
 
   createRunnerBigRunAltTexture() {
     const g = this.make.graphics({ x: 0, y: 0, add: false });
-    g.fillStyle(0x111218);
-    g.fillRect(9, 27, 13, 56);
-    g.fillRect(12, 111, 96, 12);
-    g.fillRect(48, 55, 24, 13);
-    g.fillRect(75, 74, 52, 13);
-    g.fillStyle(0xf1c798);
-    g.fillRect(33, 8, 39, 38);
-    g.fillRect(57, 55, 21, 15);
-    g.fillStyle(0xffd95c);
-    g.fillRect(29, 5, 46, 9);
-    g.fillRect(67, 14, 20, 7);
-    g.fillStyle(0x5d2c1d);
-    g.fillRect(23, 14, 17, 37);
-    g.fillRect(33, 42, 38, 9);
-    g.fillStyle(0x15151c);
-    g.fillRect(59, 24, 8, 7);
-    g.fillRect(83, 77, 48, 7);
-    g.fillStyle(0xf2ead8);
-    g.fillRect(23, 52, 56, 14);
-    g.fillStyle(0xd93542);
-    g.fillRect(19, 66, 67, 27);
-    g.fillStyle(0xf16b53);
-    g.fillRect(24, 70, 27, 7);
-    g.fillStyle(0x8c1e2e);
-    g.fillRect(68, 66, 14, 27);
-    g.fillStyle(0xff8b22);
-    g.fillRect(36, 72, 34, 7);
-    g.fillStyle(0x6e785c);
-    g.fillRect(24, 93, 40, 25);
-    g.fillRect(66, 92, 24, 33);
-    g.fillStyle(0x879372);
-    g.fillRect(28, 97, 16, 9);
-    g.fillRect(69, 96, 11, 10);
-    g.fillStyle(0x47513f);
-    g.fillRect(48, 93, 16, 25);
-    g.fillRect(80, 92, 10, 33);
-    g.fillStyle(0x2f4a39);
-    g.fillRect(32, 96, 24, 11);
-    g.fillRect(71, 96, 15, 11);
-    g.fillStyle(0x202126);
-    g.fillRect(4, 118, 58, 10);
-    g.fillRect(62, 125, 56, 10);
-    g.fillStyle(0x4e545d);
-    g.fillRect(6, 118, 22, 4);
-    g.fillRect(64, 125, 20, 4);
-    g.fillStyle(0x3d4249);
-    g.fillRect(104, 73, 37, 11);
-    g.fillStyle(0x686f77);
-    g.fillRect(105, 73, 14, 4);
-    g.fillStyle(0x40d8ff);
-    g.fillRect(4, 61, 22, 10);
-    g.fillRect(85, 65, 14, 7);
+    this.paintBigRunnerFigure(g, { lean: 2, leadLeg: 9, trailLeg: -10, leadFoot: -3, trailFoot: 6, armSwing: -6, weaponLift: 2, torsoDrop: 1, headShift: -1 });
     g.generateTexture("runner-big-run-alt", 146, 136);
     g.destroy();
   }
 
   createRunnerDuckTexture() {
     this.buildRunnerPoseTexture("runner-duck", {
-      crouch: true,
-      lean: 2,
-      leadLeg: 1,
-      trailLeg: 0,
-      leadFoot: 2,
-      armSwing: 1,
-      weaponLift: 2,
+      crouch: true, lean: 2, leadLeg: 1, trailLeg: 0, leadFoot: 2, armSwing: 1, weaponLift: 2,
     });
   }
 
   createRunnerBigDuckTexture() {
     const g = this.make.graphics({ x: 0, y: 0, add: false });
-    g.fillStyle(0x111218);
-    g.fillRect(20, 66, 12, 36);
-    g.fillRect(70, 72, 56, 12);
-    g.fillRect(28, 96, 40, 16);
-    g.fillRect(72, 94, 22, 16);
-    g.fillStyle(0xf1c798);
-    g.fillRect(46, 34, 34, 24);
-    g.fillRect(78, 73, 16, 10);
-    g.fillStyle(0xffd95c);
-    g.fillRect(42, 30, 40, 7);
-    g.fillRect(73, 37, 16, 5);
-    g.fillStyle(0x5d2c1d);
-    g.fillRect(37, 37, 13, 23);
-    g.fillStyle(0xf2ead8);
-    g.fillRect(35, 58, 54, 12);
-    g.fillStyle(0xd93542);
-    g.fillRect(30, 70, 60, 20);
-    g.fillStyle(0xf16b53);
-    g.fillRect(34, 73, 22, 5);
-    g.fillStyle(0x8c1e2e);
-    g.fillRect(76, 70, 10, 20);
-    g.fillStyle(0xff8b22);
-    g.fillRect(48, 75, 24, 5);
-    g.fillStyle(0x40d8ff);
-    g.fillRect(14, 67, 18, 9);
-    g.fillRect(89, 72, 12, 5);
-    g.fillStyle(0x6e785c);
-    g.fillRect(34, 90, 26, 18);
-    g.fillRect(66, 89, 24, 20);
-    g.fillStyle(0x879372);
-    g.fillRect(37, 93, 9, 6);
-    g.fillRect(69, 92, 9, 7);
-    g.fillStyle(0x47513f);
-    g.fillRect(50, 90, 10, 18);
-    g.fillRect(79, 89, 11, 20);
-    g.fillStyle(0x202126);
-    g.fillRect(24, 108, 38, 8);
-    g.fillRect(66, 109, 34, 8);
-    g.fillStyle(0x4e545d);
-    g.fillRect(26, 108, 14, 3);
-    g.fillRect(68, 109, 12, 3);
-    g.fillStyle(0x3d4249);
-    g.fillRect(98, 72, 30, 9);
-    g.fillStyle(0x686f77);
-    g.fillRect(99, 72, 12, 3);
+    this.paintBigRunnerFigure(g, { crouch: true, lean: 2, leadLeg: 1, trailLeg: 0, leadFoot: 2, armSwing: 1, weaponLift: 2 });
     g.generateTexture("runner-big-duck", 146, 136);
     g.destroy();
   }
 
   createRunnerJumpTextures() {
-    this.buildRunnerPoseTexture("runner-small-jump", {
-      jump: true,
-      lean: 3,
-      leadLeg: -2,
-      trailLeg: 4,
-      leadFoot: 1,
-      trailFoot: 2,
-      armSwing: 2,
-      weaponLift: -1,
-      torsoDrop: -2,
-    });
+    const g = this.make.graphics({ x: 0, y: 0, add: false });
+    this.paintBigRunnerFigure(g, { jump: true, lean: 2, leadLeg: -6, trailLeg: 4, armSwing: -3, weaponLift: -3, torsoDrop: -4 });
+    g.generateTexture("runner-big-jump", 146, 136);
+    g.destroy();
+  }
 
-    const big = this.make.graphics({ x: 0, y: 0, add: false });
-    big.fillStyle(0x111218);
-    big.fillRect(20, 28, 12, 52);
-    big.fillRect(66, 48, 62, 12);
-    big.fillRect(28, 96, 26, 24);
-    big.fillRect(61, 94, 28, 24);
-    big.fillStyle(0xf1c798);
-    big.fillRect(35, 10, 39, 36);
-    big.fillRect(74, 51, 18, 13);
-    big.fillStyle(0xffd95c);
-    big.fillRect(31, 7, 45, 9);
-    big.fillRect(68, 14, 18, 7);
-    big.fillStyle(0x5d2c1d);
-    big.fillRect(25, 16, 16, 34);
-    big.fillStyle(0xf2ead8);
-    big.fillRect(26, 51, 54, 13);
-    big.fillStyle(0xd93542);
-    big.fillRect(22, 64, 64, 25);
-    big.fillStyle(0xf16b53);
-    big.fillRect(26, 68, 25, 6);
-    big.fillStyle(0x8c1e2e);
-    big.fillRect(69, 64, 13, 25);
-    big.fillStyle(0xff8b22);
-    big.fillRect(39, 71, 31, 7);
-    big.fillStyle(0x40d8ff);
-    big.fillRect(8, 61, 20, 10);
-    big.fillRect(85, 67, 13, 6);
-    big.fillStyle(0x6e785c);
-    big.fillRect(30, 88, 20, 22);
-    big.fillRect(63, 88, 22, 24);
-    big.fillStyle(0x879372);
-    big.fillRect(33, 91, 9, 8);
-    big.fillRect(66, 91, 9, 8);
-    big.fillStyle(0x47513f);
-    big.fillRect(43, 88, 7, 22);
-    big.fillRect(76, 88, 9, 24);
-    big.fillStyle(0x202126);
-    big.fillRect(25, 109, 28, 9);
-    big.fillRect(60, 111, 30, 9);
-    big.fillStyle(0x4e545d);
-    big.fillRect(26, 109, 11, 3);
-    big.fillRect(61, 111, 12, 3);
-    big.fillStyle(0x3d4249);
-    big.fillRect(95, 48, 33, 10);
-    big.fillStyle(0x686f77);
-    big.fillRect(96, 48, 12, 4);
-    big.generateTexture("runner-big-jump", 146, 136);
-    big.destroy();
+  paintBigRunnerFigure(g, pose = {}) {
+    const lean = pose.lean || 0;
+    const crouch = !!pose.crouch;
+    const jump = !!pose.jump;
+    const leadLeg = pose.leadLeg || 0;
+    const trailLeg = pose.trailLeg || 0;
+    const leadFoot = pose.leadFoot || 0;
+    const trailFoot = pose.trailFoot || 0;
+    const armSwing = pose.armSwing || 0;
+    const weaponLift = pose.weaponLift || 0;
+    const torsoDrop = pose.torsoDrop || 0;
+    const headShift = pose.headShift || 0;
+    // Big runner is ~1.3x scale of small runner
+    // Canvas: 146x136
+    const headY = crouch ? 20 : 10;
+    const torsoY = 44 + torsoDrop + (crouch ? 14 : 0) + (jump ? -4 : 0);
+    const torsoH = crouch ? 28 : 36;
+    const legY = torsoY + torsoH;   // ~80 at rest
+    const frontLegH = crouch ? 20 : jump ? 20 : 30;
+    const backLegH = crouch ? 18 : jump ? 24 : 32;
+    const hx = 56 + lean + headShift;
+    const cx = 56 + lean;
+
+    // ââ TRAIL SHOE ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+    g.fillStyle(0x1a1a1a);
+    g.fillRect(62 + trailLeg, legY + backLegH + 6 + trailFoot, 38 + trailFoot, 5);
+    g.fillStyle(0xff6600);
+    g.fillRect(63 + trailLeg, legY + backLegH + 2 + trailFoot, 36 + trailFoot, 5);
+    g.fillStyle(0xf0f0f0);
+    g.fillRect(64 + trailLeg, legY + backLegH - 2 + trailFoot, 34 + trailFoot, 6);
+    g.fillStyle(0xffffff);
+    g.fillRect(67 + trailLeg, legY + backLegH - 2 + trailFoot, 20, 4);
+    g.fillStyle(0xe0e0e0);
+    g.fillRect(92 + trailLeg + trailFoot, legY + backLegH - 1 + trailFoot, 8, 5);
+
+    // ââ TRAIL SHIN (skin) âââââââââââââââââââââââââââââââââââââââââââââââââ
+    g.fillStyle(0xd4956a);
+    g.fillRect(67 + trailLeg, legY + 1, 18, backLegH - 1);
+    g.fillStyle(0xf5c498);
+    g.fillRect(68 + trailLeg, legY + 1, 13, backLegH - 3);
+    g.fillStyle(0xf8d8b0);
+    g.fillRect(70 + trailLeg, legY + 2, 7, 8);
+
+    // ââ TRAIL THIGH + SHORTS ââââââââââââââââââââââââââââââââââââââââââââââ
+    g.fillStyle(0x007799);
+    g.fillRect(65 + trailLeg, legY - 2, 20, 14);
+    g.fillStyle(0x00aacc);
+    g.fillRect(66 + trailLeg, legY - 2, 18, 12);
+    g.fillStyle(0x33ccee);
+    g.fillRect(68 + trailLeg, legY - 1, 10, 5);
+
+    // ââ BACK ARM âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+    const baX = cx + 8 + armSwing;
+    const baY = torsoY + 5;
+    g.fillStyle(0xd4956a);
+    g.fillRect(baX + 1, baY, 13, 18);
+    g.fillStyle(0xf5c498);
+    g.fillRect(baX + 2, baY + 1, 10, 15);
+    g.fillStyle(0xd4956a);
+    g.fillRect(baX + 4, baY + 16, 10, 13);
+    g.fillStyle(0xf5c498);
+    g.fillRect(baX + 5, baY + 17, 8, 10);
+    g.fillStyle(0xc8884e);
+    g.fillRect(baX + 3, baY + 27, 11, 8);
+    g.fillStyle(0xf5c498);
+    g.fillRect(baX + 4, baY + 28, 9, 6);
+
+    // ââ TORSO â orange tank top âââââââââââââââââââââââââââââââââââââââââââ
+    g.fillStyle(0xbb5500);
+    g.fillRect(cx + 5, torsoY, 16, torsoH);
+    g.fillStyle(0xff7722);
+    g.fillRect(cx - 18, torsoY, 26, torsoH);
+    g.fillStyle(0xffaa44);
+    g.fillRect(cx - 18, torsoY, 5, torsoH - 3);
+    g.fillStyle(0xffd080);
+    g.fillRect(cx - 17, torsoY + 2, 3, 8);
+    g.fillStyle(0xffaa44);
+    g.fillRect(cx - 18, torsoY, 24, 5);
+    // "K" logo
+    const kx = cx - 13;
+    const ky = torsoY + 10;
+    g.fillStyle(0xffffff);
+    g.fillRect(kx, ky, 4, 13);
+    g.fillRect(kx + 4, ky + 4, 4, 4);
+    g.fillRect(kx + 4, ky, 5, 4);
+    g.fillRect(kx + 5, ky + 9, 5, 4);
+    // Shorts waistband
+    g.fillStyle(0x005577);
+    g.fillRect(cx - 18, torsoY + torsoH - 8, 34, 8);
+    g.fillStyle(0x007799);
+    g.fillRect(cx - 17, torsoY + torsoH - 7, 32, 7);
+
+    // ââ FRONT ARM âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+    const faX = cx - 26 - armSwing;
+    const faY = torsoY + 3 + weaponLift;
+    g.fillStyle(0xd4956a);
+    g.fillRect(faX, faY, 13, 18);
+    g.fillStyle(0xf5c498);
+    g.fillRect(faX + 1, faY + 1, 10, 15);
+    g.fillStyle(0xd4956a);
+    g.fillRect(faX + 1, faY + 16, 10, 13);
+    g.fillStyle(0xf5c498);
+    g.fillRect(faX + 2, faY + 17, 8, 10);
+    g.fillStyle(0xc8884e);
+    g.fillRect(faX, faY + 26, 11, 8);
+    g.fillStyle(0xf5c498);
+    g.fillRect(faX + 1, faY + 27, 9, 6);
+
+    // ââ LEAD SHOE âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+    g.fillStyle(0x1a1a1a);
+    g.fillRect(18, legY + frontLegH + 4 + leadFoot, 42 + leadFoot, 5);
+    g.fillStyle(0xff6600);
+    g.fillRect(19, legY + frontLegH + leadFoot, 40 + leadFoot, 5);
+    g.fillStyle(0xf0f0f0);
+    g.fillRect(20, legY + frontLegH - 4 + leadFoot, 36 + leadFoot, 6);
+    g.fillStyle(0xffffff);
+    g.fillRect(23, legY + frontLegH - 4 + leadFoot, 22, 4);
+    g.fillStyle(0xcccccc);
+    g.fillRect(25, legY + frontLegH - 4 + leadFoot, 3, 2);
+    g.fillRect(31, legY + frontLegH - 4 + leadFoot, 3, 2);
+    g.fillRect(37, legY + frontLegH - 4 + leadFoot, 3, 2);
+
+    // ââ LEAD SHIN (skin) âââââââââââââââââââââââââââââââââââââââââââââââââ
+    g.fillStyle(0xd4956a);
+    g.fillRect(26, legY + 1, 18, frontLegH - 2 - leadLeg);
+    g.fillStyle(0xf5c498);
+    g.fillRect(27, legY + 1, 13, frontLegH - 4 - leadLeg);
+    g.fillStyle(0xf8d8b0);
+    g.fillRect(29, legY + 2, 7, 6);
+
+    // ââ LEAD THIGH + SHORTS âââââââââââââââââââââââââââââââââââââââââââââââ
+    g.fillStyle(0x007799);
+    g.fillRect(24, legY - 2, 20, 14);
+    g.fillStyle(0x00aacc);
+    g.fillRect(25, legY - 2, 18, 12);
+    g.fillStyle(0x33ccee);
+    g.fillRect(27, legY - 1, 10, 5);
+
+    // ââ HEAD âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+    // Neck
+    g.fillStyle(0xd4956a);
+    g.fillRect(hx - 4, headY + 16, 10, 7);
+    g.fillStyle(0xf5c498);
+    g.fillRect(hx - 3, headY + 16, 8, 5);
+    // Head
+    g.fillStyle(0xd4956a);
+    g.fillRect(hx - 10, headY + 2, 20, 17);
+    g.fillStyle(0xf5c498);
+    g.fillRect(hx - 9, headY + 2, 18, 15);
+    g.fillStyle(0xf8d8b0);
+    g.fillRect(hx - 6, headY + 3, 9, 8);
+    // Ear
+    g.fillStyle(0xd4956a);
+    g.fillRect(hx + 8, headY + 6, 4, 7);
+    g.fillStyle(0xf5c498);
+    g.fillRect(hx + 9, headY + 7, 3, 5);
+    // Eyes
+    g.fillStyle(0x1a0a00);
+    g.fillRect(hx - 5, headY + 6, 5, 4);
+    g.fillStyle(0xffffff);
+    g.fillRect(hx - 5, headY + 6, 2, 2);
+    // Nose
+    g.fillStyle(0xc8804a);
+    g.fillRect(hx + 1, headY + 10, 4, 3);
+    // Mouth
+    g.fillStyle(0xa06040);
+    g.fillRect(hx - 2, headY + 14, 6, 2);
+    g.fillStyle(0xff9977);
+    g.fillRect(hx - 1, headY + 13, 4, 1);
+
+    // ââ RUNNING CAP âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+    g.fillStyle(0xcc3300);
+    g.fillRect(hx - 12, headY - 4, 22, 9);
+    g.fillStyle(0xff5500);
+    g.fillRect(hx - 11, headY - 5, 20, 9);
+    g.fillStyle(0xff7722);
+    g.fillRect(hx - 10, headY - 7, 17, 8);
+    g.fillStyle(0xff9944);
+    g.fillRect(hx - 7, headY - 7, 10, 4);
+    g.fillStyle(0xffcc88);
+    g.fillRect(hx - 5, headY - 5, 5, 2);
+    // Visor
+    g.fillStyle(0xaa2200);
+    g.fillRect(hx + 7, headY - 2, 12, 5);
+    g.fillStyle(0xcc3300);
+    g.fillRect(hx + 8, headY - 2, 11, 4);
+    g.fillStyle(0x881100);
+    g.fillRect(hx + 8, headY + 2, 11, 3);
+    // Cap K logo
+    g.fillStyle(0xffffff);
+    g.fillRect(hx - 4, headY - 4, 3, 7);
+    g.fillRect(hx - 1, headY - 4, 3, 3);
+    g.fillRect(hx - 1, headY + 1, 3, 3);
+    // Hair at back
+    g.fillStyle(0x221100);
+    g.fillRect(hx - 14, headY + 2, 5, 5);
   }
 
   createRunnerScooterTextures() {
@@ -1604,425 +1371,550 @@ createRunnerBigTexture() {
       pants: 0x6e785c,
     }, 2);
   }
-
   createObstacleTextures() {
-    const barrel = this.make.graphics({ x: 0, y: 0, add: false });
-    barrel.fillStyle(0x0a0a0c);
-    barrel.fillRect(8, 6, 56, 66);
-    barrel.fillStyle(0x3a2010);
-    barrel.fillRect(10, 8, 52, 62);
-    barrel.fillStyle(0x6a3a20);
-    barrel.fillRect(12, 10, 16, 58);
-    barrel.fillStyle(0x522a14);
-    barrel.fillRect(28, 10, 32, 58);
-    barrel.fillStyle(0x1e0e08);
-    barrel.fillRect(52, 10, 8, 58);
-    barrel.fillStyle(0x141418);
-    barrel.fillRect(8, 6, 56, 8);
-    barrel.fillStyle(0x282830);
-    barrel.fillRect(10, 7, 44, 5);
-    barrel.fillStyle(0x3a3a46);
-    barrel.fillRect(12, 7, 20, 3);
-    barrel.fillStyle(0x0e0e10);
-    barrel.fillRect(6, 66, 60, 10);
-    barrel.fillStyle(0x1e1e24);
-    barrel.fillRect(8, 67, 48, 7);
-    barrel.fillStyle(0x1a1a20);
-    barrel.fillRect(6, 22, 60, 8);
-    barrel.fillStyle(0x282830);
-    barrel.fillRect(8, 23, 50, 3);
-    barrel.fillStyle(0x3a3a46);
-    barrel.fillRect(10, 23, 18, 2);
-    barrel.fillStyle(0x1a1a20);
-    barrel.fillRect(6, 48, 60, 8);
-    barrel.fillStyle(0x282830);
-    barrel.fillRect(8, 49, 50, 3);
-    barrel.fillStyle(0x3a3a46);
-    barrel.fillRect(10, 49, 18, 2);
-    barrel.fillStyle(0xffd820);
-    barrel.fillRect(10, 30, 52, 18);
-    barrel.fillStyle(0x0a0a08);
-    barrel.fillRect(10, 30, 8, 18);
-    barrel.fillRect(26, 30, 8, 18);
-    barrel.fillRect(42, 30, 8, 18);
-    barrel.fillRect(58, 30, 4, 18);
-    barrel.fillStyle(0xffe860);
-    barrel.fillRect(12, 32, 5, 3);
-    barrel.fillRect(28, 32, 5, 3);
-    barrel.fillStyle(0x8a3810);
-    barrel.fillRect(38, 14, 3, 22);
-    barrel.fillRect(22, 52, 2, 14);
-    barrel.fillStyle(0xaa4a18);
-    barrel.fillRect(39, 15, 1, 18);
-    barrel.fillStyle(0x140a04);
-    barrel.fillRect(52, 36, 6, 10);
-    barrel.fillStyle(0x7a3018);
-    barrel.fillRect(54, 37, 3, 7);
-    barrel.fillStyle(0x30e820);
-    barrel.fillRect(10, 8, 2, 58);
-    barrel.fillRect(60, 8, 2, 58);
-    barrel.fillStyle(0x18a010);
-    barrel.fillRect(10, 8, 1, 58);
-    barrel.generateTexture("barrel", 72, 80);
-    barrel.destroy();
+    const g = this.make.graphics({ x: 0, y: 0, add: false });
 
-    const barricade = this.make.graphics({ x: 0, y: 0, add: false });
-    barricade.fillStyle(0x080808);
-    barricade.fillRect(2, 72, 102, 6);
-    barricade.fillStyle(0x2a2a30);
-    barricade.fillRect(4, 8, 98, 14);
-    barricade.fillRect(10, 48, 86, 14);
-    barricade.fillStyle(0x484856);
-    barricade.fillRect(4, 8, 98, 5);
-    barricade.fillRect(10, 48, 86, 5);
-    barricade.fillStyle(0x606070);
-    barricade.fillRect(6, 9, 50, 2);
-    barricade.fillRect(12, 49, 46, 2);
-    barricade.fillStyle(0x181820);
-    barricade.fillRect(4, 18, 98, 4);
-    barricade.fillRect(10, 58, 86, 4);
-    barricade.fillStyle(0x1e1e28);
-    barricade.fillRect(10, 22, 12, 26);
-    barricade.fillStyle(0x2e2e3e);
-    barricade.fillRect(11, 22, 6, 26);
-    barricade.fillStyle(0x0e0e14);
-    barricade.fillRect(18, 22, 4, 26);
-    barricade.fillStyle(0x1e1e28);
-    barricade.fillRect(84, 22, 12, 26);
-    barricade.fillStyle(0x2e2e3e);
-    barricade.fillRect(85, 22, 6, 26);
-    barricade.fillStyle(0x0e0e14);
-    barricade.fillRect(92, 22, 4, 26);
-    barricade.fillStyle(0x242430);
-    barricade.fillRect(30, 22, 46, 10);
-    barricade.fillRect(30, 36, 46, 10);
-    barricade.fillStyle(0x363646);
-    barricade.fillRect(31, 22, 34, 4);
-    barricade.fillRect(31, 36, 34, 4);
-    barricade.fillStyle(0x14141e);
-    barricade.fillRect(62, 22, 14, 10);
-    barricade.fillRect(62, 36, 14, 10);
-    barricade.fillStyle(0xffd820);
-    barricade.fillRect(4, 8, 10, 14);
-    barricade.fillRect(22, 8, 10, 14);
-    barricade.fillRect(40, 8, 10, 14);
-    barricade.fillRect(58, 8, 10, 14);
-    barricade.fillRect(76, 8, 10, 14);
-    barricade.fillRect(92, 8, 10, 14);
-    barricade.fillStyle(0x0a0a08);
-    barricade.fillRect(14, 8, 8, 14);
-    barricade.fillRect(32, 8, 8, 14);
-    barricade.fillRect(50, 8, 8, 14);
-    barricade.fillRect(68, 8, 8, 14);
-    barricade.fillRect(86, 8, 6, 14);
-    barricade.fillStyle(0x0a0a08);
-    barricade.fillRect(10, 48, 10, 14);
-    barricade.fillRect(28, 48, 10, 14);
-    barricade.fillRect(46, 48, 10, 14);
-    barricade.fillRect(64, 48, 10, 14);
-    barricade.fillRect(82, 48, 14, 14);
-    barricade.fillStyle(0xffd820);
-    barricade.fillRect(20, 48, 8, 14);
-    barricade.fillRect(38, 48, 8, 14);
-    barricade.fillRect(56, 48, 8, 14);
-    barricade.fillRect(74, 48, 8, 14);
-    barricade.fillStyle(0xffe860);
-    barricade.fillRect(4, 9, 8, 2);
-    barricade.fillRect(22, 9, 8, 2);
-    barricade.fillRect(40, 9, 8, 2);
-    barricade.fillStyle(0x181820);
-    barricade.fillRect(8, 62, 14, 10);
-    barricade.fillRect(84, 62, 14, 10);
-    barricade.fillStyle(0x2a2a38);
-    barricade.fillRect(9, 62, 8, 4);
-    barricade.fillRect(85, 62, 8, 4);
-    barricade.fillStyle(0x101018);
-    barricade.fillRect(4, 70, 22, 6);
-    barricade.fillRect(80, 70, 22, 6);
-    barricade.generateTexture("barricade", 106, 80);
-    barricade.destroy();
+    // ââ BARREL (52x60) â orange/black hazard drum âââââââââââââââââââââââââ
+    g.clear();
+    g.fillStyle(0x221100);
+    g.fillRect(6, 56, 42, 4);
+    g.fillStyle(0xcc3300);
+    g.fillRect(8, 10, 38, 46);
+    g.fillStyle(0xff5500);
+    g.fillRect(10, 10, 30, 46);
+    g.fillStyle(0xff7722);
+    g.fillRect(12, 12, 14, 42);
+    g.fillStyle(0xff9944);
+    g.fillRect(13, 14, 6, 38);
+    g.fillStyle(0xaa2200);
+    g.fillRect(36, 10, 10, 46);
+    g.fillStyle(0x881100);
+    g.fillRect(44, 10, 4, 46);
+    g.fillStyle(0x333333);
+    g.fillRect(8, 6, 38, 6);
+    g.fillStyle(0x555555);
+    g.fillRect(10, 6, 34, 5);
+    g.fillStyle(0x777777);
+    g.fillRect(12, 7, 16, 2);
+    g.fillStyle(0x333333);
+    g.fillRect(8, 52, 38, 6);
+    g.fillStyle(0x555555);
+    g.fillRect(10, 52, 34, 4);
+    g.fillStyle(0x222222);
+    g.fillRect(6, 20, 42, 4);
+    g.fillStyle(0x444444);
+    g.fillRect(8, 20, 38, 3);
+    g.fillStyle(0x666666);
+    g.fillRect(10, 20, 20, 1);
+    g.fillStyle(0x222222);
+    g.fillRect(6, 36, 42, 4);
+    g.fillStyle(0x444444);
+    g.fillRect(8, 36, 38, 3);
+    g.fillStyle(0x666666);
+    g.fillRect(10, 36, 20, 1);
+    g.fillStyle(0xffee00);
+    g.fillRect(14, 11, 6, 8);
+    g.fillRect(22, 19, 6, 8);
+    g.fillRect(30, 11, 6, 8);
+    g.fillRect(14, 28, 6, 8);
+    g.fillRect(22, 36, 6, 7);
+    g.fillRect(30, 28, 6, 7);
+    g.fillRect(14, 44, 6, 7);
+    g.fillRect(30, 44, 6, 7);
+    g.fillStyle(0xffffff);
+    g.fillRect(22, 23, 2, 8);
+    g.fillRect(20, 25, 6, 2);
+    g.fillRect(20, 29, 6, 2);
+    g.fillStyle(0x888888);
+    g.fillRect(10, 5, 14, 1);
+    g.generateTexture("barrel", 52, 60);
 
-    const drone = this.make.graphics({ x: 0, y: 0, add: false });
-    drone.fillStyle(0x141820);
-    drone.fillRect(24, 20, 32, 22);
-    drone.fillStyle(0x242c38);
-    drone.fillRect(25, 20, 22, 10);
-    drone.fillStyle(0x1c2430);
-    drone.fillRect(38, 20, 14, 22);
-    drone.fillStyle(0x3a4454);
-    drone.fillRect(26, 21, 14, 4);
-    drone.fillStyle(0x0e1018);
-    drone.fillRect(28, 36, 24, 8);
-    drone.fillStyle(0x1e2838);
-    drone.fillRect(30, 18, 20, 10);
-    drone.fillStyle(0x2c3c50);
-    drone.fillRect(32, 18, 14, 6);
-    drone.fillStyle(0x405868);
-    drone.fillRect(34, 19, 8, 3);
-    drone.fillStyle(0x0050d0);
-    drone.fillRect(35, 30, 10, 8);
-    drone.fillStyle(0x0080ff);
-    drone.fillRect(36, 31, 8, 6);
-    drone.fillStyle(0x40b0ff);
-    drone.fillRect(37, 31, 5, 3);
-    drone.fillStyle(0x80d8ff);
-    drone.fillRect(38, 32, 3, 2);
-    drone.fillStyle(0xc0f0ff);
-    drone.fillRect(39, 32, 1, 1);
-    drone.fillStyle(0x1c2030);
-    drone.fillRect(8, 24, 18, 6);
-    drone.fillRect(54, 24, 18, 6);
-    drone.fillStyle(0x282e40);
-    drone.fillRect(8, 24, 14, 3);
-    drone.fillRect(54, 24, 14, 3);
-    drone.fillStyle(0x303848);
-    drone.fillRect(4, 20, 10, 14);
-    drone.fillRect(66, 20, 10, 14);
-    drone.fillStyle(0x404a5c);
-    drone.fillRect(5, 21, 7, 8);
-    drone.fillRect(67, 21, 7, 8);
-    drone.fillStyle(0x181c24);
-    drone.fillRect(5, 28, 8, 6);
-    drone.fillRect(67, 28, 8, 6);
-    drone.fillStyle(0x0c0e14);
-    drone.fillRect(0, 22, 10, 3);
-    drone.fillRect(0, 29, 10, 3);
-    drone.fillRect(70, 22, 10, 3);
-    drone.fillRect(70, 29, 10, 3);
-    drone.fillStyle(0x181c28);
-    drone.fillRect(0, 22, 8, 2);
-    drone.fillRect(0, 30, 8, 2);
-    drone.fillRect(72, 22, 8, 2);
-    drone.fillRect(72, 30, 8, 2);
-    drone.fillStyle(0x1e2234);
-    drone.fillRect(0, 25, 6, 4);
-    drone.fillRect(74, 25, 6, 4);
-    drone.fillStyle(0xff0000);
-    drone.fillRect(38, 22, 4, 3);
-    drone.fillStyle(0xff6060);
-    drone.fillRect(39, 22, 2, 2);
-    drone.fillStyle(0xff0000);
-    drone.fillRect(38, 42, 4, 3);
-    drone.fillStyle(0xff4040);
-    drone.fillRect(39, 43, 2, 1);
-    drone.fillStyle(0x0e1018);
-    drone.fillRect(32, 42, 16, 6);
-    drone.fillStyle(0x1c2030);
-    drone.fillRect(33, 43, 10, 4);
-    drone.fillStyle(0x0a0c10);
-    drone.fillRect(36, 46, 8, 6);
-    drone.fillStyle(0xffd000);
-    drone.fillRect(36, 50, 8, 3);
-    drone.fillStyle(0xffe840);
-    drone.fillRect(37, 51, 5, 1);
-    drone.fillStyle(0x2a3040);
-    drone.fillRect(34, 12, 2, 8);
-    drone.fillRect(44, 10, 2, 10);
-    drone.fillStyle(0xff1010);
-    drone.fillRect(34, 10, 3, 3);
-    drone.fillStyle(0xff5050);
-    drone.fillRect(35, 11, 1, 1);
-    drone.fillStyle(0x00d080);
-    drone.fillRect(44, 8, 3, 3);
-    drone.fillStyle(0x60ffe0);
-    drone.fillRect(45, 9, 1, 1);
-    drone.fillStyle(0x0060ff);
-    drone.fillRect(6, 26, 2, 3);
-    drone.fillStyle(0xff3010);
-    drone.fillRect(72, 26, 2, 3);
-    drone.generateTexture("drone", 80, 62);
-    drone.destroy();
+    // ââ BARRICADE (80x52) â yellow/black construction barrier ââââââââââââ
+    g.clear();
+    g.fillStyle(0x1a1a1a);
+    g.fillRect(4, 8, 8, 44);
+    g.fillRect(68, 8, 8, 44);
+    g.fillStyle(0x333333);
+    g.fillRect(5, 8, 5, 42);
+    g.fillStyle(0x555555);
+    g.fillRect(6, 10, 2, 8);
+    g.fillRect(6, 24, 2, 4);
+    g.fillStyle(0xff6600);
+    g.fillRect(2, 2, 12, 8);
+    g.fillStyle(0xff8822);
+    g.fillRect(4, 2, 8, 6);
+    g.fillStyle(0xffaa44);
+    g.fillRect(5, 3, 4, 3);
+    g.fillStyle(0xff6600);
+    g.fillRect(66, 2, 12, 8);
+    g.fillStyle(0xff8822);
+    g.fillRect(68, 2, 8, 6);
+    g.fillStyle(0xffaa44);
+    g.fillRect(69, 3, 4, 3);
+    g.fillStyle(0x1a1a1a);
+    g.fillRect(0, 44, 16, 8);
+    g.fillRect(64, 44, 16, 8);
+    g.fillStyle(0x333333);
+    g.fillRect(1, 44, 14, 6);
+    g.fillStyle(0x333333);
+    g.fillRect(10, 20, 60, 14);
+    g.fillStyle(0x555555);
+    g.fillRect(11, 20, 58, 12);
+    g.fillStyle(0xffee00);
+    g.fillRect(12, 21, 10, 10);
+    g.fillRect(32, 21, 10, 10);
+    g.fillRect(52, 21, 9, 10);
+    g.fillStyle(0x222222);
+    g.fillRect(22, 21, 10, 10);
+    g.fillRect(42, 21, 10, 10);
+    g.fillStyle(0x888888);
+    g.fillRect(11, 20, 58, 2);
+    g.fillStyle(0x666666);
+    g.fillRect(11, 30, 58, 2);
+    g.fillStyle(0xffee00);
+    g.fillRect(4, 14, 8, 4);
+    g.fillRect(4, 30, 8, 4);
+    g.fillRect(68, 14, 8, 4);
+    g.fillRect(68, 30, 8, 4);
+    g.generateTexture("barricade", 80, 52);
+
+    // ââ DRONE (64x40) â flying surveillance drone âââââââââââââââââââââââââ
+    g.clear();
+    g.fillStyle(0x1a1a2a);
+    g.fillRect(22, 10, 20, 20);
+    g.fillStyle(0x2a2a3a);
+    g.fillRect(20, 12, 24, 16);
+    g.fillStyle(0x3a3a4a);
+    g.fillRect(22, 10, 20, 6);
+    g.fillStyle(0x0a0a10);
+    g.fillRect(40, 16, 10, 8);
+    g.fillStyle(0x111122);
+    g.fillRect(42, 17, 8, 6);
+    g.fillStyle(0x334466);
+    g.fillRect(44, 18, 6, 4);
+    g.fillStyle(0x4466aa);
+    g.fillRect(45, 18, 4, 4);
+    g.fillStyle(0x88aadd);
+    g.fillRect(46, 19, 2, 2);
+    g.fillStyle(0x4a4a5a);
+    g.fillRect(22, 10, 10, 4);
+    g.fillStyle(0x6a6a7a);
+    g.fillRect(24, 10, 5, 2);
+    g.fillStyle(0xff0000);
+    g.fillRect(28, 8, 4, 3);
+    g.fillStyle(0xff6666);
+    g.fillRect(29, 8, 2, 2);
+    g.fillStyle(0x222233);
+    g.fillRect(4, 18, 18, 5);
+    g.fillRect(42, 18, 18, 5);
+    g.fillStyle(0x333344);
+    g.fillRect(5, 19, 16, 3);
+    g.fillRect(43, 19, 16, 3);
+    g.fillStyle(0x444455);
+    g.fillRect(6, 17, 6, 7);
+    g.fillRect(52, 17, 6, 7);
+    g.fillStyle(0x555566);
+    g.fillRect(7, 18, 4, 5);
+    g.fillRect(53, 18, 4, 5);
+    g.fillStyle(0x15151c);
+    g.fillRect(0, 12, 16, 4);
+    g.fillRect(48, 12, 16, 4);
+    g.fillStyle(0x333344);
+    g.fillRect(0, 13, 14, 2);
+    g.fillRect(50, 13, 14, 2);
+    g.fillStyle(0x4a4a5a);
+    g.fillRect(2, 13, 4, 1);
+    g.fillRect(58, 13, 4, 1);
+    g.fillStyle(0xcc3300);
+    g.fillRect(6, 14, 4, 4);
+    g.fillRect(54, 14, 4, 4);
+    g.fillStyle(0xff5500);
+    g.fillRect(7, 14, 2, 3);
+    g.fillRect(55, 14, 2, 3);
+    g.fillStyle(0x111122);
+    g.fillRect(24, 26, 16, 6);
+    g.fillStyle(0x222233);
+    g.fillRect(25, 27, 14, 4);
+    g.fillStyle(0x00ffcc);
+    g.fillRect(28, 28, 2, 2);
+    g.fillRect(32, 28, 2, 2);
+    g.fillStyle(0x111133);
+    g.fillRect(18, 34, 28, 4);
+    g.fillStyle(0x0022aa);
+    g.fillRect(22, 35, 20, 2);
+    g.generateTexture("drone", 64, 40);
+
+    g.destroy();
   }
-
-
   createRewardTextures() {
     const g = this.make.graphics({ x: 0, y: 0, add: false });
 
-    // SHIRT -> Tactical Vest (80x76)
+    // ââ SHIRT (48x44) â orange KAMUABU running jersey âââââââââââââââââââââ
     g.clear();
-    g.fillStyle(0x6b5a3e); g.fillRect(16, 8, 14, 8); g.fillRect(50, 8, 14, 8);
-    g.fillStyle(0x8b7355); g.fillRect(12, 16, 56, 46);
-    g.fillStyle(0x7a6244); g.fillRect(12, 16, 56, 4);
-    g.fillStyle(0x9b8365); g.fillRect(14, 20, 24, 28);
-    g.fillStyle(0x9b8365); g.fillRect(42, 20, 24, 28);
-    g.fillStyle(0xc8a040); g.fillRect(36, 16, 8, 46);
-    g.fillStyle(0xe0b840); g.fillRect(37, 18, 6, 42);
-    g.fillStyle(0x5a4a30); g.fillRect(16, 24, 18, 14);
-    g.fillStyle(0x4a3a20); g.fillRect(17, 25, 16, 12);
-    g.fillStyle(0xc8a040); g.fillRect(23, 24, 4, 2);
-    g.fillStyle(0x5a4a30); g.fillRect(46, 24, 18, 14);
-    g.fillStyle(0x4a3a20); g.fillRect(47, 25, 16, 12);
-    g.fillStyle(0xc8a040); g.fillRect(53, 24, 4, 2);
-    g.fillStyle(0x5a4a30); g.fillRect(14, 42, 12, 16);
-    g.fillStyle(0x5a4a30); g.fillRect(28, 42, 6, 16);
-    g.fillStyle(0x5a4a30); g.fillRect(54, 42, 12, 16);
-    g.fillStyle(0x6b5a3e); g.fillRect(30, 10, 20, 10);
-    g.fillStyle(0x7a6a4e); g.fillRect(32, 11, 16, 8);
-    g.fillStyle(0xffe080); g.fillRect(16, 20, 22, 3);
-    g.fillStyle(0xffe080); g.fillRect(42, 20, 22, 3);
-    g.generateTexture("shirt", 80, 76);
-
-    // SOCKS -> Ammo Belt (74x66)
-    g.clear();
-    g.fillStyle(0x5a4a30); g.fillRect(4, 26, 66, 14);
-    g.fillStyle(0x8b7355); g.fillRect(4, 28, 66, 6);
-    g.fillStyle(0x6b5a40); g.fillRect(4, 30, 66, 4);
-    g.fillStyle(0xc8a040); g.fillRect(30, 22, 14, 22);
-    g.fillStyle(0x8b6820); g.fillRect(33, 24, 8, 18);
-    g.fillStyle(0xffd060); g.fillRect(34, 26, 6, 4);
-    for (let i = 0; i < 5; i++) {
-      const bx = 6 + i * 12;
-      g.fillStyle(0xf0c040); g.fillRect(bx, 12, 8, 14);
-      g.fillStyle(0xd0a030); g.fillRect(bx, 14, 8, 10);
-      g.fillStyle(0xffd860); g.fillRect(bx + 1, 12, 4, 3);
-      g.fillStyle(0x6b5a3e); g.fillRect(bx, 24, 8, 4);
-    }
-    for (let i = 0; i < 3; i++) {
-      const bx = 8 + i * 16;
-      g.fillStyle(0xf0c040); g.fillRect(bx, 40, 8, 14);
-      g.fillStyle(0xd0a030); g.fillRect(bx, 42, 8, 10);
-      g.fillStyle(0x6b5a3e); g.fillRect(bx, 38, 8, 4);
-    }
-    g.generateTexture("socks", 74, 66);
-
-    // SHOE -> Combat Boots (86x60)
-    g.clear();
-    g.fillStyle(0x2a1a0a); g.fillRect(2, 48, 36, 6);
-    g.fillStyle(0x3a2a1a); g.fillRect(4, 36, 30, 14);
-    g.fillStyle(0x4a3a2a); g.fillRect(2, 40, 36, 10);
-    g.fillStyle(0x2a1a0a); g.fillRect(8, 10, 24, 30);
-    g.fillStyle(0x3a2a1a); g.fillRect(6, 12, 26, 28);
-    g.fillStyle(0xd0c0a0);
-    for (let i = 0; i < 5; i++) { g.fillRect(10, 14 + i * 5, 14, 2); }
-    g.fillStyle(0xb0a080); g.fillRect(15, 12, 4, 28);
-    g.fillStyle(0x5a4a3a); g.fillRect(2, 40, 36, 4);
-    g.fillStyle(0x6a5a4a); g.fillRect(4, 40, 32, 2);
-    g.fillStyle(0x2a1a0a); g.fillRect(48, 48, 36, 6);
-    g.fillStyle(0x3a2a1a); g.fillRect(50, 36, 30, 14);
-    g.fillStyle(0x4a3a2a); g.fillRect(48, 40, 36, 10);
-    g.fillStyle(0x2a1a0a); g.fillRect(54, 10, 24, 30);
-    g.fillStyle(0x3a2a1a); g.fillRect(52, 12, 26, 28);
-    g.fillStyle(0xd0c0a0);
-    for (let i = 0; i < 5; i++) { g.fillRect(56, 14 + i * 5, 14, 2); }
-    g.fillStyle(0xb0a080); g.fillRect(61, 12, 4, 28);
-    g.fillStyle(0x5a4a3a); g.fillRect(48, 40, 36, 4);
-    g.fillStyle(0x6a5a4a); g.fillRect(50, 40, 32, 2);
-    g.generateTexture("shoe", 86, 60);
-
-    // SCOOTER -> Military Moped (90x64)
-    g.clear();
-    g.fillStyle(0x485e2e); g.fillRect(18, 18, 54, 22);
-    g.fillStyle(0x3a4e20); g.fillRect(18, 30, 54, 10);
-    g.fillStyle(0x2a3e18); g.fillRect(62, 12, 8, 28);
-    g.fillStyle(0x3a4e20); g.fillRect(58, 10, 12, 6);
-    g.fillStyle(0x1a2010); g.fillRect(54, 8, 6, 8);
-    g.fillStyle(0x1a2010); g.fillRect(70, 8, 6, 8);
-    g.fillStyle(0xc8a040); g.fillRect(54, 8, 6, 3);
-    g.fillStyle(0xc8a040); g.fillRect(70, 8, 6, 3);
-    g.fillStyle(0x2a3010); g.fillRect(24, 26, 30, 18);
-    g.fillStyle(0x3a4020); g.fillRect(26, 28, 26, 14);
-    g.fillStyle(0x1a1a1a); g.fillRect(22, 14, 32, 8);
-    g.fillStyle(0x333333); g.fillRect(24, 15, 28, 5);
-    g.fillStyle(0x666666); g.fillRect(10, 36, 10, 6);
-    g.fillStyle(0x888888); g.fillRect(8, 37, 4, 4);
-    g.fillStyle(0xff6600); g.fillRect(6, 37, 4, 4);
-    g.fillStyle(0x1a1a1a); g.fillRect(54, 42, 28, 18);
-    g.fillStyle(0x3a3a3a); g.fillRect(56, 44, 24, 14);
-    g.fillStyle(0x888888); g.fillRect(64, 46, 8, 10);
-    g.fillStyle(0xaaaaaa); g.fillRect(66, 48, 4, 6);
-    g.fillStyle(0x555555); g.fillRect(67, 44, 2, 14); g.fillRect(56, 50, 22, 2);
-    g.fillStyle(0x1a1a1a); g.fillRect(8, 42, 28, 18);
-    g.fillStyle(0x3a3a3a); g.fillRect(10, 44, 24, 14);
-    g.fillStyle(0x888888); g.fillRect(18, 46, 8, 10);
-    g.fillStyle(0xaaaaaa); g.fillRect(20, 48, 4, 6);
-    g.fillStyle(0x555555); g.fillRect(21, 44, 2, 14); g.fillRect(10, 50, 22, 2);
-    g.fillStyle(0xffd040); g.fillRect(42, 18, 4, 18); g.fillRect(36, 24, 16, 6);
-    g.generateTexture("scooter", 90, 64);
-
-    // OUTFIT -> Full Combat Gear Set (82x78)
-    g.clear();
-    g.fillStyle(0x485e2e); g.fillRect(26, 2, 30, 22);
-    g.fillStyle(0x3a4e20); g.fillRect(24, 16, 34, 10);
-    g.fillStyle(0xffd040); g.fillRect(28, 4, 26, 8);
-    g.fillStyle(0xffb800); g.fillRect(30, 5, 22, 5);
-    g.fillStyle(0x485e2e); g.fillRect(28, 10, 26, 8);
-    g.fillStyle(0x5a7030); g.fillRect(30, 4, 8, 4);
-    g.fillStyle(0x5a7030); g.fillRect(44, 6, 8, 4);
-    g.fillStyle(0x8b7355); g.fillRect(12, 28, 58, 32);
-    g.fillStyle(0x9b8365); g.fillRect(14, 30, 26, 24);
-    g.fillStyle(0x9b8365); g.fillRect(42, 30, 26, 24);
-    g.fillStyle(0xc8a040); g.fillRect(38, 28, 6, 32);
-    g.fillStyle(0x5a4a30); g.fillRect(16, 34, 16, 12);
-    g.fillStyle(0x5a4a30); g.fillRect(50, 34, 16, 12);
-    g.fillStyle(0x5a4a30); g.fillRect(16, 48, 10, 10);
-    g.fillStyle(0x5a4a30); g.fillRect(56, 48, 10, 10);
-    g.fillStyle(0x3a2a1a); g.fillRect(14, 62, 22, 14);
-    g.fillStyle(0x3a2a1a); g.fillRect(46, 62, 22, 14);
-    g.fillStyle(0x2a1a0a); g.fillRect(12, 72, 26, 4);
-    g.fillStyle(0x2a1a0a); g.fillRect(44, 72, 26, 4);
-    g.fillStyle(0xd0c0a0);
-    for (let i = 0; i < 3; i++) { g.fillRect(17, 64 + i * 4, 12, 2); }
-    for (let i = 0; i < 3; i++) { g.fillRect(49, 64 + i * 4, 12, 2); }
-    g.fillStyle(0xffe080); g.fillRect(14, 30, 24, 3);
-    g.fillStyle(0xffe080); g.fillRect(44, 30, 24, 3);
-    g.generateTexture("outfit", 82, 78);
-
-    // LASER -> Laser Rifle (90x64)
-    g.clear();
-    g.fillStyle(0x2a2a4a); g.fillRect(6, 22, 72, 18);
-    g.fillStyle(0x3a3a6a); g.fillRect(8, 22, 72, 6);
-    g.fillStyle(0x1a1a3a); g.fillRect(6, 34, 72, 6);
-    g.fillStyle(0x4a4a8a); g.fillRect(72, 18, 14, 26);
-    g.fillStyle(0x6666aa); g.fillRect(74, 20, 10, 22);
-    g.fillStyle(0x0066ff); g.fillRect(82, 16, 8, 30);
-    g.fillStyle(0x2288ff); g.fillRect(84, 18, 6, 26);
-    g.fillStyle(0x88ccff); g.fillRect(85, 20, 4, 22);
-    g.fillStyle(0xffffff); g.fillRect(86, 24, 2, 14);
-    g.fillStyle(0x444466); g.fillRect(28, 12, 28, 12);
-    g.fillStyle(0x6666aa); g.fillRect(30, 14, 24, 8);
-    g.fillStyle(0x8888cc); g.fillRect(34, 15, 12, 4);
-    g.fillStyle(0x88aaff); g.fillRect(38, 15, 4, 2);
-    g.fillStyle(0x1a1a1a); g.fillRect(18, 38, 10, 18);
-    g.fillStyle(0x2a2a2a); g.fillRect(20, 40, 6, 14);
-    g.fillStyle(0x1a1a1a); g.fillRect(46, 38, 12, 20);
-    g.fillStyle(0x2a2a2a); g.fillRect(48, 40, 8, 16);
+    // Jersey body
+    g.fillStyle(0xcc4400);
+    g.fillRect(10, 14, 30, 26);
+    g.fillStyle(0xff6600);
+    g.fillRect(8, 12, 32, 26);
+    g.fillStyle(0xff8822);
+    g.fillRect(10, 12, 22, 24);
+    g.fillStyle(0xffaa44);
+    g.fillRect(12, 14, 8, 18);
+    // Side panels (teal accent stripes)
+    g.fillStyle(0x007799);
+    g.fillRect(8, 14, 4, 22);
+    g.fillRect(36, 14, 4, 22);
+    g.fillStyle(0x00aacc);
+    g.fillRect(8, 15, 3, 20);
+    g.fillRect(37, 15, 3, 20);
+    // Collar (round neck)
+    g.fillStyle(0x1a1a1a);
+    g.fillRect(18, 8, 12, 6);
     g.fillStyle(0x333333);
-    for (let i = 0; i < 4; i++) { g.fillRect(48, 42 + i * 4, 8, 2); }
-    g.fillStyle(0x003388); g.fillRect(36, 26, 12, 8);
-    g.fillStyle(0x0044cc); g.fillRect(38, 27, 8, 5);
-    g.fillStyle(0x2266ff); g.fillRect(40, 28, 4, 3);
-    g.fillStyle(0x1a1a3a); g.fillRect(2, 26, 8, 12);
-    g.fillStyle(0x2a2a4a); g.fillRect(4, 27, 4, 10);
-    g.generateTexture("laser", 90, 64);
+    g.fillRect(19, 9, 10, 4);
+    // Sleeves (short cap sleeves)
+    g.fillStyle(0xff6600);
+    g.fillRect(2, 12, 8, 10);
+    g.fillRect(38, 12, 8, 10);
+    g.fillStyle(0x007799);
+    g.fillRect(2, 12, 3, 10);
+    g.fillRect(43, 12, 3, 10);
+    // "K" logo center chest
+    g.fillStyle(0xffffff);
+    g.fillRect(20, 16, 3, 12);
+    g.fillRect(23, 16, 4, 4);
+    g.fillRect(23, 24, 5, 4);
+    g.fillRect(24, 21, 4, 3);
+    // Bottom hem
+    g.fillStyle(0x1a1a1a);
+    g.fillRect(8, 36, 32, 4);
+    g.fillStyle(0x007799);
+    g.fillRect(8, 37, 32, 3);
+    // Shine
+    g.fillStyle(0xffdd88);
+    g.fillRect(13, 14, 3, 6);
+    g.generateTexture("shirt", 48, 44);
 
-    // ROCKET -> RPG Launcher (86x64)
+    // ââ SOCKS (36x32) â white running socks with teal stripe ââââââââââââââ
     g.clear();
-    g.fillStyle(0x4a4a4a); g.fillRect(4, 20, 70, 24);
-    g.fillStyle(0x5a5a5a); g.fillRect(6, 22, 70, 8);
-    g.fillStyle(0x3a3a3a); g.fillRect(4, 36, 70, 8);
-    g.fillStyle(0x333333); g.fillRect(70, 14, 14, 36);
-    g.fillStyle(0x555555); g.fillRect(72, 16, 10, 32);
-    g.fillStyle(0x222222); g.fillRect(76, 12, 6, 40);
-    g.fillStyle(0xcc2200); g.fillRect(10, 24, 22, 16);
-    g.fillStyle(0xdd3300); g.fillRect(12, 25, 18, 13);
-    g.fillStyle(0xff4400); g.fillRect(8, 22, 8, 20);
-    g.fillStyle(0xff6600); g.fillRect(6, 20, 6, 24);
-    g.fillStyle(0xffaa00); g.fillRect(4, 18, 4, 28);
-    g.fillStyle(0xaa1100); g.fillRect(28, 20, 4, 8);
-    g.fillStyle(0xaa1100); g.fillRect(28, 36, 4, 8);
-    g.fillStyle(0xcc2200); g.fillRect(30, 18, 2, 8);
-    g.fillStyle(0xcc2200); g.fillRect(30, 38, 2, 8);
-    g.fillStyle(0xff6600); g.fillRect(0, 22, 8, 20);
-    g.fillStyle(0xffaa00); g.fillRect(2, 24, 6, 16);
-    g.fillStyle(0xffee00); g.fillRect(4, 26, 4, 12);
-    g.fillStyle(0xffffff); g.fillRect(5, 28, 2, 8);
-    g.fillStyle(0x222222); g.fillRect(34, 44, 18, 16);
-    g.fillStyle(0x1a1a1a); g.fillRect(48, 44, 14, 16);
-    g.fillStyle(0x333333); g.fillRect(36, 46, 14, 12);
-    g.fillStyle(0x1a1a1a); g.fillRect(42, 40, 10, 8);
-    g.fillStyle(0xffd040); g.fillRect(4, 20, 6, 4);
-    g.fillStyle(0xffd040); g.fillRect(62, 20, 6, 4);
-    g.generateTexture("rocket", 86, 64);
+    // Left sock
+    g.fillStyle(0xdddddd);
+    g.fillRect(2, 8, 14, 22);
+    g.fillStyle(0xffffff);
+    g.fillRect(3, 8, 12, 20);
+    g.fillStyle(0xeeeeee);
+    g.fillRect(4, 10, 6, 14);
+    // Left sock top fold
+    g.fillStyle(0x00aacc);
+    g.fillRect(2, 6, 14, 4);
+    g.fillStyle(0x33ccee);
+    g.fillRect(3, 6, 12, 3);
+    g.fillStyle(0x0088aa);
+    g.fillRect(2, 8, 14, 2);
+    // Left sock toe
+    g.fillStyle(0xeeeeee);
+    g.fillRect(2, 26, 14, 4);
+    g.fillStyle(0xcccccc);
+    g.fillRect(2, 28, 14, 2);
+    // Right sock
+    g.fillStyle(0xdddddd);
+    g.fillRect(20, 8, 14, 22);
+    g.fillStyle(0xffffff);
+    g.fillRect(21, 8, 12, 20);
+    g.fillStyle(0xeeeeee);
+    g.fillRect(22, 10, 6, 14);
+    g.fillStyle(0x00aacc);
+    g.fillRect(20, 6, 14, 4);
+    g.fillStyle(0x33ccee);
+    g.fillRect(21, 6, 12, 3);
+    g.fillStyle(0x0088aa);
+    g.fillRect(20, 8, 14, 2);
+    g.fillStyle(0xeeeeee);
+    g.fillRect(20, 26, 14, 4);
+    g.fillStyle(0xcccccc);
+    g.fillRect(20, 28, 14, 2);
+    // Shine dots
+    g.fillStyle(0xffffff);
+    g.fillRect(5, 11, 2, 2);
+    g.fillRect(23, 11, 2, 2);
+    g.generateTexture("socks", 36, 32);
+
+    // ââ SHOE (44x28) â white running shoe with orange sole ââââââââââââââââ
+    g.clear();
+    // Sole (black rubber)
+    g.fillStyle(0x1a1a1a);
+    g.fillRect(2, 20, 40, 6);
+    g.fillStyle(0x333333);
+    g.fillRect(4, 20, 36, 4);
+    // Orange midsole stripe
+    g.fillStyle(0xff6600);
+    g.fillRect(2, 16, 40, 6);
+    g.fillStyle(0xff8822);
+    g.fillRect(4, 16, 36, 5);
+    // White upper
+    g.fillStyle(0xe0e0e0);
+    g.fillRect(4, 6, 38, 12);
+    g.fillStyle(0xffffff);
+    g.fillRect(6, 4, 34, 12);
+    g.fillStyle(0xf0f0f0);
+    g.fillRect(8, 4, 22, 10);
+    // Toe box
+    g.fillStyle(0xf5f5f5);
+    g.fillRect(34, 4, 8, 12);
+    g.fillStyle(0xffffff);
+    g.fillRect(36, 5, 6, 10);
+    // Collar
+    g.fillStyle(0xdddddd);
+    g.fillRect(4, 4, 8, 6);
+    g.fillStyle(0xcccccc);
+    g.fillRect(4, 4, 6, 4);
+    // Laces
+    g.fillStyle(0xcccccc);
+    g.fillRect(14, 5, 2, 2);
+    g.fillRect(18, 5, 2, 2);
+    g.fillRect(22, 5, 2, 2);
+    g.fillRect(26, 5, 2, 2);
+    g.fillRect(14, 8, 2, 2);
+    g.fillRect(18, 8, 2, 2);
+    g.fillRect(22, 8, 2, 2);
+    // Teal K logo on side
+    g.fillStyle(0x00aacc);
+    g.fillRect(20, 12, 2, 4);
+    g.fillRect(22, 12, 3, 2);
+    g.fillRect(23, 14, 3, 2);
+    // Heel counter
+    g.fillStyle(0x007799);
+    g.fillRect(4, 6, 6, 10);
+    g.fillStyle(0x00aacc);
+    g.fillRect(5, 7, 4, 8);
+    // Highlights
+    g.fillStyle(0xffffff);
+    g.fillRect(10, 5, 6, 2);
+    g.generateTexture("shoe", 44, 28);
+
+    // ââ SCOOTER (64x44) â electric kick scooter ââââââââââââââââââââââââââââ
+    g.clear();
+    // Back wheel
+    g.fillStyle(0x111111);
+    g.fillRect(2, 28, 16, 16);
+    g.fillStyle(0x222222);
+    g.fillRect(4, 30, 12, 12);
+    g.fillStyle(0x444444);
+    g.fillRect(6, 32, 8, 8);
+    g.fillStyle(0x666666);
+    g.fillRect(8, 34, 4, 4);
+    // Front wheel
+    g.fillStyle(0x111111);
+    g.fillRect(46, 28, 16, 16);
+    g.fillStyle(0x222222);
+    g.fillRect(48, 30, 12, 12);
+    g.fillStyle(0x444444);
+    g.fillRect(50, 32, 8, 8);
+    g.fillStyle(0x666666);
+    g.fillRect(52, 34, 4, 4);
+    // Deck (orange platform)
+    g.fillStyle(0xcc4400);
+    g.fillRect(8, 26, 48, 6);
+    g.fillStyle(0xff6600);
+    g.fillRect(10, 24, 44, 6);
+    g.fillStyle(0xff8822);
+    g.fillRect(12, 24, 30, 4);
+    g.fillStyle(0xffaa44);
+    g.fillRect(14, 24, 10, 2);
+    // Grip tape (dots)
+    g.fillStyle(0xcc3300);
+    g.fillRect(14, 25, 2, 2);
+    g.fillRect(20, 25, 2, 2);
+    g.fillRect(26, 25, 2, 2);
+    g.fillRect(32, 25, 2, 2);
+    g.fillRect(38, 25, 2, 2);
+    // Stem
+    g.fillStyle(0x333333);
+    g.fillRect(52, 12, 6, 14);
+    g.fillStyle(0x555555);
+    g.fillRect(53, 12, 4, 12);
+    // Handlebar
+    g.fillStyle(0x222222);
+    g.fillRect(44, 10, 20, 4);
+    g.fillStyle(0x444444);
+    g.fillRect(46, 10, 16, 3);
+    // Handlebar grips (orange)
+    g.fillStyle(0xff6600);
+    g.fillRect(44, 9, 4, 6);
+    g.fillRect(60, 9, 4, 6);
+    g.fillStyle(0xff8822);
+    g.fillRect(45, 9, 2, 5);
+    g.fillRect(61, 9, 2, 5);
+    // Battery pack (teal LED strip)
+    g.fillStyle(0x005577);
+    g.fillRect(18, 26, 20, 4);
+    g.fillStyle(0x00aacc);
+    g.fillRect(19, 27, 18, 2);
+    g.fillStyle(0x00ffee);
+    g.fillRect(20, 27, 4, 2);
+    g.fillRect(26, 27, 4, 2);
+    g.fillRect(32, 27, 4, 2);
+    g.generateTexture("scooter", 64, 44);
+
+    // ââ OUTFIT (56x52) â full KAMUABU kit (jersey + shorts) ââââââââââââââ
+    g.clear();
+    // Jersey top
+    g.fillStyle(0xcc4400);
+    g.fillRect(12, 6, 32, 26);
+    g.fillStyle(0xff6600);
+    g.fillRect(10, 4, 36, 26);
+    g.fillStyle(0xff8822);
+    g.fillRect(12, 4, 22, 22);
+    g.fillStyle(0xffaa44);
+    g.fillRect(14, 6, 8, 16);
+    g.fillStyle(0x007799);
+    g.fillRect(10, 6, 4, 22);
+    g.fillRect(42, 6, 4, 22);
+    // Collar
+    g.fillStyle(0x222222);
+    g.fillRect(22, 0, 12, 6);
+    g.fillStyle(0x444444);
+    g.fillRect(23, 1, 10, 4);
+    // Shorts
+    g.fillStyle(0x005577);
+    g.fillRect(12, 28, 32, 20);
+    g.fillStyle(0x007799);
+    g.fillRect(14, 28, 28, 18);
+    g.fillStyle(0x00aacc);
+    g.fillRect(16, 28, 22, 16);
+    g.fillStyle(0x33ccee);
+    g.fillRect(18, 30, 10, 8);
+    // Side stripes on shorts (orange)
+    g.fillStyle(0xff6600);
+    g.fillRect(14, 30, 3, 14);
+    g.fillRect(39, 30, 3, 14);
+    // Waistband
+    g.fillStyle(0x1a1a1a);
+    g.fillRect(12, 28, 32, 4);
+    g.fillStyle(0x333333);
+    g.fillRect(14, 28, 28, 3);
+    // "K" on jersey
+    g.fillStyle(0xffffff);
+    g.fillRect(24, 8, 3, 12);
+    g.fillRect(27, 8, 4, 4);
+    g.fillRect(27, 16, 5, 4);
+    g.fillRect(28, 13, 4, 3);
+    // Star on shorts (gold)
+    g.fillStyle(0xffee00);
+    g.fillRect(26, 33, 2, 6);
+    g.fillRect(24, 35, 6, 2);
+    // Trim gleam
+    g.fillStyle(0xffdd88);
+    g.fillRect(15, 6, 2, 6);
+    g.generateTexture("outfit", 56, 52);
+
+    // ââ LASER (40x20) â energy weapon upgrade ââââââââââââââââââââââââââââ
+    g.clear();
+    // Gun body
+    g.fillStyle(0x111122);
+    g.fillRect(6, 6, 28, 10);
+    g.fillStyle(0x1a1a2a);
+    g.fillRect(4, 8, 32, 8);
+    g.fillStyle(0x2a2a3a);
+    g.fillRect(6, 8, 26, 6);
+    // Top rail
+    g.fillStyle(0x333344);
+    g.fillRect(6, 6, 28, 4);
+    g.fillStyle(0x4a4a5a);
+    g.fillRect(8, 6, 22, 2);
+    g.fillStyle(0x6a6a7a);
+    g.fillRect(10, 6, 8, 1);
+    // Grip
+    g.fillStyle(0x222233);
+    g.fillRect(8, 14, 10, 6);
+    g.fillStyle(0x333344);
+    g.fillRect(9, 14, 8, 5);
+    // Barrel (front, glowing)
+    g.fillStyle(0x0000aa);
+    g.fillRect(32, 9, 6, 6);
+    g.fillStyle(0x2244cc);
+    g.fillRect(33, 9, 5, 5);
+    g.fillStyle(0x4488ff);
+    g.fillRect(34, 10, 4, 3);
+    g.fillStyle(0x88ccff);
+    g.fillRect(35, 10, 3, 2);
+    g.fillStyle(0xffffff);
+    g.fillRect(36, 11, 2, 1);
+    // Scope
+    g.fillStyle(0x1a1a2a);
+    g.fillRect(14, 4, 10, 4);
+    g.fillStyle(0x334466);
+    g.fillRect(15, 4, 8, 3);
+    g.fillStyle(0x88aadd);
+    g.fillRect(17, 4, 4, 2);
+    // Energy cell (glowing blue)
+    g.fillStyle(0x0022aa);
+    g.fillRect(22, 14, 8, 6);
+    g.fillStyle(0x2244cc);
+    g.fillRect(23, 14, 6, 5);
+    g.fillStyle(0x4488ff);
+    g.fillRect(24, 15, 4, 3);
+    g.fillStyle(0x88ccff);
+    g.fillRect(25, 15, 2, 2);
+    // Trigger
+    g.fillStyle(0x444455);
+    g.fillRect(12, 12, 4, 4);
+    g.fillStyle(0x555566);
+    g.fillRect(13, 12, 2, 3);
+    g.generateTexture("laser", 40, 20);
+
+    // ââ ROCKET (44x24) â rocket launcher upgrade âââââââââââââââââââââââââ
+    g.clear();
+    // Main tube
+    g.fillStyle(0x222211);
+    g.fillRect(4, 8, 34, 10);
+    g.fillStyle(0x334422);
+    g.fillRect(2, 8, 36, 8);
+    g.fillStyle(0x445533);
+    g.fillRect(4, 8, 28, 6);
+    g.fillStyle(0x556644);
+    g.fillRect(6, 9, 16, 4);
+    g.fillStyle(0x778855);
+    g.fillRect(8, 10, 6, 2);
+    // Rocket nose (front, orange/red)
+    g.fillStyle(0xcc2200);
+    g.fillRect(38, 8, 6, 10);
+    g.fillStyle(0xff3300);
+    g.fillRect(40, 9, 4, 8);
+    g.fillStyle(0xff5522);
+    g.fillRect(42, 10, 2, 6);
+    // Exhaust (back, glowing)
+    g.fillStyle(0xff6600);
+    g.fillRect(0, 9, 4, 8);
+    g.fillStyle(0xff9900);
+    g.fillRect(0, 10, 3, 6);
+    g.fillStyle(0xffcc00);
+    g.fillRect(0, 11, 2, 4);
+    g.fillStyle(0xffffff);
+    g.fillRect(0, 12, 1, 2);
+    // Grip / handle
+    g.fillStyle(0x1a1a11);
+    g.fillRect(10, 16, 12, 6);
+    g.fillStyle(0x2a2a22);
+    g.fillRect(11, 16, 10, 5);
+    // Scope / sight
+    g.fillStyle(0x222211);
+    g.fillRect(18, 4, 8, 5);
+    g.fillStyle(0x334422);
+    g.fillRect(19, 4, 6, 4);
+    g.fillStyle(0x88aa66);
+    g.fillRect(20, 5, 4, 2);
+    // Bands / rings on tube
+    g.fillStyle(0x1a1a11);
+    g.fillRect(12, 8, 3, 10);
+    g.fillRect(24, 8, 3, 10);
+    // Warning markings
+    g.fillStyle(0xffee00);
+    g.fillRect(28, 9, 4, 2);
+    g.fillRect(28, 13, 4, 2);
+    g.fillStyle(0xff3300);
+    g.fillRect(29, 11, 2, 2);
+    g.generateTexture("rocket", 44, 24);
 
     g.destroy();
   }
@@ -2042,10 +1934,10 @@ createRunnerBigTexture() {
       // BACK LEG
       const bLX = hX - 8;
       const bLY = tY + tH;
-      g.fillStyle(0x1a2240); g.fillRect(bLX - 8, bLY + bLeg, 12, 18);
-      g.fillStyle(0x2a3250); g.fillRect(bLX - 6, bLY + 16 + bLeg, 10, 16);
-      g.fillStyle(0x1a1a1a); g.fillRect(bLX - 8, bLY + 30 + bLeg, 14, 6);
-      g.fillStyle(0x2a2a2a); g.fillRect(bLX - 10, bLY + 34 + bLeg, 16, 4);
+      g.fillStyle(0x1a2240); g.fillRect(bLX - 8, bLY + bLeg, 12, 14);
+      g.fillStyle(0x2a3250); g.fillRect(bLX - 6, bLY + 12 + bLeg, 10, 12);
+      g.fillStyle(0x1a1a1a); g.fillRect(bLX - 8, bLY + 23 + bLeg, 14, 5);
+      g.fillStyle(0x2a2a2a); g.fillRect(bLX - 10, bLY + 27 + bLeg, 16, 4);
 
       // BACK ARM with electric baton
       const bAX = hX - 14 + lean;
@@ -2106,12 +1998,12 @@ createRunnerBigTexture() {
       // FRONT LEG
       const fLX = hX + 6;
       const fLY = tY + tH;
-      g.fillStyle(0x1a2240); g.fillRect(fLX - 2, fLY + fLeg, 12, 18);
-      g.fillStyle(0x2a3250); g.fillRect(fLX, fLY + 16 + fLeg, 10, 16);
-      g.fillStyle(0x222222); g.fillRect(fLX - 2, fLY + 14 + fLeg, 12, 6);
-      g.fillStyle(0x333333); g.fillRect(fLX - 1, fLY + 15 + fLeg, 10, 4);
-      g.fillStyle(0x1a1a1a); g.fillRect(fLX - 2, fLY + 30 + fLeg, 14, 6);
-      g.fillStyle(0x2a2a2a); g.fillRect(fLX - 4, fLY + 34 + fLeg, 16, 4);
+      g.fillStyle(0x1a2240); g.fillRect(fLX - 2, fLY + fLeg, 12, 14);
+      g.fillStyle(0x2a3250); g.fillRect(fLX, fLY + 12 + fLeg, 10, 12);
+      g.fillStyle(0x222222); g.fillRect(fLX - 2, fLY + 11 + fLeg, 12, 5);
+      g.fillStyle(0x333333); g.fillRect(fLX - 1, fLY + 12 + fLeg, 10, 3);
+      g.fillStyle(0x1a1a1a); g.fillRect(fLX - 2, fLY + 23 + fLeg, 14, 5);
+      g.fillStyle(0x2a2a2a); g.fillRect(fLX - 4, fLY + 27 + fLeg, 16, 4);
     };
 
     drawCop(0, 0, 0, false, false);   g.generateTexture("enemy-grunt", 102, 98);
